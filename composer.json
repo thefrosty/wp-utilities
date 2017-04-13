@@ -1,0 +1,28 @@
+{
+  "name": "thefrosty/wp-utilities",
+  "description": "A library containing my standard development resources",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Austin Passy",
+      "email": "austin@passy.co",
+      "homepage": "https://github.com/thefrosty"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=7.0"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "TheFrosty\\WP\\Utils\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+    }
+  }
+}
