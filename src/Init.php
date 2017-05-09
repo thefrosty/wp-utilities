@@ -17,6 +17,15 @@ class Init implements \IteratorAggregate {
     public $plugin_components = [];
 
     /**
+     * Helper property to check whether the object has been initiated
+     * or loaded. So this class can call the `initialize` method more
+     * than once.
+     *
+     * @var string $property
+     */
+    private $property = 'initiated';
+
+    /**
      * Adds an object to $container property
      *
      * @param WpHooksInterface $wp_hooks
@@ -34,9 +43,12 @@ class Init implements \IteratorAggregate {
      * be done here.
      */
     public function initialize() {
-        foreach ( $this as $container_object ) {
-            if ( $container_object instanceof WpHooksInterface ) {
-                $container_object->addHooks();
+        foreach ( $this as $object ) {
+            if ( $object instanceof WpHooksInterface &&
+                 ! property_exists( $object, $this->property )
+            ) {
+                $object->addHooks();
+                $object->{$this->property} = true;
             }
         }
     }
