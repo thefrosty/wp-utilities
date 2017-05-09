@@ -1,12 +1,12 @@
 # WordPress Utilities
 
-A library containing my standard development resources
+A library containing my standard development resources.
 
 ### Requirements
 
 ```
-PHP 7.0 or higher
-WordPress 4.7.0
+PHP >= 7
+WordPress >= 4.7
 ```
 
 The required WordPress version will always be the most recent point release of
