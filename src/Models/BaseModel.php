@@ -147,6 +147,6 @@ abstract class BaseModel {
      * @return string
      */
     private function getMethod( string $prefix, string $field ): string {
-        return $prefix . str_replace( '_', '', ucwords( $field, '_' ) );
+        return $prefix . str_replace( [ '_', '-' ], '', ucwords( $field, '_-' ) );
     }
 }
