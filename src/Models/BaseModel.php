@@ -60,6 +60,7 @@ abstract class BaseModel {
      * @param BaseModel[] $models
      *
      * @return array
+     * @throws \Exception
      */
     public function toArrayDeep( array $models ): array {
 
