@@ -1,11 +1,11 @@
 <?php
 
-namespace TheFrosty\WP\Utils;
+namespace TheFrosty\WP\Utils\Utils;
 
 /**
  * Class AbstractSingleton
  *
- * @package TheFrosty\WP\Utils
+ * @package TheFrosty\WP\Utils\Utils
  */
 abstract class AbstractSingleton implements SingletonInterface {
 
