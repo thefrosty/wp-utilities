@@ -21,5 +21,5 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:~0.2.2
+composer require thefrosty/wp-utilities:~0.2.3
 ```

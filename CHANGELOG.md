@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.3] - 2018-01-29
+### Added
+- Added `AbstractSingleton` class and `InterfaceSingleton` interface to the a new Utils directory.
+### Updated
+- Added `@throws` notice to PhpDoc in `BaseModel::toArrayDeep()`.
+
 ## [0.2.2] - 2017-07-28
 ### Updated
 - Added `-` to BaseModel to allow array keys to be set as `example_one => 'Value'` or `example-one => 'Value`.
