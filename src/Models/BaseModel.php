@@ -1,21 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace TheFrosty\WP\Utils\Models;
+namespace TheFrosty\WpUtilities\Models;
 
 /**
  * Class BaseModel
  *
- * @package TheFrosty\WP\Utils\Models
+ * @package TheFrosty\WpUtilities\Models
  */
-abstract class BaseModel {
+abstract class BaseModel
+{
 
     /**
      * BaseModel constructor.
      *
      * @param array $fields
      */
-    public function __construct( array $fields ) {
-        $this->populate( $fields );
+    public function __construct(array $fields)
+    {
+        $this->populate($fields);
     }
 
     /**
@@ -28,25 +30,24 @@ abstract class BaseModel {
      * @return array
      * @throws \Exception
      */
-    public function toArray(): array {
-        if ( ! empty( $this->getSerializableFields() ) ) {
+    public function toArray() : array
+    {
+        if (! empty($this->getSerializableFields())) {
             $result = [];
 
-            foreach ( $this->getSerializableFields() as $index => $field_name ) {
-                $value = $this->{'get' . ucwords( $field_name )}();
-                if ( is_object( $value ) && method_exists( $value, 'toArray' ) ) {
-                    $result[ $field_name ] = $value->toArray();
-                } else {
-                    $result[ $field_name ] = $value;
+            foreach ($this->getSerializableFields() as $index => $field_name) {
+                $value = $this->{'get' . ucwords($field_name)}();
+                if (is_object($value) && method_exists($value, 'toArray')) {
+                    $result[$field_name] = $value->toArray();
+                    continue;
                 }
+                $result[$field_name] = $value;
             }
 
             return $result;
         }
-        throw new \Exception(
-            'If you are going to use toArray() in your model you have
-            to implement custom logic or return a list of fields in getSerializableFields().'
-        );
+        throw new \Exception('If you are going to use toArray() in your model you have
+            to implement custom logic or return a list of fields in getSerializableFields().');
     }
 
     /**
@@ -62,10 +63,10 @@ abstract class BaseModel {
      * @return array
      * @throws \Exception
      */
-    public function toArrayDeep( array $models ): array {
-
+    public function toArrayDeep(array $models) : array
+    {
         $deep_array = [];
-        foreach ( $models as $model ) {
+        foreach ($models as $model) {
             $deep_array[] = $model->toArray();
         }
 
@@ -77,7 +78,8 @@ abstract class BaseModel {
      *
      * @return array
      */
-    protected function getDateTimeFields() {
+    protected function getDateTimeFields() : array
+    {
         return [];
     }
 
@@ -88,7 +90,8 @@ abstract class BaseModel {
      *
      * @return array
      */
-    protected function getSerializableFields(): array {
+    protected function getSerializableFields() : array
+    {
         return [];
     }
 
@@ -96,29 +99,29 @@ abstract class BaseModel {
      * Populate model
      *
      * @param array $fields
-     *
      * @return void
      */
-    protected function populate( $fields ) {
-        foreach ( $fields as $field => $value ) {
+    protected function populate(array $fields)
+    {
+        foreach ($fields as $field => $value) {
             // If field value is null we just leave it blank
-            if ( is_null( $value ) ) {
+            if (is_null($value)) {
                 continue;
             }
 
-            $setter_method = $this->getSetterMethod( $field );
-            $populate_method = $this->getPopulateMethod( $field );
+            $setter_method = $this->getSetterMethod($field);
+            $populate_method = $this->getPopulateMethod($field);
 
             // First try to proceed with custom population logic
-            if ( method_exists( $this, $populate_method ) ) {
-                $this->$populate_method( $value );
+            if (method_exists($this, $populate_method)) {
+                $this->$populate_method($value);
                 // If no custom logic found proceed with regular setters
-            } elseif ( method_exists( $this, $setter_method ) ) {
+            } elseif (method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
-                if ( in_array( $field, $this->getDateTimeFields(), true ) ) {
-                    $value = date_create( $value );
+                if (in_array($field, $this->getDateTimeFields(), true)) {
+                    $value = date_create($value);
                 }
-                $this->$setter_method( $value );
+                $this->$setter_method($value);
             }
         }
     }
@@ -128,8 +131,9 @@ abstract class BaseModel {
      *
      * @return string
      */
-    private function getSetterMethod( string $field ): string {
-        return $this->getMethod( 'set', $field );
+    private function getSetterMethod(string $field) : string
+    {
+        return $this->getMethod('set', $field);
     }
 
     /**
@@ -137,8 +141,9 @@ abstract class BaseModel {
      *
      * @return string
      */
-    private function getPopulateMethod( string $field ): string {
-        return $this->getMethod( 'populate', $field );
+    private function getPopulateMethod(string $field) : string
+    {
+        return $this->getMethod('populate', $field);
     }
 
     /**
@@ -147,7 +152,8 @@ abstract class BaseModel {
      *
      * @return string
      */
-    private function getMethod( string $prefix, string $field ): string {
-        return $prefix . str_replace( [ '_', '-' ], '', ucwords( $field, '_-' ) );
+    private function getMethod(string $prefix, string $field) : string
+    {
+        return $prefix . str_replace(['_', '-'], '', ucwords($field, '_-'));
     }
 }

@@ -1,16 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace TheFrosty\WP\Utils\Utils;
+namespace TheFrosty\WpUtilities\Utils;
 
 /**
  * Interface SingletonInterface
  *
- * @package TheFrosty\WP\Utils\Utils
+ * @package TheFrosty\WpUtilities\Utils
  */
-interface SingletonInterface {
+interface SingletonInterface
+{
 
-	/**
-	 * @return SingletonInterface
-	 */
-	public static function getInstance(): SingletonInterface;
+    /**
+     * @return SingletonInterface
+     */
+    public static function getInstance() : self;
 }

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.0] - 2018-03-30
+## Breaking Update
+### Added
+- New `Plugin` builder (forked from [cedaro/wp-plugin](https://github.com/cedaro/wp-plugin)) + heavily modified for PHP 7.
+- Travis CI.
+  - phpunit tests.
+  - phpcs + phpmd.
+
+### Updated
+- Project namespace changed from `TheFrosty\WP\Utils` to `TheFrosty\WpUtilities`.
+- Project now adheres to PSR2 coding standards.
+
 ## [0.2.3] - 2018-01-29
 ### Added
 - Added `AbstractSingleton` class and `InterfaceSingleton` interface to the a new Utils directory.

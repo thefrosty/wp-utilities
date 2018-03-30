@@ -1,48 +1,53 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace TheFrosty\WP\Utils\Utils;
+namespace TheFrosty\WpUtilities\Utils;
 
 /**
  * Class AbstractSingleton
  *
- * @package TheFrosty\WP\Utils\Utils
+ * @package TheFrosty\WpUtilities\Utils
  */
-abstract class AbstractSingleton implements SingletonInterface {
+abstract class AbstractSingleton implements SingletonInterface
+{
 
-	/**
-	 * Array of `SingletonInterface` objects.
-	 *
-	 * @var SingletonInterface[]
-	 */
-	private static $instances = [];
+    /**
+     * Array of `SingletonInterface` objects.
+     *
+     * @var SingletonInterface[]
+     */
+    private static $instances = [];
 
-	/**
-	 * @return SingletonInterface
-	 */
-	public static function getInstance(): SingletonInterface {
-		self::$instances[ static::class ] = self::$instances[ static::class ] ?? new static();
+    /**
+     * @return SingletonInterface
+     */
+    public static function getInstance() : SingletonInterface
+    {
+        self::$instances[static::class] = self::$instances[static::class] ?? new static();
 
-		return self::$instances[ static::class ];
-	}
+        return self::$instances[static::class];
+    }
 
-	/**
-	 * Nobody should unserialize this instance.
-	 *
-	 * @throws \Exception
-	 */
-	public function __wakeup() {
-		throw new \Exception( sprintf( 'Cannot unserialize %s', static::class ) );
-	}
+    /**
+     * Nobody should unserialize this instance.
+     *
+     * @throws \Exception
+     */
+    public function __wakeup()
+    {
+        throw new \Exception(sprintf('Cannot unserialize %s', static::class));
+    }
 
-	/**
-	 * AbstractSingleton constructor.
-	 */
-	protected function __construct() {
-	}
+    /**
+     * AbstractSingleton constructor.
+     */
+    protected function __construct()
+    {
+    }
 
-	/**
-	 * Clone magic method is private, nobody should clone this instance.
-	 */
-	private function __clone() {
-	}
+    /**
+     * Clone magic method is private, nobody should clone this instance.
+     */
+    private function __clone()
+    {
+    }
 }
