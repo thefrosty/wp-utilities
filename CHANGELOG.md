@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.1] - 2018-04-04
+### Updated
+- Added the `initialize` method in `AbstractPlugin` since it's no longer extending `Init`.
+
 ## [1.1.0] - 2018-04-04
 ### Updated
 - Changed `Init` from an abstract class to final class.
