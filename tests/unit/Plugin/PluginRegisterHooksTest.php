@@ -2,6 +2,7 @@
 
 namespace TheFrosty\PhpUnit\WpUtilities;
 
+use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;

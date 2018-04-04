@@ -3,6 +3,7 @@
 namespace TheFrosty\PhpUnit\WpUtilities;
 
 use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
+use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\PhpUnit\WpUtilities\Framework\TestCase;
 

@@ -8,7 +8,7 @@ namespace TheFrosty\WpUtilities\Plugin;
  * @package TheFrosty\WpUtilities\Plugin
  * @link https://github.com/johnpbloch/wordpress-dev
  */
-abstract class AbstractPlugin extends Init implements PluginInterface
+abstract class AbstractPlugin implements PluginInterface
 {
     const DEFAULT_TAG = 'init';
 
@@ -29,6 +29,13 @@ abstract class AbstractPlugin extends Init implements PluginInterface
     private $directory;
 
     /**
+     * Init object.
+     *
+     * @var Init $init
+     */
+    private $init;
+
+    /**
      * Absolute path to the main plugin file.
      *
      * @var string $file
@@ -43,18 +50,18 @@ abstract class AbstractPlugin extends Init implements PluginInterface
     private $slug;
 
     /**
-     * URL to the main plugin directory.
-     *
-     * @var string $url
-     */
-    private $url;
-
-    /**
      * Array of action tags that have been registered.
      *
      * @var array $tags
      */
     private $tags = [];
+
+    /**
+     * URL to the main plugin directory.
+     *
+     * @var string $url
+     */
+    private $url;
 
     /**
      * Retrieve the absolute path for the main plugin file.
@@ -111,6 +118,27 @@ abstract class AbstractPlugin extends Init implements PluginInterface
     public function getPath(string $path = '') : string
     {
         return $this->directory . \ltrim($path, '/');
+    }
+
+    /**
+     * Return the Init object.
+     *
+     * {@inheritdoc}
+     */
+    public function getInit() : Init
+    {
+        return $this->init;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return $this
+     */
+    public function setInit(Init $init) : PluginInterface
+    {
+        $this->init = $init;
+
+        return $this;
     }
 
     /**
@@ -190,7 +218,7 @@ abstract class AbstractPlugin extends Init implements PluginInterface
      */
     public function add(WpHooksInterface $wp_hooks) : PluginInterface
     {
-        $this->register($wp_hooks, $this);
+        $this->getInit()->register($wp_hooks, $this);
 
         return $this;
     }
@@ -232,11 +260,12 @@ abstract class AbstractPlugin extends Init implements PluginInterface
     {
         $wp_hooks = new $wp_hook();
         if (! ($wp_hooks instanceof WpHooksInterface)) {
-            throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class .
-                ', got: ' . \get_class($wp_hook));
+            throw new \InvalidArgumentException(
+                'Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)
+            );
         }
         /** @var WpHooksInterface $wp_hooks */
-        $this->register($wp_hooks, $this);
+        $this->getInit()->register($wp_hooks, $this);
         $this->initializeOnHook();
     }
 
@@ -248,7 +277,7 @@ abstract class AbstractPlugin extends Init implements PluginInterface
     {
         call_user_func_array(function ($tag) {
             \add_action($tag, function () {
-                $this->initialize();
+                $this->getInit()->initialize();
             });
         }, $this->getTags());
     }
