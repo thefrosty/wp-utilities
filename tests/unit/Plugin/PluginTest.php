@@ -20,7 +20,7 @@ class PluginTest extends TestCase
      */
     public function test_implements_plugin_interface()
     {
-        $plugin = new Plugin();
+        $plugin = new Plugin(new Init());
         $this->assertInstanceOf(PluginInterface::class, $plugin);
     }
 }

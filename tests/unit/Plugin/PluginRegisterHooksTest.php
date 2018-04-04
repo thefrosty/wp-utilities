@@ -35,7 +35,7 @@ class PluginRegisterHooksTest extends TestCase
 
         $provider->expects($this->exactly(1))->method('addHooks');
 
-        $plugin = new Plugin();
+        $plugin = new Plugin(new Init());
         /** WpHooksInterface @var WpHooksInterface $provider */
         $plugin->add($provider);
 

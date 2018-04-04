@@ -32,7 +32,7 @@ class PluginAwareTraitTest extends TestCase
             return;
         }
 
-        $plugin = new Plugin();
+        $plugin = new Plugin(new Init());
         /** PluginAwareTrait @var PluginAwareTrait $provider */
         $provider->setPlugin($plugin);
 
