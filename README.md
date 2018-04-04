@@ -1,5 +1,12 @@
 # WordPress Utilities
 
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/thefrosty/wp-utilities.svg)]()
+[![Latest Stable Version](https://img.shields.io/packagist/v/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
+[![Total Downloads](https://img.shields.io/packagist/dt/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
+[![License](https://img.shields.io/packagist/l/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
+[![Build Status](https://travis-ci.org/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.org/thefrosty/wp-utilities)
+[![Beerpay](https://beerpay.io/thefrosty/wp-utilities/badge.svg?style=flat)](https://beerpay.io/thefrosty/wp-utilities)
+
 A library containing my standard development resources.
 
 ### Requirements
@@ -21,5 +28,5 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:~1.0.1
+composer require thefrosty/wp-utilities:~1.1.0
 ```
