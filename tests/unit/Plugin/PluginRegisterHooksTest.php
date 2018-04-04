@@ -2,6 +2,7 @@
 
 namespace TheFrosty\PhpUnit\WpUtilities;
 
+use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
@@ -34,7 +35,7 @@ class PluginRegisterHooksTest extends TestCase
 
         $provider->expects($this->exactly(1))->method('addHooks');
 
-        $plugin = new Plugin();
+        $plugin = new Plugin(new Init());
         /** WpHooksInterface @var WpHooksInterface $provider */
         $plugin->add($provider);
 

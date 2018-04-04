@@ -2,6 +2,7 @@
 
 namespace TheFrosty\PhpUnit\WpUtilities;
 
+use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\PhpUnit\WpUtilities\Framework\TestCase;
@@ -19,7 +20,7 @@ class PluginTest extends TestCase
      */
     public function test_implements_plugin_interface()
     {
-        $plugin = new Plugin();
+        $plugin = new Plugin(new Init());
         $this->assertInstanceOf(PluginInterface::class, $plugin);
     }
 }

@@ -50,6 +50,13 @@ interface PluginInterface
     public function getPath(string $path = '') : string;
 
     /**
+     * Gets to Init object.
+     *
+     * @return Init
+     */
+    public function getInit() : Init;
+
+    /**
      * Retrieve the absolute path for the main plugin file.
      *
      * @return string

@@ -28,7 +28,7 @@ class PluginFactory
             // @codingStandardsIgnoreEnd
         }
 
-        $plugin = (new Plugin())->setBasename(\plugin_basename($filename))
+        $plugin = (new Plugin(new Init()))->setBasename(\plugin_basename($filename))
             ->setDirectory(\plugin_dir_path($filename))
             ->setFile($filename)
             ->setSlug($slug)

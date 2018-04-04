@@ -7,7 +7,7 @@ namespace TheFrosty\WpUtilities\Plugin;
  *
  * @package TheFrosty\WpUtilities\Plugin
  */
-abstract class Init implements \IteratorAggregate
+final class Init implements \IteratorAggregate
 {
 
     /**
@@ -21,7 +21,7 @@ abstract class Init implements \IteratorAggregate
      *
      * @var WpHooksInterface[] $wp_hooks
      */
-    public $wp_hooks = [];
+    private $wp_hooks = [];
 
     /**
      * Adds an object to $wp_hooks property.
@@ -31,7 +31,7 @@ abstract class Init implements \IteratorAggregate
      *
      * @return PluginInterface
      */
-    protected function register(
+    public function register(
         WpHooksInterface $wp_hooks,
         PluginInterface $plugin
     ) : PluginInterface {
@@ -50,10 +50,10 @@ abstract class Init implements \IteratorAggregate
      */
     public function initialize()
     {
-        foreach ($this as $wp_hooks) {
-            if ($wp_hooks instanceof WpHooksInterface && ! property_exists($wp_hooks, self::PROPERTY)) {
-                $wp_hooks->{self::PROPERTY} = true;
-                $wp_hooks->addHooks();
+        foreach ($this as $wp_hook) {
+            if ($wp_hook instanceof WpHooksInterface && ! property_exists($wp_hook, self::PROPERTY)) {
+                $wp_hook->{self::PROPERTY} = true;
+                $wp_hook->addHooks();
             }
         }
     }
@@ -66,5 +66,14 @@ abstract class Init implements \IteratorAggregate
     public function getIterator() : \ArrayIterator
     {
         return new \ArrayIterator($this->wp_hooks);
+    }
+
+    /**
+     * Gets the array of registered WpHooksInterface objects.
+     * @return WpHooksInterface[]
+     */
+    public function getWpHooks() : array
+    {
+        return $this->wp_hooks;
     }
 }
