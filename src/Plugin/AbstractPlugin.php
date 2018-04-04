@@ -252,6 +252,14 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Initialize the Init `WpHooksInterface` objects.
+     */
+    public function initialize()
+    {
+        $this->getInit()->initialize();
+    }
+
+    /**
      * Initialize the late hook provider when it's been registered on an action hook.
      *
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
