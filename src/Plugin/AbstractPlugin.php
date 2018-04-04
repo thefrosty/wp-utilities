@@ -64,15 +64,6 @@ abstract class AbstractPlugin implements PluginInterface
     private $url;
 
     /**
-     * AbstractPlugin constructor.
-     * @param Init $init
-     */
-    public function __construct(Init $init)
-    {
-        $this->init = $init;
-    }
-
-    /**
      * Retrieve the absolute path for the main plugin file.
      *
      * {@inheritdoc}
@@ -137,6 +128,17 @@ abstract class AbstractPlugin implements PluginInterface
     public function getInit() : Init
     {
         return $this->init;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return $this
+     */
+    public function setInit(Init $init) : PluginInterface
+    {
+        $this->init = $init;
+
+        return $this;
     }
 
     /**

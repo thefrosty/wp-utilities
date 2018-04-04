@@ -57,6 +57,14 @@ interface PluginInterface
     public function getInit() : Init;
 
     /**
+     * Sets to Init object.
+     *
+     * @param Init $init
+     * @return $this
+     */
+    public function setInit(Init $init) : self;
+
+    /**
      * Retrieve the absolute path for the main plugin file.
      *
      * @return string
