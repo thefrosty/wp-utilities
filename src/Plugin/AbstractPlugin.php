@@ -246,7 +246,7 @@ abstract class AbstractPlugin implements PluginInterface
             } elseif ($admin_only === null) {
                 $this->initiateWpHooks($wp_hook);
             }
-        }, $priority ?? 10);
+        }, ($priority ?? 10) - 2);
 
         return $this;
     }

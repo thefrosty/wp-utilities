@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.2] - 2018-04-18
+### Updated
+- Make sure the `addOnHook` action priority is set minus 2 so when `initializeOnHook` is called on the
+same hook tag it can execute.
+
 ## [1.1.1] - 2018-04-04
 ### Updated
 - Added the `initialize` method in `AbstractPlugin` since it's no longer extending `Init`.
