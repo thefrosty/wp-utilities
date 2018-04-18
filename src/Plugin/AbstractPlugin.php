@@ -238,15 +238,15 @@ abstract class AbstractPlugin implements PluginInterface
     ) : PluginInterface {
         $tag = $tag ?? self::DEFAULT_TAG;
         $this->setTags($tag);
-        \add_action($tag, function () use ($wp_hook, $admin_only) {
+        \add_action($tag, function () use ($wp_hook, $admin_only, $priority) {
             if ($admin_only === true && \is_admin()) {
-                $this->initiateWpHooks($wp_hook);
+                $this->initiateWpHooks($wp_hook, $priority);
             } elseif ($admin_only === false && ! \is_admin()) {
-                $this->initiateWpHooks($wp_hook);
+                $this->initiateWpHooks($wp_hook, $priority);
             } elseif ($admin_only === null) {
-                $this->initiateWpHooks($wp_hook);
+                $this->initiateWpHooks($wp_hook, $priority);
             }
-        }, $priority ?? 10);
+        }, ($priority ?? 10) - 2);
 
         return $this;
     }
@@ -263,8 +263,10 @@ abstract class AbstractPlugin implements PluginInterface
      * Initialize the late hook provider when it's been registered on an action hook.
      *
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
+     * @param int $priority Optional. Used to specify the order in which the functions
+     *                                  associated with a particular action are executed. Default 10.
      */
-    private function initiateWpHooks(string $wp_hook)
+    private function initiateWpHooks(string $wp_hook, int $priority = 10)
     {
         $wp_hooks = new $wp_hook();
         if (! ($wp_hooks instanceof WpHooksInterface)) {
@@ -274,19 +276,22 @@ abstract class AbstractPlugin implements PluginInterface
         }
         /** @var WpHooksInterface $wp_hooks */
         $this->getInit()->register($wp_hooks, $this);
-        $this->initializeOnHook();
+        $this->initializeOnHook($priority);
     }
 
     /**
      * Iterate over all registered tag's and re-initialize the WpHooksInterface objects to
      * initiate their hooks on the appropriate registered action (tag).
+     *
+     * @param int $priority Optional. Used to specify the order in which the functions
+     *                                  associated with a particular action are executed. Default 10.
      */
-    private function initializeOnHook()
+    private function initializeOnHook(int $priority = 10)
     {
-        call_user_func_array(function ($tag) {
+        call_user_func_array(function ($tag) use ($priority) {
             \add_action($tag, function () {
                 $this->getInit()->initialize();
-            });
+            }, $priority + 2);
         }, $this->getTags());
     }
 
