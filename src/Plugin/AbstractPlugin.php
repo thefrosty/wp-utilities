@@ -10,6 +10,7 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 abstract class AbstractPlugin implements PluginInterface
 {
+    const DEFAULT_PRIORITY = 10;
     const DEFAULT_TAG = 'init';
 
     /**
@@ -239,6 +240,7 @@ abstract class AbstractPlugin implements PluginInterface
         $tag = $tag ?? self::DEFAULT_TAG;
         $this->setTags($tag);
         \add_action($tag, function () use ($wp_hook, $admin_only, $priority) {
+            $priority = ($priority ?? self::DEFAULT_PRIORITY) + 2;
             if ($admin_only === true && \is_admin()) {
                 $this->initiateWpHooks($wp_hook, $priority);
             } elseif ($admin_only === false && ! \is_admin()) {
@@ -246,7 +248,7 @@ abstract class AbstractPlugin implements PluginInterface
             } elseif ($admin_only === null) {
                 $this->initiateWpHooks($wp_hook, $priority);
             }
-        }, ($priority ?? 10) - 2);
+        }, ($priority ?? self::DEFAULT_PRIORITY) - 2);
 
         return $this;
     }
@@ -266,7 +268,7 @@ abstract class AbstractPlugin implements PluginInterface
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      */
-    private function initiateWpHooks(string $wp_hook, int $priority = 10)
+    private function initiateWpHooks(string $wp_hook, int $priority = self::DEFAULT_PRIORITY)
     {
         $wp_hooks = new $wp_hook();
         if (! ($wp_hooks instanceof WpHooksInterface)) {
@@ -286,7 +288,7 @@ abstract class AbstractPlugin implements PluginInterface
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      */
-    private function initializeOnHook(int $priority = 10)
+    private function initializeOnHook(int $priority)
     {
         call_user_func_array(function ($tag) use ($priority) {
             \add_action($tag, function () {
