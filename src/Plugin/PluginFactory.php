@@ -2,13 +2,15 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use Pimple\Container as Pimple;
+use Psr\Container\ContainerInterface;
+
 /**
  * Class PluginFactory
  * @package TheFrosty\WpUtilities\Plugin
  */
 class PluginFactory
 {
-
     /**
      * Create a plugin instance.
      *
@@ -35,13 +37,26 @@ class PluginFactory
             ->setSlug($slug)
             ->setUrl(\plugin_dir_url($filename));
 
+        $plugin = self::setContainer($plugin);
+
+        return $plugin;
+    }
+
+    /**
+     * Set the Pimple\Container if it's available.
+     *
+     * @param Plugin $plugin
+     * @return Plugin
+     */
+    private static function setContainer(Plugin $plugin) : Plugin
+    {
         try {
-            if (class_exists('Pimple\Container') && interface_exists('Psr\Container\ContainerInterface')) {
+            if (\class_exists(Pimple::class) && \interface_exists(ContainerInterface::class)) {
                 $plugin->setContainer(new Container());
             }
         } catch (\InvalidArgumentException $exception) {
             if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-                error_log(
+                \error_log(
                     \sprintf(
                         '[DEBUG] The `Psr\Container\ContainerInterface` couldn\'t initiate. message: %s',
                         $exception->getMessage()

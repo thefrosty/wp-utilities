@@ -1,4 +1,4 @@
-# Beachbody On Demand Plugin
+# Plugin
 
 ## Adding a new hook provider object
 
@@ -31,11 +31,11 @@ $plugin
 }
 ```
 
-If you'd like to initalize a class on a specific action hook use `add_on_hook()` like:
+If you'd like to initialize a class on a specific action hook use `addOnHook()` like:
 
 ```php
 $plugin
     ->add( new SomeOtherClass() )
-    ->add_on_hook( SomeClassToLoad::class, 'admin_init', 10, true )
+    ->addOnHook( SomeClassToLoad::class, $tag = 'admin_init', $priority = 10, $admin_only = true )
 	->initialize();
 ```

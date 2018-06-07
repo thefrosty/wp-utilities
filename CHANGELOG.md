@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2018-06-07
+### Added
+- HttpFoundation as composer suggestion.
+- HttpFoundation trait and interface.
+- Instantiate the Request object in `Init` if the WpHook implements the HttpFoundation interface.
+
+### Updated
+- PluginAwareTrait; updated order of getter/setter.
+- Move the Container initiated into it's own method in the PluginFactory class.
+
+## [1.1.3] - 2018-04-18
+### Fixed
+- Sets a default priority constant. Passes an int value to avoid strict_types errors.
+
 ## [1.1.2] - 2018-04-18
 ### Updated
 - Make sure the `addOnHook` action priority is set minus 2 so when `initializeOnHook` is called on the
