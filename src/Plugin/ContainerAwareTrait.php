@@ -46,7 +46,7 @@ trait ContainerAwareTrait
     }
 
     /**
-     * Calling a non-existant method on the class checks to see if there's an
+     * Calling a non-existent method on the class checks to see if there's an
      * item in the container that is callable and if so, calls it.
      *
      * @param string $method Method name.
@@ -86,7 +86,8 @@ trait ContainerAwareTrait
     public function setContainer(ContainerInterface $container) : parent
     {
         if (! ($container instanceof ContainerInterface)) {
-            throw new \InvalidArgumentException('Expected a . ' . ContainerInterface::class);
+            throw new \InvalidArgumentException(sprintf('Expected a %s, got a %s.', ContainerInterface::class,
+                get_class($container)));
         }
 
         $this->container = $container;
