@@ -41,6 +41,10 @@ final class Init implements \IteratorAggregate
             $wp_hooks->setPlugin($plugin);
         }
 
+        if ($wp_hooks instanceof HttpFoundationRequestInterface) {
+            $wp_hooks->setRequest();
+        }
+
         return $plugin;
     }
 
