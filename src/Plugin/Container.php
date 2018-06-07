@@ -2,8 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
-use Psr\Container\ContainerInterface;
 use Pimple\Container as Pimple;
+use Psr\Container\ContainerInterface;
 
 /**
  * Container class.
