@@ -8,13 +8,22 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 trait PluginAwareTrait
 {
-
     /**
      * Main plugin instance.
      *
      * @var PluginInterface $plugin
      */
     private $plugin;
+
+    /**
+     * Get the main plugin instance.
+     *
+     * @return PluginInterface
+     */
+    public function getPlugin() : PluginInterface
+    {
+        return $this->plugin;
+    }
 
     /**
      * Set the main plugin instance.
@@ -27,15 +36,5 @@ trait PluginAwareTrait
         $this->plugin = $plugin;
 
         return $plugin;
-    }
-
-    /**
-     * Get the main plugin instance.
-     *
-     * @return PluginInterface
-     */
-    public function getPlugin() : PluginInterface
-    {
-        return $this->plugin;
     }
 }
