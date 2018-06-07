@@ -86,8 +86,9 @@ trait ContainerAwareTrait
     public function setContainer(ContainerInterface $container) : parent
     {
         if (! ($container instanceof ContainerInterface)) {
-            throw new \InvalidArgumentException(sprintf('Expected a %s, got a %s.', ContainerInterface::class,
-                get_class($container)));
+            throw new \InvalidArgumentException(
+                sprintf('Expected a %s, got a %s.', ContainerInterface::class, get_class($container))
+            );
         }
 
         $this->container = $container;

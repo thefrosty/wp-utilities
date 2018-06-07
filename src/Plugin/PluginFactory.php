@@ -56,8 +56,12 @@ class PluginFactory
             }
         } catch (\InvalidArgumentException $exception) {
             if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
-                \error_log(\sprintf('[DEBUG] The `Psr\Container\ContainerInterface` couldn\'t initiate. message: %s',
-                    $exception->getMessage()));
+                \error_log(
+                    \sprintf(
+                        '[DEBUG] The `Psr\Container\ContainerInterface` couldn\'t initiate. message: %s',
+                        $exception->getMessage()
+                    )
+                );
             }
         }
 
