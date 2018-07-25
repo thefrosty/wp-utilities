@@ -21,7 +21,6 @@ interface HttpFoundationRequestInterface
      * Set the container.
      *
      * @param Request|null $request Symfony HttpFoundation Request object
-     * @return $this
      */
-    public function setRequest(Request $request = null) : self;
+    public function setRequest(Request $request = null);
 }
