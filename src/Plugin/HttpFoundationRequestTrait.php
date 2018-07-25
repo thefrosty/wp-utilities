@@ -30,10 +30,10 @@ trait HttpFoundationRequestTrait
     /**
      * {@inheritdoc}
      */
-    public function setRequest() : parent
+    public function setRequest(Request $request = null) : self
     {
-        if (empty(self::$request)) {
-            self::$request = Request::createFromGlobals();
+        if (! (self::$request instanceof Request)) {
+            self::$request = $request ?? Request::createFromGlobals();
         }
 
         return $this;

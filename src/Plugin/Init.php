@@ -41,8 +41,10 @@ final class Init implements \IteratorAggregate
             $wp_hooks->setPlugin($plugin);
         }
 
-        if ($wp_hooks instanceof HttpFoundationRequestInterface) {
-            $wp_hooks->setRequest();
+        if ($wp_hooks instanceof HttpFoundationRequestInterface &&
+            \class_exists('Symfony\\Component\\HttpFoundation\\Request')
+        ) {
+            $wp_hooks->setRequest(Request::createFromGlobals());
         }
 
         return $plugin;
@@ -55,7 +57,7 @@ final class Init implements \IteratorAggregate
     public function initialize()
     {
         foreach ($this as $wp_hook) {
-            if ($wp_hook instanceof WpHooksInterface && ! property_exists($wp_hook, self::PROPERTY)) {
+            if ($wp_hook instanceof WpHooksInterface && ! \property_exists($wp_hook, self::PROPERTY)) {
                 $wp_hook->{self::PROPERTY} = true;
                 $wp_hook->addHooks();
             }
