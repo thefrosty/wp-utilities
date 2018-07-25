@@ -41,10 +41,8 @@ final class Init implements \IteratorAggregate
             $wp_hooks->setPlugin($plugin);
         }
 
-        if ($wp_hooks instanceof HttpFoundationRequestInterface &&
-            \class_exists('Symfony\\Component\\HttpFoundation\\Request')
-        ) {
-            $wp_hooks->setRequest(Request::createFromGlobals());
+        if ($wp_hooks instanceof HttpFoundationRequestInterface) {
+            $wp_hooks->setRequest();
         }
 
         return $plugin;
