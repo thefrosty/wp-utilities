@@ -1,7 +1,7 @@
 {
   "name": "thefrosty/wp-utilities",
   "description": "A library containing my standard development resources",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "authors": [
     {
@@ -13,6 +13,7 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
+  "optimize-autoloader": true,
   "require": {
     "php": ">=7.0"
   },

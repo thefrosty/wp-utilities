@@ -87,7 +87,7 @@ trait ContainerAwareTrait
     {
         if (! ($container instanceof ContainerInterface)) {
             throw new \InvalidArgumentException(
-                sprintf('Expected a %s, got a %s.', ContainerInterface::class, get_class($container))
+                \sprintf('Expected a %s, got a %s.', ContainerInterface::class, \get_class($container))
             );
         }
 

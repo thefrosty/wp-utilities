@@ -290,7 +290,7 @@ abstract class AbstractPlugin implements PluginInterface
      */
     private function initializeOnHook(int $priority)
     {
-        call_user_func_array(function ($tag) use ($priority) {
+        \call_user_func_array(function ($tag) use ($priority) {
             \add_action($tag, function () {
                 $this->getInit()->initialize();
             }, $priority + 2);
@@ -304,7 +304,7 @@ abstract class AbstractPlugin implements PluginInterface
      */
     private function getTags() : array
     {
-        return array_unique($this->tags);
+        return \array_unique($this->tags);
     }
 
     /**

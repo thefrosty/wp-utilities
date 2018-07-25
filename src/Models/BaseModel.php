@@ -36,8 +36,8 @@ abstract class BaseModel
             $result = [];
 
             foreach ($this->getSerializableFields() as $index => $field_name) {
-                $value = $this->{'get' . ucwords($field_name)}();
-                if (is_object($value) && method_exists($value, 'toArray')) {
+                $value = $this->{'get' . \ucwords($field_name)}();
+                if (\is_object($value) && \method_exists($value, 'toArray')) {
                     $result[$field_name] = $value->toArray();
                     continue;
                 }
@@ -105,7 +105,7 @@ abstract class BaseModel
     {
         foreach ($fields as $field => $value) {
             // If field value is null we just leave it blank
-            if (is_null($value)) {
+            if (\is_null($value)) {
                 continue;
             }
 
@@ -113,13 +113,13 @@ abstract class BaseModel
             $populate_method = $this->getPopulateMethod($field);
 
             // First try to proceed with custom population logic
-            if (method_exists($this, $populate_method)) {
+            if (\method_exists($this, $populate_method)) {
                 $this->$populate_method($value);
                 // If no custom logic found proceed with regular setters
-            } elseif (method_exists($this, $setter_method)) {
+            } elseif (\method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
-                if (in_array($field, $this->getDateTimeFields(), true)) {
-                    $value = date_create($value);
+                if (\in_array($field, $this->getDateTimeFields(), true)) {
+                    $value = \date_create($value);
                 }
                 $this->$setter_method($value);
             }
@@ -154,6 +154,6 @@ abstract class BaseModel
      */
     private function getMethod(string $prefix, string $field) : string
     {
-        return $prefix . str_replace(['_', '-'], '', ucwords($field, '_-'));
+        return $prefix . \str_replace(['_', '-'], '', \ucwords($field, '_-'));
     }
 }
