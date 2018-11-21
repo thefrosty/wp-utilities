@@ -2,9 +2,6 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
-use Pimple\Container as Pimple;
-use Psr\Container\ContainerInterface;
-
 /**
  * Class PluginFactory
  * @package TheFrosty\WpUtilities\Plugin
@@ -51,7 +48,9 @@ class PluginFactory
     private static function setContainer(Plugin $plugin) : Plugin
     {
         try {
-            if (\class_exists(Pimple::class) && \interface_exists(ContainerInterface::class)) {
+            if (\class_exists('\Pimple\Container') &&
+                \interface_exists('\Psr\Container\ContainerInterface')
+            ) {
                 $plugin->setContainer(new Container());
             }
         } catch (\InvalidArgumentException $exception) {
