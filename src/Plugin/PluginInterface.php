@@ -128,13 +128,15 @@ interface PluginInterface
      *                                  associated with a particular action are executed. Default 10.
      * @param bool $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
      *     null.
+     * @param array $args Argument unpacking via ... passed to the `$wp_hook` constructor.
      * @return $this
      * @throws \InvalidArgumentException
      */
     public function addOnHook(
         string $wp_hook,
-        string $tag = 'init',
-        int $priority = 10,
-        bool $admin_only = null
+        string $tag = null,
+        int $priority = null,
+        bool $admin_only = null,
+        array $args = []
     ) : self;
 }

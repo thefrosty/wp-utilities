@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2018-11-21
+### Added 
+- Added 5th parameter to `addOnHook` to pass to class constructor. using argument unpacking via `...`.
+- An abstract Singleton class and interface.
+
 ## [1.2.2] - 2018-07-25
 ### Fixed
 - Fatal error on incorrect return type.

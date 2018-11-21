@@ -9,9 +9,8 @@ namespace TheFrosty\WpUtilities\Utils;
  */
 interface SingletonInterface
 {
-
     /**
      * @return SingletonInterface
      */
-    public static function getInstance() : self;
+    public static function getInstance() : SingletonInterface;
 }
