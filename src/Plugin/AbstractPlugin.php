@@ -235,18 +235,19 @@ abstract class AbstractPlugin implements PluginInterface
         string $wp_hook,
         string $tag = null,
         int $priority = null,
-        bool $admin_only = null
+        bool $admin_only = null,
+        array $args = []
     ) : PluginInterface {
         $tag = $tag ?? self::DEFAULT_TAG;
         $this->setTags($tag);
-        \add_action($tag, function () use ($wp_hook, $admin_only, $priority) {
+        \add_action($tag, function () use ($wp_hook, $admin_only, $priority, $args) {
             $priority = ($priority ?? self::DEFAULT_PRIORITY) + 2;
             if ($admin_only === true && \is_admin()) {
-                $this->initiateWpHooks($wp_hook, $priority);
+                $this->initiateWpHooks($wp_hook, $priority, $args);
             } elseif ($admin_only === false && ! \is_admin()) {
-                $this->initiateWpHooks($wp_hook, $priority);
+                $this->initiateWpHooks($wp_hook, $priority, $args);
             } elseif ($admin_only === null) {
-                $this->initiateWpHooks($wp_hook, $priority);
+                $this->initiateWpHooks($wp_hook, $priority, $args);
             }
         }, ($priority ?? self::DEFAULT_PRIORITY) - 2);
 
@@ -267,10 +268,11 @@ abstract class AbstractPlugin implements PluginInterface
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
+     * @param array $args Argument unpacking via `...`.
      */
-    private function initiateWpHooks(string $wp_hook, int $priority = self::DEFAULT_PRIORITY)
+    private function initiateWpHooks(string $wp_hook, int $priority = self::DEFAULT_PRIORITY, array $args = [])
     {
-        $wp_hooks = new $wp_hook();
+        $wp_hooks = empty($args) ? new $wp_hook() : new $wp_hook(...$args);
         if (! ($wp_hooks instanceof WpHooksInterface)) {
             throw new \InvalidArgumentException(
                 'Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)
