@@ -9,11 +9,10 @@ namespace TheFrosty\WpUtilities\Utils;
  */
 abstract class AbstractSingleton implements SingletonInterface
 {
-
     /**
      * Array of `SingletonInterface` objects.
      *
-     * @var SingletonInterface[]
+     * @var SingletonInterface[] $instances
      */
     private static $instances = [];
 
