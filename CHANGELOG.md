@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+PHP Version >= `7.2` will be required by version `1.4`.
+
+## [1.3.1] - 2019-01-07
+### Fixed
+- Using multiple `addOnHook` methods clears the tag variable (add_filter(**$tag**, function() {})) rendering the second
+called method invalid on it's registered tag (unless it matched that of the first tag). The action tag is now passed down
+from the method to `initiateWpHooks` and `initializeOnHook` (which are private methods), so no changes required.
+
 ## [1.3.0] - 2018-11-21
 ### Added 
 - Added 5th parameter to `addOnHook` to pass to class constructor. using argument unpacking via `...`.

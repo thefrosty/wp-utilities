@@ -51,13 +51,6 @@ abstract class AbstractPlugin implements PluginInterface
     private $slug;
 
     /**
-     * Array of action tags that have been registered.
-     *
-     * @var array $tags
-     */
-    private $tags = [];
-
-    /**
      * URL to the main plugin directory.
      *
      * @var string $url
@@ -239,15 +232,14 @@ abstract class AbstractPlugin implements PluginInterface
         array $args = []
     ) : PluginInterface {
         $tag = $tag ?? self::DEFAULT_TAG;
-        $this->setTags($tag);
-        \add_action($tag, function () use ($wp_hook, $admin_only, $priority, $args) {
+        \add_action($tag, function () use ($wp_hook, $admin_only, $priority, $args, $tag) {
             $priority = ($priority ?? self::DEFAULT_PRIORITY) + 2;
             if ($admin_only === true && \is_admin()) {
-                $this->initiateWpHooks($wp_hook, $priority, $args);
+                $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
             } elseif ($admin_only === false && ! \is_admin()) {
-                $this->initiateWpHooks($wp_hook, $priority, $args);
+                $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
             } elseif ($admin_only === null) {
-                $this->initiateWpHooks($wp_hook, $priority, $args);
+                $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
             }
         }, ($priority ?? self::DEFAULT_PRIORITY) - 2);
 
@@ -269,53 +261,37 @@ abstract class AbstractPlugin implements PluginInterface
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      * @param array $args Argument unpacking via `...`.
+     * @param string $tag The name of the action passed in from `addOnHook()`.
      */
-    private function initiateWpHooks(string $wp_hook, int $priority = self::DEFAULT_PRIORITY, array $args = [])
-    {
+    private function initiateWpHooks(
+        string $wp_hook,
+        int $priority = self::DEFAULT_PRIORITY,
+        array $args = [],
+        string $tag = self::DEFAULT_TAG
+    ) {
         $wp_hooks = empty($args) ? new $wp_hook() : new $wp_hook(...$args);
         if (! ($wp_hooks instanceof WpHooksInterface)) {
-            throw new \InvalidArgumentException(
-                'Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)
-            );
+            throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)); // phpcs:ignore
         }
         /** @var WpHooksInterface $wp_hooks */
         $this->getInit()->register($wp_hooks, $this);
-        $this->initializeOnHook($priority);
+        $this->initializeOnHook($tag, $priority);
     }
 
     /**
      * Iterate over all registered tag's and re-initialize the WpHooksInterface objects to
      * initiate their hooks on the appropriate registered action (tag).
      *
+     * @param string $tag The name of the action to which the $function_to_add is hooked.
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      */
-    private function initializeOnHook(int $priority)
+    private function initializeOnHook(string $tag, int $priority)
     {
-        \call_user_func_array(function ($tag) use ($priority) {
+        \call_user_func(function ($tag) use ($priority) {
             \add_action($tag, function () {
                 $this->getInit()->initialize();
             }, $priority + 2);
-        }, $this->getTags());
-    }
-
-    /**
-     * Return all the names of the action tags registered.
-     *
-     * @return array
-     */
-    private function getTags() : array
-    {
-        return \array_unique($this->tags);
-    }
-
-    /**
-     * Set the tag names for initialization later.
-     *
-     * @param string $tag The name of the action.
-     */
-    private function setTags(string $tag)
-    {
-        $this->tags[] = $tag;
+        }, $tag);
     }
 }
