@@ -271,7 +271,7 @@ abstract class AbstractPlugin implements PluginInterface
     ) {
         $wp_hooks = empty($args) ? new $wp_hook() : new $wp_hook(...$args);
         if (! ($wp_hooks instanceof WpHooksInterface)) {
-            throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook));
+            throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)); // phpcs:ignore
         }
         /** @var WpHooksInterface $wp_hooks */
         $this->getInit()->register($wp_hooks, $this);
