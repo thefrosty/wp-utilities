@@ -8,7 +8,7 @@ use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
  * Class disablePluginUpdateCheck
  * @package TheFrosty\WpUtilities\WpAdmin
  */
-class disablePluginUpdateCheck extends AbstractHookProvider
+class DisablePluginUpdateCheck extends AbstractHookProvider
 {
     private const WP_ORG_UPDATE_CHECK = 'https://api.wordpress.org/plugins/update-check/';
 
