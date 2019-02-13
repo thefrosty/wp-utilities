@@ -5,7 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
-PHP Version >= `7.2` will be required by version `1.4`.
+PHP Version >= `7.2` will be required by version `1.5`.
+
+## [1.4] - 2019-02-13
+### PHP version bumped to >= 7.1
+### Added
+- New property in `PluginFactory::create` to disable plugin update checks.
 
 ## [1.3.1] - 2019-01-07
 ### Fixed
