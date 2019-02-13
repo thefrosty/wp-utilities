@@ -10,7 +10,8 @@ PHP Version >= `7.2` will be required by version `1.5`.
 ## [1.4] - 2019-02-13
 ### PHP version bumped to >= 7.1
 ### Added
-- New property in `PluginFactory::create` to disable plugin update checks.
+- Add a new class `TheFrosty\WpUtilities\WpAdmin\disablePluginUpdateCheck` to disable plugin update checks. All you have
+to do is instantiate it in a PluginInterface `add()` method.
 
 ## [1.3.1] - 2019-01-07
 ### Fixed
