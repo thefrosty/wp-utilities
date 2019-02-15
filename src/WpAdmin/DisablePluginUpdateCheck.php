@@ -17,7 +17,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      */
     public function addHooks()
     {
-        $this->addFilter('http_request_args', [$this, 'httpRequestRemovePluginBasename']);
+        $this->addFilter('http_request_args', [$this, 'httpRequestRemovePluginBasename'], 10, 2);
         $this->addFilter('site_transient_update_plugins', [$this, 'transientRemovePluginBasename']);
     }
 
