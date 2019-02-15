@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP Version >= `7.2` will be required by version `1.5`.
 
+## [1.4.1] - 2019-02-13
+### Fixed
+- Too few arguments to function `TheFrosty\WpUtilities\WpAdmin\DisablePluginUpdateCheck::httpRequestRemovePluginBasename()`.
+
 ## [1.4] - 2019-02-13
 ### PHP version bumped to >= 7.1
 ### Added
