@@ -12,9 +12,11 @@ A library containing my standard development resources.
 ### Requirements
 
 ```
-PHP >= 7
+PHP >= 7.1
 WordPress >= 4.8
 ```
+
+For PHP < 7.1, use version 1.3.x.
 
 The required WordPress version will always be the most recent point release of
 the previous major release branch.
@@ -28,5 +30,5 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:~1.3
+composer require thefrosty/wp-utilities:~1.5
 ```
