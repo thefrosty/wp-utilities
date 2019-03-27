@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
-PHP Version >= `7.2` will be required by version `1.5`.
+PHP Version >= `7.2` will be required by version `2.0`.
+
+## [1.5.0] - 2019-03-14
+### Added
+- New method `addOnCondtion` allowed hooks to be instantiated only when a condition is met.
 
 ## [1.4.1] - 2019-02-13
 ### Fixed

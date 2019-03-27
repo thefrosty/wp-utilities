@@ -218,6 +218,28 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Register a hook provider when a specific condition is met.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addOnCondition(
+        string $wp_hook,
+        callable $condition,
+        string $tag = null,
+        int $priority = null,
+        bool $admin_only = null,
+        array $args = []
+    ) : PluginInterface {
+        if (\call_user_func($condition)) {
+            return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
+        }
+
+        return $this;
+    }
+
+    /**
      * Register a hook provider on a specific action.
      *
      * {@inheritdoc}
