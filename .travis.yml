@@ -17,6 +17,17 @@ branches:
     - master
     - develop
 
+env:
+  global:
+    - WORDPRESS_DB_USER=wp
+    - WORDPRESS_DB_PASS=password
+    - WORDPRESS_DB_NAME=wp_tests
+    - WP_VERSION=4.9
+    - WP_MULTISITE=0
+
+matrix:
+  fast_finish: true
+
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - export DEV_BIN_PATH=bin
