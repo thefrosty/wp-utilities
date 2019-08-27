@@ -21,9 +21,11 @@
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.5",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+    "phpunit/phpunit": "^7",
+    "phpmd/phpmd": "^2.6",
     "squizlabs/php_codesniffer": "^3.2",
-    "phpmd/phpmd": "^2.6"
+    "wp-phpunit/wp-phpunit": "^5"
   },
   "suggest": {
     "pimple/pimple": "",
@@ -38,5 +40,24 @@
     "psr-4": {
       "TheFrosty\\PhpUnit\\WpUtilities\\": "tests/unit/"
     }
+  },
+  "scripts": {
+    "install-codestandards": [
+      "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+    ],
+    "phpcs": [
+      "bash ./bin/phpcs.sh"
+    ],
+    "phpmd": [
+      "bash ./bin/phpmd.sh"
+    ],
+    "phpunit": [
+      "phpunit --colors --coverage-html coverage"
+    ],
+    "tests": [
+      "@phpcs",
+      "@phpmd",
+      "@phpunit"
+    ]
   }
 }
