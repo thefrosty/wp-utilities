@@ -8,6 +8,24 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 class PluginFactory
 {
+
+    /** @var Plugin[] $instances */
+    private static $instances;
+
+    /**
+     * Get the plugin instance.
+     * @param string $slug
+     * @return Plugin
+     */
+    public static function getInstance(string $slug) : Plugin
+    {
+        if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
+            return self::$instances[$slug];
+        }
+
+        return self::create($slug);
+    }
+
     /**
      * Create a plugin instance.
      *
@@ -19,6 +37,9 @@ class PluginFactory
      */
     public static function create(string $slug, ?string $filename = '') : Plugin
     {
+        if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
+            return self::$instances[$slug];
+        }
         // Use the calling file as the main plugin file.
         if (empty($filename)) {
             // @codingStandardsIgnoreStart
@@ -35,6 +56,7 @@ class PluginFactory
             ->setUrl(\plugin_dir_url($filename));
 
         $plugin = self::setContainer($plugin);
+        self::$instances[$slug] = $plugin;
 
         return $plugin;
     }

@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
-PHP Version >= `7.2` will be required by version `2.0`.
+PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
+
+## [1.6.0] - 2019-08-27
+### Updated
+- `PluginFactory` now has a method: `PluginFactory::getInstance($slug)` to return the current instance of the created plugin object.
 
 ## [1.5.0] - 2019-03-14
 ### Added

@@ -1,28 +1,53 @@
-language: php
+sudo: false
+dist: trusty
 
+cache:
+  directories:
+    - "$HOME/.composer/cache"
+    - vendor
+
+language: php
 php:
   - '7.3'
   - '7.2'
   - '7.1'
 
-install: composer install
-
-script:
-  - ./vendor/bin/phpunit --coverage-html coverage
-  - ./vendor/bin/phpcs --standard=PSR2 --extensions=php src
-  - ./vendor/bin/phpmd src text phpmd-ruleset.xml --exclude vendor --suffixes php
-
-after_script:
-  - composer export-coverage
-
-cache:
-  directories:
-    - vendor
-
 branches:
   only:
     - master
     - develop
+
+env:
+  global:
+    - WORDPRESS_DB_USER=wp
+    - WORDPRESS_DB_PASS=password
+    - WORDPRESS_DB_NAME=wp_tests
+    - WP_VERSION=4.9
+    - WP_MULTISITE=0
+
+matrix:
+  fast_finish: true
+
+install:
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - export DEV_BIN_PATH=bin
+  - source $DEV_BIN_PATH/create-all-branches.sh
+  - |
+    # Remove Xdebug for a huge performance increase:
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    else
+      echo "xdebug.ini does not exist"
+    fi
+  - composer require --dev --no-update roots/wordpress:${WP_VERSION} wp-phpunit/wp-phpunit:${WP_VERSION}
+  - composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
+
+before_script:
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON $WORDPRESS_DB_NAME.* TO $WORDPRESS_DB_USER IDENTIFIED BY '$WORDPRESS_DB_PASS';"
+  - mysql -u root -e "CREATE DATABASE $WORDPRESS_DB_NAME;"
+
+script:
+  - composer tests
 
 notifications:
   email:
