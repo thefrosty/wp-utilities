@@ -52,7 +52,7 @@
       "bash ./bin/phpmd.sh"
     ],
     "phpunit": [
-      "phpunit --colors --coverage-html coverage"
+      "phpunit --colors"
     ],
     "tests": [
       "@phpcs",
