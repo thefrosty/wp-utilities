@@ -21,6 +21,16 @@ abstract class BaseModel
     }
 
     /**
+     * Optional. Implement customized getCustomDelimiters() to return values
+     * to search and replace for getMethod().
+     * @return array
+     */
+    public function getCustomDelimiters() : array
+    {
+        return [];
+    }
+
+    /**
      * Optional method to get a model as an array
      * Default implementation is to engage fields listed in getSerializableFields()
      *
@@ -32,7 +42,7 @@ abstract class BaseModel
      */
     public function toArray() : array
     {
-        if (! empty($this->getSerializableFields())) {
+        if (!empty($this->getSerializableFields())) {
             $result = [];
 
             foreach ($this->getSerializableFields() as $index => $field_name) {
@@ -127,8 +137,8 @@ abstract class BaseModel
     }
 
     /**
+     * Gets the 'set' method.
      * @param string $field
-     *
      * @return string
      */
     private function getSetterMethod(string $field) : string
@@ -137,8 +147,8 @@ abstract class BaseModel
     }
 
     /**
+     * Gets the 'populate' method.
      * @param string $field
-     *
      * @return string
      */
     private function getPopulateMethod(string $field) : string
@@ -147,13 +157,16 @@ abstract class BaseModel
     }
 
     /**
+     * Helper to get the method with prefix.
      * @param string $prefix
      * @param string $field
-     *
      * @return string
      */
     private function getMethod(string $prefix, string $field) : string
     {
-        return $prefix . \str_replace(['_', '-'], '', \ucwords($field, '_-'));
+        $search = \array_merge(['_', '-'], $this->getCustomDelimiters());
+        $delimiters = '_-';
+        $delimiters .= !empty($this->getCustomDelimiters()) ? \implode('', $this->getCustomDelimiters()) : '';
+        return $prefix . \str_replace($search, '', \ucwords($field, $delimiters));
     }
 }
