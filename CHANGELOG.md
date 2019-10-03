@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.6.1] - 2019-10-02
+### Added
+- Added `getCustomDelimiters` method to the BaseModel to allow additional search/delimiters to be added to the getMethod
+replacement. Useful when properties contain more than just "_" and "-", like for instance "$" signs.
+
 ## [1.6.0] - 2019-08-27
 ### Updated
 - `PluginFactory` now has a method: `PluginFactory::getInstance($slug)` to return the current instance of the created plugin object.
