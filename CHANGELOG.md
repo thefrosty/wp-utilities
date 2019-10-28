@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.6.2] - 2019-10-28
+### Updated
+- In the `BaseModel` class update the get method call to use the `getMethod` helper in `toArray`.
+
 ## [1.6.1] - 2019-10-02
 ### Added
 - Added `getCustomDelimiters` method to the BaseModel to allow additional search/delimiters to be added to the getMethod
