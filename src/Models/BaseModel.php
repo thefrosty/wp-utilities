@@ -46,7 +46,11 @@ abstract class BaseModel
             $result = [];
 
             foreach ($this->getSerializableFields() as $index => $field_name) {
-                $value = $this->{'get' . \ucwords($field_name)}();
+                $method = $this->getMethod('get', $field_name);
+                if (!\method_exists($this, $method)) {
+                    continue;
+                }
+                $value = $this->$method();
                 if (\is_object($value) && \method_exists($value, 'toArray')) {
                     $result[$field_name] = $value->toArray();
                     continue;
