@@ -22,7 +22,7 @@ env:
     - WORDPRESS_DB_USER=wp
     - WORDPRESS_DB_PASS=password
     - WORDPRESS_DB_NAME=wp_tests
-    - WP_VERSION=4.9
+    - WP_VERSION=5.2
     - WP_MULTISITE=0
 
 matrix:
