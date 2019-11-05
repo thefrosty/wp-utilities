@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.7.0] - 2019-11-04
+### Added
+- `RestApi\PostTypeFilter`, `Api\WpCacheTrait` & `Api\WpQueryTrait`.
+- `PostTypeFilter` can be initiated to add `filter[]` querying to the rest endpoints 
+(enhanced rest filter of [WP-API/rest-filter](https://github.com/WP-API/rest-filter))
+- Default action/filter prefix constant in `TheFrosty\WpUtilities\Plugin\Plugin` called `TAG`
+### Updated
+- Add missing dependency "phpcompatibility" for require-dev.
+- Bumped WordPress version to 5.2 in travis.
+
 ## [1.6.2] - 2019-10-28
 ### Updated
 - In the `BaseModel` class update the get method call to use the `getMethod` helper in `toArray`.
