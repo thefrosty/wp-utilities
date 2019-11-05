@@ -11,4 +11,6 @@ class Plugin extends AbstractPlugin
 {
 
     use ContainerAwareTrait;
+
+    public const TAG = 'thefrosty/wp_utilities';
 }
