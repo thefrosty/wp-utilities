@@ -72,6 +72,14 @@ interface PluginInterface
     public function getFile() : string;
 
     /**
+     * Returns the time the file was last modified, or FALSE on failure.
+     * The time is returned as a Unix timestamp, which is suitable for the date() function.
+     *
+     * @return string|null
+     */
+    public function getFileTime() : ?string;
+
+    /**
      * Set the path to the main plugin file.
      *
      * @param string $file Absolute path to the main plugin file.

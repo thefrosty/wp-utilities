@@ -146,6 +146,19 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Returns the time the file was last modified, or FALSE on failure.
+     * The time is returned as a Unix timestamp, which is suitable for the date() function.
+     *
+     * @return string|null
+     */
+    public function getFileTime() : ?string
+    {
+        $file_time = \filemtime($this->file);
+
+        return $file_time ? \strval($file_time) : null;
+    }
+
+    /**
      * Set the path to the main plugin file.
      *
      * {@inheritdoc}

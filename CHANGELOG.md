@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.7.1] - 2019-11-04
+### Added
+- `getFileTime` to `PluginInterface` which allows asset version attributes on modified file time over version constraints.
+Use `$plugin->getFileTime()` or a date formatted string `\date(\DateTime::::ISO8601, $plugin->getFileTime()`.
 ## [1.7.0] - 2019-11-04
 ### Added
 - `RestApi\PostTypeFilter`, `Api\WpCacheTrait` & `Api\WpQueryTrait`.
