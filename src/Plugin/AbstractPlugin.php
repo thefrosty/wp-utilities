@@ -146,6 +146,19 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Returns the time the file was last modified, or FALSE on failure.
+     * The time is returned as a Unix timestamp, which is suitable for the date() function.
+     *
+     * @return string|null
+     */
+    public function getFileTime() : ?string
+    {
+        $file_time = \filemtime($this->file);
+
+        return $file_time ? \strval($file_time) : null;
+    }
+
+    /**
      * Set the path to the main plugin file.
      *
      * {@inheritdoc}
@@ -219,6 +232,24 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Register a hook provider when a specific condition is met.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addIfCondition(
+        string $wp_hook,
+        bool $condition
+    ): PluginInterface {
+        if ($condition && $this->classImplementsWpHooks($wp_hook)) {
+            $this->getInit()->register(new $wp_hook(), $this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Register a hook provider when a specific condition is met on a custom hook.
      *
      * {@inheritdoc}
      * @return $this
@@ -315,5 +346,17 @@ abstract class AbstractPlugin implements PluginInterface
                 $this->getInit()->initialize();
             }, $priority + 2);
         }, $tag);
+    }
+
+    /**
+     * Does the class implement the required `WpHooksInterface` class interface?
+     *
+     * @param string $wp_hook
+     *
+     * @return bool
+     */
+    private function classImplementsWpHooks(string $wp_hook): bool
+    {
+        return \in_array(WpHooksInterface::class, \class_implements($wp_hook), true);
     }
 }

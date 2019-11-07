@@ -72,6 +72,14 @@ interface PluginInterface
     public function getFile() : string;
 
     /**
+     * Returns the time the file was last modified, or FALSE on failure.
+     * The time is returned as a Unix timestamp, which is suitable for the date() function.
+     *
+     * @return string|null
+     */
+    public function getFileTime() : ?string;
+
+    /**
      * Set the path to the main plugin file.
      *
      * @param string $file Absolute path to the main plugin file.
@@ -120,6 +128,24 @@ interface PluginInterface
 
     /**
      * Register hooks for the plugin when a specific condition is met.
+     * This instantiates the `WpHooksInterface` if the condition is met as opposed to `addOnCondition()` which
+     * instantiates the `WpHooksInterface` on the supplied $tag (action hook).
+     *
+     * @link https://codex.wordpress.org/Plugin_API/Action_Reference
+     * @param string $wp_hook String value of the WpHooksInterface hook provider.
+     * @param bool $condition The condition that needs to be met before adding the new hook provider.
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addIfCondition(
+        string $wp_hook,
+        bool $condition
+    ) : self;
+
+    /**
+     * Register hooks for the plugin when a specific condition is met on a custom hook.
+     * This instantiates the `WpHooksInterface` if the condition is met and the current action
+     * is equal to the $tag (action hook).
      *
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
