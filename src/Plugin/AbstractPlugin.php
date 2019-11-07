@@ -237,6 +237,24 @@ abstract class AbstractPlugin implements PluginInterface
      * @return $this
      * @throws \InvalidArgumentException
      */
+    public function addIfCondition(
+        string $wp_hook,
+        bool $condition
+    ): PluginInterface {
+        if ($condition && $this->classImplementsWpHooks($wp_hook)) {
+            $this->getInit()->register(new $wp_hook(), $this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Register a hook provider when a specific condition is met on a custom hook.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
     public function addOnCondition(
         string $wp_hook,
         callable $condition,
@@ -328,5 +346,17 @@ abstract class AbstractPlugin implements PluginInterface
                 $this->getInit()->initialize();
             }, $priority + 2);
         }, $tag);
+    }
+
+    /**
+     * Does the class implement the required `WpHooksInterface` class interface?
+     *
+     * @param string $wp_hook
+     *
+     * @return bool
+     */
+    private function classImplementsWpHooks(string $wp_hook): bool
+    {
+        return \in_array(WpHooksInterface::class, \class_implements($wp_hook), true);
     }
 }
