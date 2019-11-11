@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.7.3] - 2019-11-11
+### Fixed
+- Added $path parameter to `getFileTime` and change to pull from getPath which would be the absolute path to the file
+instead of the basename file, oops.
+
 ## [1.7.2] - 2019-11-11
 ### Changed
 - The `addOnCondition` has a breaking change adding a new parameter after the callback, allowing an array

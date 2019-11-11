@@ -149,11 +149,12 @@ abstract class AbstractPlugin implements PluginInterface
      * Returns the time the file was last modified, or FALSE on failure.
      * The time is returned as a Unix timestamp, which is suitable for the date() function.
      *
+     * @param string $path Optional. Path relative to the plugin root.
      * @return string|null
      */
-    public function getFileTime() : ?string
+    public function getFileTime(string $path = '') : ?string
     {
-        $file_time = \filemtime($this->file);
+        $file_time = \filemtime($this->getPath($path));
 
         return $file_time ? \strval($file_time) : null;
     }
