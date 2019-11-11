@@ -13,7 +13,7 @@ A library containing my standard development resources.
 
 ```
 PHP >= 7.1
-WordPress >= 4.8
+WordPress >= 5.0
 ```
 
 For PHP < 7.1, use version 1.3.x.
