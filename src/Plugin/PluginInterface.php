@@ -149,7 +149,8 @@ interface PluginInterface
      *
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
-     * @param callable $condition The condition that needs to be met before adding the new hook provider.
+     * @param callable $function The condition that needs to be met before adding the new hook provider.
+     * @param array $param_arr The parameters to be passed to the function, as an indexed array.
      * @param string $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
@@ -161,7 +162,8 @@ interface PluginInterface
      */
     public function addOnCondition(
         string $wp_hook,
-        callable $condition,
+        callable $function,
+        array $param_arr = [],
         string $tag = null,
         int $priority = null,
         bool $admin_only = null,
