@@ -7,12 +7,14 @@ set -e
 echo 'Checking PHPCS';
 
 width=$(tput cols);
-if [ `git rev-parse --verify HEAD` ]; then
+if [[ `git rev-parse --verify HEAD` ]]; then
 	against='HEAD'
-elif [ `git rev-parse --verify develop` ]; then
+elif [[ `git rev-parse --verify develop` ]]; then
 	against='develop'
+elif [[ "$(git rev-parse --verify master)" ]]; then
+    against='master'
 else
-    echo "git can't verify HEAD or develop.";
+    echo "git can't verify HEAD, develop or master.";
     exit 1;
 fi
 

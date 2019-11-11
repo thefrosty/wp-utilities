@@ -6,16 +6,18 @@ set -e
 # Go to root of the repository
 echo 'Checking ESLint';
 
-if [ `git rev-parse --verify HEAD` ]; then
+if [[ "$(git rev-parse --verify HEAD)" ]]; then
 	against='HEAD'
-elif [ `git rev-parse --verify develop` ]; then
+elif [[ "$(git rev-parse --verify develop)" ]]; then
 	against='develop'
+elif [[ "$(git rev-parse --verify master)" ]]; then
+    against='master'
 else
-    echo "git can't verify HEAD or develop.";
+    echo "git can't verify HEAD, develop or master.";
     exit 1;
 fi
 
-commitFiles=`git diff --name-only $(git merge-base develop ${against})`
+commitFiles=$(git diff --name-only "$(git merge-base develop ${against})")
 
 jsFiles="";
 jsFilesCount=0;
@@ -35,4 +37,4 @@ fi
 
 echo "Checking files: $jsFiles";
 
-eslint -c .eslintrc ${jsFiles}
+npx standard "${jsFiles}"

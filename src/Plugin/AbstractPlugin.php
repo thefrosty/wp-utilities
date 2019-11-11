@@ -257,13 +257,15 @@ abstract class AbstractPlugin implements PluginInterface
      */
     public function addOnCondition(
         string $wp_hook,
-        callable $condition,
+        callable $function,
+        array $param_arr = [],
         string $tag = null,
         int $priority = null,
         bool $admin_only = null,
         array $args = []
     ) : PluginInterface {
-        if (\call_user_func($condition)) {
+        $condition = empty($param_arr) ? \call_user_func($function) : \call_user_func_array($function, $param_arr);
+        if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
         }
 

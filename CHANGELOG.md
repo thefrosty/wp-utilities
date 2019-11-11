@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
-## [1.7.1] - 2019-11-04
+## [1.7.2] - 2019-11-11
+### Changed
+- The `addOnCondition` has a breaking change adding a new parameter after the callback, allowing an array
+of args to be passed to the callback. If empty `call_user_function` is used, else `call_user_func_array` is used.
+### Updated
+- `addOnCondition` is also using the new `classImplementsWpHooks` condition function before adding the hook to avoid
+possible errors when passing in the class string. 
+- Bash formatting cleanup on `bin/` directory shell linters.
+
+## [1.7.1] - 2019-11-07
 ### Added
 - Add `getFileTime` to `PluginInterface` which allows asset version attributes on modified file time over version constraints.
 Use `$plugin->getFileTime()` or a date formatted string `\date(\DateTime::::ISO8601, $plugin->getFileTime()`.
