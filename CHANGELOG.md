@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.8.0] - 2019-11-17
+### Updated
+- Added TRAVIS & CIRCLECI variable checks to the phpcs summary flag.
+- Cleaned up view: dashboard-widget.php.
+- Cleaned up DashboardWidget.
+
 ## [1.7.3] - 2019-11-11
 ### Fixed
 - Added $path parameter to `getFileTime` and change to pull from getPath which would be the absolute path to the file

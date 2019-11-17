@@ -1,12 +1,17 @@
 <?php
 
-if (! ($this instanceof \TheFrosty\WpUtilities\WpAdmin\DashboardWidget)) {
-    wp_die();
-}
+use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
+/**
+ * DashboardWidget object.
+ * @var $this DashboardWidget
+ */
+if (!($this instanceof DashboardWidget)) {
+    wp_die(sprintf('Please don\'t load this file outside of <code>%s.</code>', esc_attr(DashboardWidget::class)));
+}
 static $count;
 
-$rss_items = $this->getFeedItems(1, $this->feed_url);
+$rss_items = $this->getFeedItems(1, $this->getWidget()->getFeedUrl());
 
 $content = '<div class="rss-widget"><ul>';
 
@@ -14,7 +19,7 @@ if (empty($rss_items)) {
     $content .= '<li>' . __('Error fetching feed') . '</li>';
 } else {
     foreach ($rss_items as $key => $item) {
-        if (! ($item instanceof \SimplePie_Item)) {
+        if (!($item instanceof SimplePie_Item)) {
             continue;
         }
 

@@ -3,6 +3,7 @@
 namespace TheFrosty\WpUtilities\WpAdmin;
 
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
+use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 
 /**
@@ -10,7 +11,7 @@ use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
  *
  * @package TheFrosty\WpUtilities\WpAdmin
  */
-class DashboardWidget
+class DashboardWidget implements WpHooksInterface
 {
     use HooksTrait;
 
@@ -43,7 +44,7 @@ class DashboardWidget
     /**
      * Load additional hooks for this class.
      */
-    public function loadIndexPhp()
+    protected function loadIndexPhp()
     {
         $this->setWidget($this->args);
         $this->addAction('wp_dashboard_setup', [$this, 'addDashboardWidget']);
@@ -52,25 +53,19 @@ class DashboardWidget
     /**
      * Add Dashboard widget
      */
-    public function addDashboardWidget()
+    protected function addDashboardWidget()
     {
-        if (! $this->isDashboardAllowed()) {
+        if (!$this->isDashboardAllowed()) {
             return;
         }
 
         \wp_add_dashboard_widget(
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
-            [$this, 'dashboardWidgetCallback']
+            function () {
+                $this->renderDashboardWidget();
+            }
         );
-    }
-
-    /**
-     * Dashboard widget
-     */
-    public function dashboardWidgetCallback()
-    {
-        include __DIR__ . '/../../views/dashboard-widget.php';
     }
 
     /**
@@ -82,9 +77,9 @@ class DashboardWidget
      * @return array|\SimplePie_Item[] Empty array on failure, Array of \SimplePie_Item'a on
      *     success.
      */
-    public function getFeedItems(int $max, string $url) : array
+    public function getFeedItems(int $max, string $url): array
     {
-        if (! \function_exists('fetch_feed')) {
+        if (!\function_exists('fetch_feed')) {
             include_once ABSPATH . WPINC . DIRECTORY_SEPARATOR . 'feed.php';
         }
 
@@ -94,9 +89,9 @@ class DashboardWidget
          * @return array|\SimplePie
          */
         $get_pie = function (string $url) {
-            $pie = fetch_feed($url);
+            $pie = \fetch_feed($url);
             // Bail if feed doesn't work
-            if (! ($pie instanceof \SimplePie) || \is_wp_error($pie)) {
+            if (!($pie instanceof \SimplePie) || \is_wp_error($pie)) {
                 return [];
             }
 
@@ -105,7 +100,7 @@ class DashboardWidget
 
         $pie = $get_pie($url);
         // Bail if feed doesn't work
-        if (! ($pie instanceof \SimplePie)) {
+        if (!($pie instanceof \SimplePie)) {
             return [];
         }
 
@@ -114,17 +109,14 @@ class DashboardWidget
          *
          * @return array|null $get_items
          */
-        $get_items = function ($pie) use ($max) {
-            return ($pie instanceof \SimplePie) ? $pie->get_items(
-                0,
-                $pie->get_item_quantity($max)
-            ) : [];
+        $get_items = static function ($pie) use ($max) {
+            return ($pie instanceof \SimplePie) ? $pie->get_items(0, $pie->get_item_quantity($max)) : [];
         };
 
         $pie_items = $get_items($pie);
         // If the feed was erroneous
-        if (! $pie_items) {
-            $md5 = md5($url);
+        if (!$pie_items) {
+            $md5 = \md5($url);
             \delete_transient('feed_' . $md5);
             \delete_transient('feed_mod_' . $md5);
             $pie = $get_pie($url);
@@ -139,7 +131,7 @@ class DashboardWidget
      *
      * @return Widget
      */
-    public function getWidget() : Widget
+    public function getWidget(): Widget
     {
         return $this->widget;
     }
@@ -155,11 +147,19 @@ class DashboardWidget
     }
 
     /**
+     * Render the dashboard widget
+     */
+    private function renderDashboardWidget()
+    {
+        include __DIR__ . '/../../views/dashboard-widget.php';
+    }
+
+    /**
      * Check if the dashboard widget is allowed.
      *
      * @return bool
      */
-    private function isDashboardAllowed() : bool
+    private function isDashboardAllowed(): bool
     {
         $allowed = \apply_filters(\sprintf(
             'thefrosty_wp_util_%s_dashboard_allowed',

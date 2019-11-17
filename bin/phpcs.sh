@@ -38,7 +38,7 @@ fi
 
 echo "Checking files: $phpFiles"
 
-if [[ ${phpFilesCount} -gt 2 ]]; then
+if [[ ${phpFilesCount} -gt 2 ]] && ( [[ ${TRAVIS+x} ]] || [[ ${CIRCLECI+x} ]] ); then
 	args="$args --report=summary"
 fi
 
