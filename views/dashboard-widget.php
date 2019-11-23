@@ -32,7 +32,8 @@ if (empty($rss_items)) {
             ], $item->get_permalink())) . '">' . esc_html($item->get_title()) . '</a>';
 
         if ($count === 1) {
-            $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' . $item->get_date(get_option('date_format')) . '</span>';
+            $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
+                $item->get_date(get_option('date_format')) . '</span>';
             $content .= '<div class="rssSummary">' . strip_tags(wp_trim_words($item->get_description(), 28)) . '</div>';
         }
         $content .= '</li>';
