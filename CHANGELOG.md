@@ -12,6 +12,9 @@ PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 - Added TRAVIS & CIRCLECI variable checks to the phpcs summary flag.
 - Cleaned up view: dashboard-widget.php.
 - Cleaned up DashboardWidget.
+### Added
+- New image to the README.
+- New TemplateLoader class, _for loading template files in your plugin_.
 
 ## [1.7.3] - 2019-11-11
 ### Fixed
