@@ -50,6 +50,22 @@ interface PluginInterface
     public function getPath(string $path = '') : string;
 
     /**
+     * Retrieve the TemplateLoaderInterface object.
+     *
+     * @return TemplateLoaderInterface
+     */
+    public function getTemplateLoader() : TemplateLoaderInterface;
+
+    /**
+     * Set the TemplateLoaderInterface object.
+     *
+     * @param TemplateLoaderInterface $template_loader
+     *
+     * @return $this
+     */
+    public function setTemplateLoader(TemplateLoaderInterface $template_loader) : self;
+
+    /**
      * Gets to Init object.
      *
      * @return Init
