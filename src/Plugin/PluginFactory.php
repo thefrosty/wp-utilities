@@ -56,6 +56,7 @@ class PluginFactory
             ->setUrl(\plugin_dir_url($filename));
 
         $plugin = self::setContainer($plugin);
+        $plugin->setTemplateLoader(new TemplateLoader($plugin));
         self::$instances[$slug] = $plugin;
 
         return $plugin;

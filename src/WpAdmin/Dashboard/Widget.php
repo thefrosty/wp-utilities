@@ -25,7 +25,7 @@ class Widget extends BaseModel
      * Set the feed URL.
      * @param string $url
      */
-    public function setFeedUrl(string $url)
+    protected function setFeedUrl(string $url)
     {
         $this->feed_url = $url;
     }
@@ -34,7 +34,7 @@ class Widget extends BaseModel
      * Get the feed URL.
      * @return string
      */
-    public function getFeedUrl() : string
+    public function getFeedUrl(): string
     {
         return $this->feed_url;
     }
@@ -43,7 +43,7 @@ class Widget extends BaseModel
      * Set the widget ID.
      * @param string $widget_id
      */
-    public function setWidgetId(string $widget_id)
+    protected function setWidgetId(string $widget_id)
     {
         $this->widget_id = $widget_id;
     }
@@ -52,7 +52,7 @@ class Widget extends BaseModel
      * Get the widget ID.
      * @return string
      */
-    public function getWidgetId() : string
+    public function getWidgetId(): string
     {
         return $this->widget_id;
     }
@@ -61,7 +61,7 @@ class Widget extends BaseModel
      * Set the widget name.
      * @param string $widget_name
      */
-    public function setWidgetName(string $widget_name)
+    protected function setWidgetName(string $widget_name)
     {
         $this->widget_name = $widget_name;
     }
@@ -70,7 +70,7 @@ class Widget extends BaseModel
      * Get the widget name.
      * @return string
      */
-    public function getWidgetName() : string
+    public function getWidgetName(): string
     {
         return $this->widget_name;
     }
