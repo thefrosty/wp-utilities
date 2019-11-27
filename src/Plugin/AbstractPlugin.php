@@ -30,6 +30,13 @@ abstract class AbstractPlugin implements PluginInterface
     private $directory;
 
     /**
+     * TemplateLoaderInterface object.
+     *
+     * @var TemplateLoaderInterface $template_loader
+     */
+    private $template_loader;
+
+    /**
      * Init object.
      *
      * @var Init $init
@@ -112,6 +119,29 @@ abstract class AbstractPlugin implements PluginInterface
     public function getPath(string $path = '') : string
     {
         return $this->directory . \ltrim($path, '/');
+    }
+
+    /**
+     * Retrieve the TemplateLoaderInterface object.
+     *
+     * {@inheritdoc}
+     * @return TemplateLoaderInterface
+     */
+    public function getTemplateLoader() : TemplateLoaderInterface
+    {
+        return $this->template_loader;
+    }
+
+    /**
+     * Set the TemplateLoaderInterface object.
+     *
+     * {@inheritdoc}
+     * @return $this
+     */
+    public function setTemplateLoader(TemplateLoaderInterface $template_loader) : PluginInterface
+    {
+        $this->template_loader = $template_loader;
+        return $this;
     }
 
     /**
