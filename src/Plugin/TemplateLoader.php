@@ -204,6 +204,7 @@ class TemplateLoader implements TemplateLoaderInterface
      *
      * @return string
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function getLocatedFile(array $template_names): string
     {

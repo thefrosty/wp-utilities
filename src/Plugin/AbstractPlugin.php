@@ -348,6 +348,7 @@ abstract class AbstractPlugin implements PluginInterface
      *                                  associated with a particular action are executed. Default 10.
      * @param array $args Argument unpacking via `...`.
      * @param string $tag The name of the action passed in from `addOnHook()`.
+     * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function initiateWpHooks(
         string $wp_hook,
