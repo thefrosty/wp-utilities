@@ -10,24 +10,14 @@ namespace TheFrosty\WpUtilities\Api;
 trait WpCacheTrait
 {
 
+    use Hash;
+
     /**
      * Cache group value.
      *
      * @var string|null $group
      */
     private $group;
-
-    /**
-     * Get a cache key.
-     *
-     * @param string $data
-     *
-     * @return string
-     */
-    protected function getHashedKey(string $data): string
-    {
-        return \hash('sha256', $data);
-    }
 
     /**
      * Get the cache group.
