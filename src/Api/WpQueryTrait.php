@@ -27,7 +27,7 @@ trait WpQueryTrait
     {
         $defaults = [
             'post_type' => $post_type,
-            'posts_per_page' => 1000,
+            'posts_per_page' => 99,
             'post_status' => ['publish', 'pending', 'future', 'draft'],
             'ignore_sticky_posts' => true,
             'no_found_rows' => true,
