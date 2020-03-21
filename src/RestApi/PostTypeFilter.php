@@ -17,6 +17,14 @@ class PostTypeFilter implements WpHooksInterface
     use HooksTrait;
 
     public const QUERY_PARAM = 'filter';
+    private const QUERY_VARS = [
+        'meta_query',
+        'meta_compare',
+        'meta_key',
+        'meta_value',
+        'post__in',
+        'post_name__in',
+    ];
 
     /**
      * Post Type names.
@@ -76,14 +84,11 @@ class PostTypeFilter implements WpHooksInterface
         }
         $filter = $request->get_params()[self::QUERY_PARAM];
         if (isset($filter['posts_per_page']) &&
-            ((int)$filter['posts_per_page'] >= 1 &&
-                (int)$filter['posts_per_page'] <= 100)
+            ((int)$filter['posts_per_page'] >= 1 && (int)$filter['posts_per_page'] <= 100)
         ) {
             $args['posts_per_page'] = $filter['posts_per_page'];
         }
-        $vars = \apply_filters('rest_query_vars', $GLOBALS['wp']->public_query_vars);
-        // Allow valid meta query vars.
-        $vars = \array_unique(\array_merge($vars, ['meta_query', 'meta_key', 'meta_value', 'meta_compare']));
+        $vars = $this->getPublicQueryVars($request);
         foreach ($vars as $var) {
             if (isset($filter[$var])) {
                 $args[$var] = $filter[$var];
@@ -91,5 +96,18 @@ class PostTypeFilter implements WpHooksInterface
         }
 
         return $args;
+    }
+
+    /**
+     * Get WordPress' global public query vars, and merge them with our custom allowed vars.
+     *
+     * @param \WP_REST_Request|null $request Pass in the current WP_REST_Request object to the filter.
+     * @return array
+     */
+    private function getPublicQueryVars(?\WP_REST_Request $request = null): array
+    {
+        $vars = \apply_filters('rest_query_vars', $GLOBALS['wp']->public_query_vars, $request);
+
+        return \array_unique(\array_merge($vars, self::QUERY_VARS));
     }
 }
