@@ -13,9 +13,9 @@ trait WpCacheTrait
     /**
      * Cache group value.
      *
-     * @var string $group
+     * @var string|null $group
      */
-    private $group = __CLASS__;
+    private $group;
 
     /**
      * Get a cache key.
@@ -34,7 +34,7 @@ trait WpCacheTrait
      */
     protected function getCacheGroup(): string
     {
-        return $this->group;
+        return $this->group ?? static::class;
     }
 
     /**
