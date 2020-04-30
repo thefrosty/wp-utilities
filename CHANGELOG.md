@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [1.9.1] - 2020-04-30
+### Updated
+- WpCacheTrait's `setCache` $group param default to null.
+### Added
+- WpCacheTrait `deleteCache`.
+
+## [1.9.0] - 2020-03-21
+### Updated
+- WpQueryTrait's default per_page value to 99 (previously 1000).
+### Added
+- Hash trait, used in WpCacheTrait.
+- Transients trait.
+
 ## [1.8.0] - 2019-11-17
 ### Updated
 - Added TRAVIS & CIRCLECI variable checks to the phpcs summary flag.
