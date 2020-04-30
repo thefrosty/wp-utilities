@@ -65,8 +65,21 @@ trait WpCacheTrait
      *
      * @return bool Returns TRUE on success or FALSE on failure.
      */
-    protected function setCache(string $key, $value, ?string $group = '', int $expiration = 0): bool
+    protected function setCache(string $key, $value, ?string $group = null, int $expiration = 0): bool
     {
         return \wp_cache_set($key, $value, $group ?? $this->group, $expiration);
+    }
+
+    /**
+     * Deletes a value in cache.
+     *
+     * @param string $key The key under which the value is stored.
+     * @param string|null $group The group value appended to the $key.
+     *
+     * @return bool Returns TRUE on success or FALSE on failure.
+     */
+    protected function deleteCache(string $key, ?string $group = null): bool
+    {
+        return \wp_cache_delete($key, $group ?? $this->getCacheGroup());
     }
 }
