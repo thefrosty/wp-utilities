@@ -52,7 +52,7 @@ trait WpCacheTrait
      */
     protected function getCache(string $key, ?string $group = null, bool $force = false, ?bool &$found = null)
     {
-        return \wp_cache_get($key, $group ?? $this->group, $force, $found);
+        return \wp_cache_get($key, $group ?? $this->getCacheGroup(), $force, $found);
     }
 
     /**
@@ -67,7 +67,7 @@ trait WpCacheTrait
      */
     protected function setCache(string $key, $value, ?string $group = null, int $expiration = 0): bool
     {
-        return \wp_cache_set($key, $value, $group ?? $this->group, $expiration);
+        return \wp_cache_set($key, $value, $group ?? $this->getCacheGroup(), $expiration);
     }
 
     /**
