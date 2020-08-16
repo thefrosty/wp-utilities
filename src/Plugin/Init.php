@@ -4,7 +4,6 @@ namespace TheFrosty\WpUtilities\Plugin;
 
 /**
  * Class Init
- *
  * @package TheFrosty\WpUtilities\Plugin
  */
 final class Init implements \IteratorAggregate
@@ -14,27 +13,25 @@ final class Init implements \IteratorAggregate
      * Helper property to check whether the object has been initiated
      * or loaded. So this class can call `initialize()` method more than once.
      */
-    const PROPERTY = 'initiated';
+    private const PROPERTY = 'initiated';
 
     /**
      * A container for objects that implement WpHooksInterface.
-     *
      * @var WpHooksInterface[] $wp_hooks
      */
     private $wp_hooks = [];
 
     /**
      * Adds an object to $wp_hooks property.
-     *
      * @param WpHooksInterface $wp_hooks Hook provider.
      * @param PluginInterface $plugin PluginInterface for plugin awareness.
-     *
      * @return PluginInterface
      */
     public function register(
         WpHooksInterface $wp_hooks,
         PluginInterface $plugin
-    ) : PluginInterface {
+    ): PluginInterface
+    {
         $this->wp_hooks[] = $wp_hooks;
 
         if ($wp_hooks instanceof PluginAwareInterface) {
@@ -52,10 +49,10 @@ final class Init implements \IteratorAggregate
      * All the methods that need to be performed upon plugin initialization should
      * be done here.
      */
-    public function initialize()
+    public function initialize(): void
     {
         foreach ($this as $wp_hook) {
-            if ($wp_hook instanceof WpHooksInterface && ! \property_exists($wp_hook, self::PROPERTY)) {
+            if ($wp_hook instanceof WpHooksInterface && !\property_exists($wp_hook, self::PROPERTY)) {
                 $wp_hook->{self::PROPERTY} = true;
                 $wp_hook->addHooks();
             }
@@ -64,10 +61,9 @@ final class Init implements \IteratorAggregate
 
     /**
      * Provides an iterator over the $wp_hooks property.
-     *
      * @return \ArrayIterator
      */
-    public function getIterator() : \ArrayIterator
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->wp_hooks);
     }
@@ -76,7 +72,7 @@ final class Init implements \IteratorAggregate
      * Gets the array of registered WpHooksInterface objects.
      * @return WpHooksInterface[]
      */
-    public function getWpHooks() : array
+    public function getWpHooks(): array
     {
         return $this->wp_hooks;
     }
