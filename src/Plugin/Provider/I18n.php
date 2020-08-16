@@ -22,7 +22,7 @@ class I18n implements PluginAwareInterface, WpHooksInterface
      *
      * Loads the text domain during the `plugins_loaded` action.
      */
-    public function addHooks()
+    public function addHooks(): void
     {
         if (\did_action('plugins_loaded')) {
             $this->loadTextdomain();
@@ -35,7 +35,7 @@ class I18n implements PluginAwareInterface, WpHooksInterface
     /**
      * Load the text domain to localize the plugin.
      */
-    protected function loadTextdomain()
+    protected function loadTextdomain(): void
     {
         \load_plugin_textdomain(
             $this->getPlugin()->getSlug(),
