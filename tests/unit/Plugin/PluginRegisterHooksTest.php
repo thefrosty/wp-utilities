@@ -1,17 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace TheFrosty\PhpUnit\WpUtilities;
+namespace TheFrosty\WpUtilities\Tests\Plugin;
 
-use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
-use TheFrosty\PhpUnit\WpUtilities\Framework\TestCase;
+use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class PluginRegisterHooksTest
  *
- * @package TheFrosty\PhpUnit\WpUtilities
+ * @package TheFrosty\WpUtilities\Test\Plugin
  */
 class PluginRegisterHooksTest extends TestCase
 {

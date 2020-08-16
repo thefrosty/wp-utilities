@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace TheFrosty\PhpUnit\WpUtilities\Framework\Mock;
+namespace TheFrosty\WpUtilities\Tests\Plugin\Framework\Mock;
 
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 
 /**
  * Class HookProvider
  *
- * @package TheFrosty\PhpUnit\WpUtilities\Framework\Mock
+ * @package TheFrosty\WpUtilities\Tests\Plugin\Framework\Mock
  */
 class HookProvider extends AbstractHookProvider
 {
@@ -15,26 +15,24 @@ class HookProvider extends AbstractHookProvider
     /**
      * Add hooks.
      */
-    public function addHooks()
+    public function addHooks(): void
     {
     }
 
     /**
      * Register hooks.
-     *
      * @return bool
      */
-    public function registerActions()
+    public function registerActions(): bool
     {
         return $this->addAction('template_redirect', [$this, 'templateRedirect']);
     }
 
     /**
      * Register filters.
-     *
      * @return bool
      */
-    public function registerFilters()
+    public function registerFilters(): bool
     {
         return $this->addFilter('the_title', [$this, 'getTitle']);
     }
@@ -42,16 +40,15 @@ class HookProvider extends AbstractHookProvider
     /**
      * Empty method for the action.
      */
-    protected function templateRedirect()
+    protected function templateRedirect(): void
     {
     }
 
     /**
      * Empty method for the filter.
-     *
      * @return string
      */
-    protected function getTitle()
+    protected function getTitle(): string
     {
         return 'Title';
     }

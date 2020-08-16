@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace TheFrosty\PhpUnit\WpUtilities\Framework;
+namespace TheFrosty\WpUtilities\Tests\Plugin\Framework;
 
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
 /**
  * Class TestCase
  *
- * @package TheFrosty\PhpUnit\WpUtilities\Framework
+ * @package TheFrosty\WpUtilities\Tests\Plugin\Framework
  */
 class TestCase extends PhpUnitTestCase
 {

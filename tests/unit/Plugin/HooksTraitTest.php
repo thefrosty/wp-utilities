@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace TheFrosty\PhpUnit\WpUtilities;
+namespace TheFrosty\WpUtilities\Tests\Plugin;
 
-use TheFrosty\PhpUnit\WpUtilities\Framework\Mock\HookProvider;
-use TheFrosty\PhpUnit\WpUtilities\Framework\TestCase;
+use TheFrosty\WpUtilities\Tests\Plugin\Framework\Mock\HookProvider;
+use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class HooksTraitTest
  *
- * @package TheFrosty\PhpUnit\WpUtilities
+ * @package TheFrosty\WpUtilities\Test\Plugin
  */
 class HooksTraitTest extends TestCase
 {

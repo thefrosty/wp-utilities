@@ -39,7 +39,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "TheFrosty\\PhpUnit\\WpUtilities\\": "tests/unit/"
+      "TheFrosty\\WpUtilities\\Tests\\": "tests/unit/"
     }
   },
   "scripts": {
