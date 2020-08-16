@@ -17,7 +17,7 @@ class PluginFactory
      * @param string $slug
      * @return Plugin
      */
-    public static function getInstance(string $slug) : Plugin
+    public static function getInstance(string $slug): Plugin
     {
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
@@ -31,11 +31,10 @@ class PluginFactory
      *
      * @param string $slug Plugin slug.
      * @param string|null $filename Optional. Absolute path to the main plugin file.
-     *                         This should be passed if the calling file is not
-     *                         the main plugin file.
+     *                         This should be passed if the calling file is not the main plugin file.
      * @return Plugin A Plugin object instance.
      */
-    public static function create(string $slug, ?string $filename = '') : Plugin
+    public static function create(string $slug, ?string $filename = ''): Plugin
     {
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
@@ -68,7 +67,7 @@ class PluginFactory
      * @param Plugin $plugin
      * @return Plugin
      */
-    private static function setContainer(Plugin $plugin) : Plugin
+    private static function setContainer(Plugin $plugin): Plugin
     {
         try {
             if (\class_exists('\Pimple\Container') &&

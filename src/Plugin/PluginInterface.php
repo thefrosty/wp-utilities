@@ -16,7 +16,7 @@ interface PluginInterface
      *
      * @return string
      */
-    public function getBasename() : string;
+    public function getBasename(): string;
 
     /**
      * Set the plugin basename.
@@ -24,14 +24,14 @@ interface PluginInterface
      * @param string $basename Relative path from the main plugin directory.
      * @return $this
      */
-    public function setBasename(string $basename) : self;
+    public function setBasename(string $basename): self;
 
     /**
      * Retrieve the plugin directory.
      *
      * @return string
      */
-    public function getDirectory() : string;
+    public function getDirectory(): string;
 
     /**
      * Set the plugin's directory.
@@ -39,7 +39,7 @@ interface PluginInterface
      * @param string $directory Absolute path to the main plugin directory.
      * @return $this
      */
-    public function setDirectory(string $directory) : self;
+    public function setDirectory(string $directory): self;
 
     /**
      * Retrieve the path to a file in the plugin.
@@ -47,14 +47,14 @@ interface PluginInterface
      * @param string $path Optional. Path relative to the plugin root.
      * @return string
      */
-    public function getPath(string $path = '') : string;
+    public function getPath(string $path = ''): string;
 
     /**
      * Retrieve the TemplateLoaderInterface object.
      *
      * @return TemplateLoaderInterface
      */
-    public function getTemplateLoader() : TemplateLoaderInterface;
+    public function getTemplateLoader(): TemplateLoaderInterface;
 
     /**
      * Set the TemplateLoaderInterface object.
@@ -63,14 +63,14 @@ interface PluginInterface
      *
      * @return $this
      */
-    public function setTemplateLoader(TemplateLoaderInterface $template_loader) : self;
+    public function setTemplateLoader(TemplateLoaderInterface $template_loader): self;
 
     /**
      * Gets to Init object.
      *
      * @return Init
      */
-    public function getInit() : Init;
+    public function getInit(): Init;
 
     /**
      * Sets to Init object.
@@ -78,14 +78,14 @@ interface PluginInterface
      * @param Init $init
      * @return $this
      */
-    public function setInit(Init $init) : self;
+    public function setInit(Init $init): self;
 
     /**
      * Retrieve the absolute path for the main plugin file.
      *
      * @return string
      */
-    public function getFile() : string;
+    public function getFile(): string;
 
     /**
      * Returns the time the file was last modified, or FALSE on failure.
@@ -94,7 +94,7 @@ interface PluginInterface
      * @param string $path Optional. Path relative to the plugin root.
      * @return string|null
      */
-    public function getFileTime(string $path = '') : ?string;
+    public function getFileTime(string $path = ''): ?string;
 
     /**
      * Set the path to the main plugin file.
@@ -102,14 +102,14 @@ interface PluginInterface
      * @param string $file Absolute path to the main plugin file.
      * @return $this
      */
-    public function setFile(string $file) : self;
+    public function setFile(string $file): self;
 
     /**
      * Retrieve the plugin identifier.
      *
      * @return string
      */
-    public function getSlug() : string;
+    public function getSlug(): string;
 
     /**
      * Set the plugin identifier.
@@ -117,7 +117,7 @@ interface PluginInterface
      * @param string $slug Plugin identifier.
      * @return $this
      */
-    public function setSlug(string $slug) : self;
+    public function setSlug(string $slug): self;
 
     /**
      * Retrieve the URL for a file in the plugin.
@@ -125,7 +125,7 @@ interface PluginInterface
      * @param string $path Optional. Path relative to the plugin root.
      * @return string
      */
-    public function getUrl(string $path = '') : string;
+    public function getUrl(string $path = ''): string;
 
     /**
      * Set the URL for plugin directory root.
@@ -133,7 +133,7 @@ interface PluginInterface
      * @param string $url URL to the root of the plugin directory.
      * @return $this
      */
-    public function setUrl(string $url) : self;
+    public function setUrl(string $url): self;
 
     /**
      * Register hooks for the plugin.
@@ -141,7 +141,7 @@ interface PluginInterface
      * @param WpHooksInterface $hooks Hook provider.
      * @return $this
      */
-    public function add(WpHooksInterface $hooks) : self;
+    public function add(WpHooksInterface $hooks): self;
 
     /**
      * Register hooks for the plugin when a specific condition is met.
@@ -157,7 +157,7 @@ interface PluginInterface
     public function addIfCondition(
         string $wp_hook,
         bool $condition
-    ) : self;
+    ): self;
 
     /**
      * Register hooks for the plugin when a specific condition is met on a custom hook.
@@ -168,10 +168,10 @@ interface PluginInterface
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
      * @param callable $function The condition that needs to be met before adding the new hook provider.
      * @param array $param_arr The parameters to be passed to the function, as an indexed array.
-     * @param string $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
-     * @param int $priority Optional. Used to specify the order in which the functions
+     * @param string|null $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
+     * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
-     * @param bool $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
+     * @param bool|null $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
      *     null.
      * @param array $args Argument unpacking via ... passed to the `$wp_hook` constructor.
      * @return $this
@@ -181,21 +181,21 @@ interface PluginInterface
         string $wp_hook,
         callable $function,
         array $param_arr = [],
-        string $tag = null,
-        int $priority = null,
-        bool $admin_only = null,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
         array $args = []
-    ) : self;
+    ): self;
 
     /**
      * Register hooks for the plugin on a specific action tag.
      *
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
-     * @param string $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
-     * @param int $priority Optional. Used to specify the order in which the functions
+     * @param string|null $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
+     * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
-     * @param bool $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
+     * @param bool|null $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
      *     null.
      * @param array $args Argument unpacking via ... passed to the `$wp_hook` constructor.
      * @return $this
@@ -203,9 +203,9 @@ interface PluginInterface
      */
     public function addOnHook(
         string $wp_hook,
-        string $tag = null,
-        int $priority = null,
-        bool $admin_only = null,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
         array $args = []
-    ) : self;
+    ): self;
 }

@@ -130,9 +130,7 @@ class TemplateLoader implements TemplateLoaderInterface
     protected function getTemplate(array $template_names): string
     {
         try {
-            $located = $this->getLocatedFile($template_names);
-
-            return $located;
+            return $this->getLocatedFile($template_names);
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -275,11 +273,12 @@ class TemplateLoader implements TemplateLoaderInterface
      * Use the template names as a cache key.
      *
      * @param array $names
-     *
      * @return string|null
      */
     private function getCacheKey(array $names): ?string
     {
-        return \array_shift(\array_values($names));
+        $values = \array_values($names);
+
+        return \array_shift($values);
     }
 }

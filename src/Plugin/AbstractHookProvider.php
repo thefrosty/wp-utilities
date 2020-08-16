@@ -14,5 +14,5 @@ abstract class AbstractHookProvider implements WpHooksInterface, PluginAwareInte
     /**
      * Registers hooks for the plugin.
      */
-    abstract public function addHooks();
+    abstract public function addHooks(): void;
 }
