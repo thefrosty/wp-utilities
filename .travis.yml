@@ -10,22 +10,25 @@ language: php
 php:
   - '7.4'
   - '7.3'
+  - '7.2'
 
 branches:
   only:
     - master
     - develop
 
+jobs:
+  allow_failures:
+    - php: 7.2
+  fast_finish: true
+
 env:
   global:
     - WORDPRESS_DB_USER=wp
     - WORDPRESS_DB_PASS=password
     - WORDPRESS_DB_NAME=wp_tests
-    - WP_VERSION=5.4  
+    - WP_VERSION=5.4
     - WP_MULTISITE=0
-
-matrix:
-  fast_finish: true
 
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
