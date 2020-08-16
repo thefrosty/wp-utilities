@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
 
+## [2.0.0] - 2020-08-16
+
+
 ## [1.9.1] - 2020-04-30
 ### Updated
 - WpCacheTrait's `setCache` $group param default to null.
