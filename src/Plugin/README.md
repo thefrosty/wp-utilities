@@ -5,6 +5,7 @@
 Initiate the factory like so:
 
 ```php
+use TheFrosty\WpUtilities\Plugin\PluginFactory;
 ( PluginFactory::create( 'slug' ) )
 	->add( new Members() ) // Class extends `AbstractHookProvider` or implements `WpHooksInterface` 
 	->add( new SomeOtherClass() ) 
@@ -14,6 +15,7 @@ Initiate the factory like so:
 ...or:
 
 ```php
+use TheFrosty\WpUtilities\Plugin\PluginFactory;
 $plugin = PluginFactory::create( 'slug' );
 $plugin
     ->add( new SomeOtherClass() )
@@ -24,7 +26,8 @@ $plugin
 You can also use the latter statement with conditions available on `plugins_loaded` (or use the new `addIfCondition` method) like:
 
 ```php
-if ( is_customize_preview() ) {
+/** @var heFrosty\WpUtilities\Plugin\Plugin $plugin */
+if ( \is_customize_preview() ) {
 $plugin
     ->add( new SomeOtherCustomizeClass() )
 	->initialize();
