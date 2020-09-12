@@ -25,6 +25,7 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @package TheFrosty\WpUtilities\Api\GitHub
+ * @SuppressWarnings(PHPMD)
  */
 class Updater implements WpHooksInterface
 {
@@ -69,8 +70,11 @@ class Updater implements WpHooksInterface
         $this->config = \wp_parse_args($config, $defaults);
         // if the minimum config isn't set, issue a warning and bail
         if (!$this->hasMinimumConfig()) {
-            $message = \sprintf('The `%s` was initialized without the minimum required configuration. The following params are missing: %s',
-                self::class, \implode(',', $this->missing_config));
+            $message = \sprintf(
+                'The `%s` was initialized without the minimum required configuration. The following params are missing: %s', // phpcs:ignore
+                self::class,
+                \implode(',', $this->missing_config)
+            );
             \_doing_it_wrong(__CLASS__, $message, self::VERSION);
             return;
         }
@@ -122,10 +126,9 @@ class Updater implements WpHooksInterface
      */
     protected function setDefaults(): void
     {
-        // See Downloading a zipball (private repo) https://help.github.com/articles/downloading-files-from-the-command-line
-        [$scheme, , $path] = \parse_url($this->config['zip_url']); // $scheme, $host, $path
-        $zip_url = $scheme . '://api.github.com/repos' . $path;
-        $this->config['zip_url'] = $zip_url;
+        if (!empty($this->config['custom_zip_url'])) {
+            $this->config['zip_url'] = $this->config['custom_zip_url'];
+        }
 
         if (!isset($this->config['new_version'])) {
             $this->config['new_version'] = $this->getNewVersionNumber();
@@ -192,7 +195,11 @@ class Updater implements WpHooksInterface
      */
     protected function apiCheck($value)
     {
-        if (!isset($value) || !\is_object($value) || (empty($value->response) && !\is_array($value->response)) || !empty($value->checked)) {
+        if (!isset($value) ||
+            !\is_object($value) ||
+            (empty($value->response) && !\is_array($value->response)) ||
+            !empty($value->checked)
+        ) {
             return $value;
         }
 
