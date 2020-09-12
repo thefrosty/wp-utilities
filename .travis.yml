@@ -27,7 +27,7 @@ env:
     - WORDPRESS_DB_USER=wp
     - WORDPRESS_DB_PASS=password
     - WORDPRESS_DB_NAME=wp_tests
-    - WP_VERSION=5.4
+    - WP_VERSION=5.5.1
     - WP_MULTISITE=0
 
 install:
