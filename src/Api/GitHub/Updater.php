@@ -70,8 +70,9 @@ class Updater implements WpHooksInterface
         // if the minimum config isn't set, issue a warning and bail
         if (!$this->hasMinimumConfig()) {
             $message = \sprintf(
-                'The `%s` was initialized without the minimum required configuration. The following params are missing: %s',
-                self::class, \implode(',', $this->missing_config)
+                'The `%s` was initialized without the minimum required configuration. The following params are missing: %s', // phpcs:ignore
+                self::class,
+                \implode(',', $this->missing_config)
             );
             \_doing_it_wrong(__CLASS__, $message, self::VERSION);
             return;
