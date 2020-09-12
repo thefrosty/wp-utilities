@@ -25,7 +25,7 @@ abstract class BaseModel
      * to search and replace for getMethod().
      * @return array
      */
-    public function getCustomDelimiters() : array
+    public function getCustomDelimiters(): array
     {
         return [];
     }
@@ -40,13 +40,13 @@ abstract class BaseModel
      * @return array
      * @throws \Exception
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         if (!empty($this->getSerializableFields())) {
             $result = [];
 
             foreach ($this->getSerializableFields() as $index => $field_name) {
-                $method = $this->getMethod('get', $field_name);
+                $method = $this->getGetMethod($field_name);
                 if (!\method_exists($this, $method)) {
                     continue;
                 }
@@ -77,7 +77,7 @@ abstract class BaseModel
      * @return array
      * @throws \Exception
      */
-    public function toArrayDeep(array $models) : array
+    public function toArrayDeep(array $models): array
     {
         $deep_array = [];
         foreach ($models as $model) {
@@ -92,7 +92,7 @@ abstract class BaseModel
      *
      * @return array
      */
-    protected function getDateTimeFields() : array
+    protected function getDateTimeFields(): array
     {
         return [];
     }
@@ -104,7 +104,7 @@ abstract class BaseModel
      *
      * @return array
      */
-    protected function getSerializableFields() : array
+    protected function getSerializableFields(): array
     {
         return [];
     }
@@ -115,7 +115,7 @@ abstract class BaseModel
      * @param array $fields
      * @return void
      */
-    protected function populate(array $fields)
+    protected function populate(array $fields): void
     {
         foreach ($fields as $field => $value) {
             // If field value is null we just leave it blank
@@ -145,9 +145,19 @@ abstract class BaseModel
      * @param string $field
      * @return string
      */
-    private function getSetterMethod(string $field) : string
+    private function getSetterMethod(string $field): string
     {
         return $this->getMethod('set', $field);
+    }
+
+    /**
+     * Gets the 'get' method.
+     * @param string $field
+     * @return string
+     */
+    private function getGetMethod(string $field): string
+    {
+        return $this->getMethod('get', $field);
     }
 
     /**
@@ -155,7 +165,7 @@ abstract class BaseModel
      * @param string $field
      * @return string
      */
-    private function getPopulateMethod(string $field) : string
+    private function getPopulateMethod(string $field): string
     {
         return $this->getMethod('populate', $field);
     }
@@ -166,7 +176,7 @@ abstract class BaseModel
      * @param string $field
      * @return string
      */
-    private function getMethod(string $prefix, string $field) : string
+    private function getMethod(string $prefix, string $field): string
     {
         $search = \array_merge(['_', '-'], $this->getCustomDelimiters());
         $delimiters = '_-';
