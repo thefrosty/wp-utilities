@@ -122,10 +122,9 @@ class Updater implements WpHooksInterface
      */
     protected function setDefaults(): void
     {
-        // See Downloading a zipball (private repo) https://help.github.com/articles/downloading-files-from-the-command-line
-        [$scheme, , $path] = \parse_url($this->config['zip_url']); // $scheme, $host, $path
-        $zip_url = $scheme . '://api.github.com/repos' . $path;
-        $this->config['zip_url'] = $zip_url;
+        if (!empty($this->config['custom_zip_url'])) {
+            $this->config['zip_url'] = $this->config['custom_zip_url'];
+        }
 
         if (!isset($this->config['new_version'])) {
             $this->config['new_version'] = $this->getNewVersionNumber();
