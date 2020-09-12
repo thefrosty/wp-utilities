@@ -5,10 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
-PHP version >= 7.2 & WordPress version >= 5.1 will be required by version `2.0`.
+PHP version >= 7.4 & WordPress version >= 5.5 will be required by version `2.0`.
+* @todo look at https://github.com/RectorPHP/Rector
 
-## [2.0.0] - 2020-08-16
-
+## [1.10.0] - 2020-09-12
+### Updated
+- Require PHP => 7.3
+- Update bin shell files.
+- Update travis to test against WordPress 5.5.1
+- Add getter method helper to BaseModel.
+### Added
+- New encrypt & decrypt methods to the Hash trait.
+- New RestApi/Http/RouteService for easy REST route registration.
 
 ## [1.9.1] - 2020-04-30
 ### Updated
