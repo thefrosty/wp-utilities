@@ -5,10 +5,13 @@
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true">
-
+    <php>
+        <ini name="error_reporting" value="24575" />
+        <env name="WP_PHPUNIT__TESTS_CONFIG" value="./tests/wp-tests-config.php" />
+    </php>
     <testsuites>
         <testsuite name="unit">
-            <directory>./tests/unit/</directory>
+            <directory phpVersion="7.3" phpVersionOperator=">=">./tests/unit/</directory>
         </testsuite>
     </testsuites>
 

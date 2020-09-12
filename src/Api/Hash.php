@@ -11,14 +11,43 @@ trait Hash
 {
 
     /**
-     * Get a cache key.
+     * Get a sha256 hash key.
      *
      * @param string $data
-     *
      * @return string
      */
     protected function getHashedKey(string $data): string
     {
         return \hash('sha256', $data);
+    }
+
+    /**
+     * Decrypt a string.
+     *
+     * @param string $data The encrypted string value.
+     * @param string $encryption_key The encryption key.
+     * @return string
+     */
+    protected function decrypt(string $data, string $encryption_key): string
+    {
+        $key = $this->getHashedKey($encryption_key);
+        $iv = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
+
+        return \openssl_decrypt(\base64_decode($data), 'AES-256-CBC', $key, 0, $iv);
+    }
+
+    /**
+     * Encrypt a string.
+     *
+     * @param string $data The string value to encrypt
+     * @param string $encryption_key The encryption key. Example `SomeKeyWith4Delimiter|` _maybe_.
+     * @return string
+     */
+    protected function encrypt(string $data, string $encryption_key): string
+    {
+        $key = $this->getHashedKey($encryption_key);
+        $iv = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
+
+        return \base64_encode(\openssl_encrypt($data, 'AES-256-CBC', $key, 0, $iv));
     }
 }

@@ -12,15 +12,13 @@ interface HttpFoundationRequestInterface
 {
     /**
      * Get the Request object.
-     *
-     * @return Request
+     * @return Request|null
      */
-    public function getRequest() : Request;
+    public function getRequest(): ?Request;
 
     /**
-     * Set the container.
-     *
+     * Set the Request.
      * @param Request|null $request Symfony HttpFoundation Request object
      */
-    public function setRequest(Request $request = null);
+    public function setRequest(?Request $request = null): void;
 }

@@ -17,7 +17,6 @@ trait ContainerAwareTrait
 
     /**
      * Container.
-     *
      * @var ContainerInterface
      */
     private $container;
@@ -40,7 +39,7 @@ trait ContainerAwareTrait
      * @param string $name Service name.
      * @return bool
      */
-    public function __isset($name) : bool
+    public function __isset($name): bool
     {
         return $this->getContainer()->has($name);
     }
@@ -71,7 +70,7 @@ trait ContainerAwareTrait
      *
      * @return ContainerInterface
      */
-    public function getContainer() : ContainerInterface
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
@@ -83,9 +82,9 @@ trait ContainerAwareTrait
      * @return $this
      * @throws \InvalidArgumentException If the object is incorrect.
      */
-    public function setContainer(ContainerInterface $container) : parent
+    public function setContainer(ContainerInterface $container): parent
     {
-        if (! ($container instanceof ContainerInterface)) {
+        if (!($container instanceof ContainerInterface)) {
             throw new \InvalidArgumentException(
                 \sprintf('Expected a %s, got a %s.', ContainerInterface::class, \get_class($container))
             );

@@ -7,9 +7,7 @@ use Psr\Container\ContainerInterface;
 
 /**
  * Container class.
- *
  * Extends Pimple to satisfy the ContainerInterface.
- *
  * @package TheFrosty\WpUtilities\Plugin
  */
 class Container extends Pimple implements ContainerInterface

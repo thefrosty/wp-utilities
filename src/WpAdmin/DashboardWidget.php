@@ -36,7 +36,7 @@ class DashboardWidget implements WpHooksInterface
     /**
      * Add class hooks.
      */
-    public function addHooks()
+    public function addHooks(): void
     {
         $this->addAction('load-index.php', [$this, 'loadIndexPhp']);
     }
@@ -44,7 +44,7 @@ class DashboardWidget implements WpHooksInterface
     /**
      * Load additional hooks for this class.
      */
-    protected function loadIndexPhp()
+    protected function loadIndexPhp(): void
     {
         $this->setWidget($this->args);
         $this->addAction('wp_dashboard_setup', [$this, 'addDashboardWidget']);
@@ -53,7 +53,7 @@ class DashboardWidget implements WpHooksInterface
     /**
      * Add Dashboard widget
      */
-    protected function addDashboardWidget()
+    protected function addDashboardWidget(): void
     {
         if (!$this->isDashboardAllowed()) {
             return;
@@ -141,7 +141,7 @@ class DashboardWidget implements WpHooksInterface
      *
      * @param array $args
      */
-    private function setWidget(array $args)
+    private function setWidget(array $args): void
     {
         $this->widget = new Widget($args);
     }
@@ -149,7 +149,7 @@ class DashboardWidget implements WpHooksInterface
     /**
      * Render the dashboard widget
      */
-    private function renderDashboardWidget()
+    private function renderDashboardWidget(): void
     {
         include __DIR__ . '/../../views/dashboard-widget.php';
     }

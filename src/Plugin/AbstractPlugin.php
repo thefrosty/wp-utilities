@@ -10,56 +10,49 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 abstract class AbstractPlugin implements PluginInterface
 {
-    const DEFAULT_PRIORITY = 10;
-    const DEFAULT_TAG = 'init';
+    public const DEFAULT_PRIORITY = 10;
+    public const DEFAULT_TAG = 'init';
 
     /**
      * Plugin basename.
      *
      * Ex: plugin-name/plugin-name.php
-     *
      * @var string $basename
      */
     private $basename;
 
     /**
      * Absolute path to the main plugin directory.
-     *
      * @var string $directory
      */
     private $directory;
 
     /**
      * TemplateLoaderInterface object.
-     *
      * @var TemplateLoaderInterface $template_loader
      */
     private $template_loader;
 
     /**
      * Init object.
-     *
      * @var Init $init
      */
     private $init;
 
     /**
      * Absolute path to the main plugin file.
-     *
      * @var string $file
      */
     private $file;
 
     /**
      * Plugin identifier.
-     *
      * @var string $slug
      */
     private $slug;
 
     /**
      * URL to the main plugin directory.
-     *
      * @var string $url
      */
     private $url;
@@ -69,7 +62,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * {@inheritdoc}
      */
-    public function getBasename() : string
+    public function getBasename(): string
     {
         return $this->basename;
     }
@@ -80,7 +73,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setBasename(string $basename) : PluginInterface
+    public function setBasename(string $basename): PluginInterface
     {
         $this->basename = $basename;
 
@@ -92,7 +85,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * {@inheritdoc}
      */
-    public function getDirectory() : string
+    public function getDirectory(): string
     {
         return $this->directory;
     }
@@ -103,7 +96,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setDirectory(string $directory) : PluginInterface
+    public function setDirectory(string $directory): PluginInterface
     {
         $this->directory = \rtrim($directory, '/') . '/';
 
@@ -116,7 +109,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return string
      */
-    public function getPath(string $path = '') : string
+    public function getPath(string $path = ''): string
     {
         return $this->directory . \ltrim($path, '/');
     }
@@ -127,7 +120,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return TemplateLoaderInterface
      */
-    public function getTemplateLoader() : TemplateLoaderInterface
+    public function getTemplateLoader(): TemplateLoaderInterface
     {
         return $this->template_loader;
     }
@@ -138,7 +131,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setTemplateLoader(TemplateLoaderInterface $template_loader) : PluginInterface
+    public function setTemplateLoader(TemplateLoaderInterface $template_loader): PluginInterface
     {
         $this->template_loader = $template_loader;
         return $this;
@@ -149,7 +142,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * {@inheritdoc}
      */
-    public function getInit() : Init
+    public function getInit(): Init
     {
         return $this->init;
     }
@@ -158,7 +151,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setInit(Init $init) : PluginInterface
+    public function setInit(Init $init): PluginInterface
     {
         $this->init = $init;
 
@@ -167,10 +160,9 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the absolute path for the main plugin file.
-     *
      * @return string
      */
-    public function getFile() : string
+    public function getFile(): string
     {
         return $this->file;
     }
@@ -182,7 +174,7 @@ abstract class AbstractPlugin implements PluginInterface
      * @param string $path Optional. Path relative to the plugin root.
      * @return string|null
      */
-    public function getFileTime(string $path = '') : ?string
+    public function getFileTime(string $path = ''): ?string
     {
         $file_time = \filemtime($this->getPath($path));
 
@@ -195,7 +187,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setFile(string $file) : PluginInterface
+    public function setFile(string $file): PluginInterface
     {
         $this->file = $file;
 
@@ -207,7 +199,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * {@inheritdoc}
      */
-    public function getSlug() : string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -218,7 +210,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setSlug(string $slug) : PluginInterface
+    public function setSlug(string $slug): PluginInterface
     {
         $this->slug = $slug;
 
@@ -230,7 +222,7 @@ abstract class AbstractPlugin implements PluginInterface
      *
      * {@inheritdoc}
      */
-    public function getUrl(string $path = '') : string
+    public function getUrl(string $path = ''): string
     {
         return $this->url . \ltrim($path, '/');
     }
@@ -241,7 +233,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function setUrl(string $url) : PluginInterface
+    public function setUrl(string $url): PluginInterface
     {
         $this->url = \rtrim($url, '/') . '/';
 
@@ -254,7 +246,7 @@ abstract class AbstractPlugin implements PluginInterface
      * {@inheritdoc}
      * @return $this
      */
-    public function add(WpHooksInterface $wp_hooks) : PluginInterface
+    public function add(WpHooksInterface $wp_hooks): PluginInterface
     {
         $this->getInit()->register($wp_hooks, $this);
 
@@ -268,10 +260,8 @@ abstract class AbstractPlugin implements PluginInterface
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function addIfCondition(
-        string $wp_hook,
-        bool $condition
-    ): PluginInterface {
+    public function addIfCondition(string $wp_hook, bool $condition): PluginInterface
+    {
         if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             $this->getInit()->register(new $wp_hook(), $this);
         }
@@ -294,7 +284,7 @@ abstract class AbstractPlugin implements PluginInterface
         int $priority = null,
         bool $admin_only = null,
         array $args = []
-    ) : PluginInterface {
+    ): PluginInterface {
         $condition = empty($param_arr) ? \call_user_func($function) : \call_user_func_array($function, $param_arr);
         if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
@@ -312,17 +302,17 @@ abstract class AbstractPlugin implements PluginInterface
      */
     public function addOnHook(
         string $wp_hook,
-        string $tag = null,
-        int $priority = null,
-        bool $admin_only = null,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
         array $args = []
-    ) : PluginInterface {
+    ): PluginInterface {
         $tag = $tag ?? self::DEFAULT_TAG;
         \add_action($tag, function () use ($wp_hook, $admin_only, $priority, $args, $tag) {
             $priority = ($priority ?? self::DEFAULT_PRIORITY) + 2;
             if ($admin_only === true && \is_admin()) {
                 $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
-            } elseif ($admin_only === false && ! \is_admin()) {
+            } elseif ($admin_only === false && !\is_admin()) {
                 $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
             } elseif ($admin_only === null) {
                 $this->initiateWpHooks($wp_hook, $priority, $args, $tag);
@@ -335,7 +325,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Initialize the Init `WpHooksInterface` objects.
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->getInit()->initialize();
     }
@@ -344,25 +334,24 @@ abstract class AbstractPlugin implements PluginInterface
      * Initialize the late hook provider when it's been registered on an action hook.
      *
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
-     * @param int $priority Optional. Used to specify the order in which the functions
+     * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      * @param array $args Argument unpacking via `...`.
-     * @param string $tag The name of the action passed in from `addOnHook()`.
+     * @param string|null $tag The name of the action passed in from `addOnHook()`.
      * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function initiateWpHooks(
         string $wp_hook,
-        int $priority = self::DEFAULT_PRIORITY,
+        ?int $priority = null,
         array $args = [],
-        string $tag = self::DEFAULT_TAG
-    ) {
+        ?string $tag = null
+    ): void {
         $wp_hooks = empty($args) ? new $wp_hook() : new $wp_hook(...$args);
-        if (! ($wp_hooks instanceof WpHooksInterface)) {
+        if (!($wp_hooks instanceof WpHooksInterface)) {
             throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)); // phpcs:ignore
         }
-        /** @var WpHooksInterface $wp_hooks */
         $this->getInit()->register($wp_hooks, $this);
-        $this->initializeOnHook($tag, $priority);
+        $this->initializeOnHook($tag ?? self::DEFAULT_TAG, $priority ?? self::DEFAULT_PRIORITY);
     }
 
     /**
@@ -373,10 +362,10 @@ abstract class AbstractPlugin implements PluginInterface
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      */
-    private function initializeOnHook(string $tag, int $priority)
+    private function initializeOnHook(string $tag, int $priority): void
     {
-        \call_user_func(function ($tag) use ($priority) {
-            \add_action($tag, function () {
+        \call_user_func(function ($tag) use ($priority): void {
+            \add_action($tag, function (): void {
                 $this->getInit()->initialize();
             }, $priority + 2);
         }, $tag);
@@ -386,7 +375,6 @@ abstract class AbstractPlugin implements PluginInterface
      * Does the class implement the required `WpHooksInterface` class interface?
      *
      * @param string $wp_hook
-     *
      * @return bool
      */
     private function classImplementsWpHooks(string $wp_hook): bool

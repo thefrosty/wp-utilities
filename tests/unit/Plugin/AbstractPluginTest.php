@@ -1,15 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace TheFrosty\PhpUnit\WpUtilities;
+namespace TheFrosty\WpUtilities\Tests\Plugin;
 
 use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
-use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
-use TheFrosty\PhpUnit\WpUtilities\Framework\TestCase;
+use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class AbstractPluginTest
- * @package TheFrosty\PhpUnit\WpUtilities
+ * @package TheFrosty\WpUtilities\Test\Plugin
  */
 class AbstractPluginTest extends TestCase
 {

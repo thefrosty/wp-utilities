@@ -15,5 +15,5 @@ interface PluginAwareInterface
      * @param PluginInterface $plugin Main plugin instance.
      * @return PluginInterface
      */
-    public function setPlugin(PluginInterface $plugin) : PluginInterface;
+    public function setPlugin(PluginInterface $plugin): PluginInterface;
 }
