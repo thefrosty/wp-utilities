@@ -15,7 +15,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
     /**
      * Add class hooks
      */
-    public function addHooks()
+    public function addHooks(): void
     {
         $this->addFilter('http_request_args', [$this, 'httpRequestRemovePluginBasename'], 10, 2);
         $this->addFilter('site_transient_update_plugins', [$this, 'transientRemovePluginBasename']);
@@ -28,7 +28,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      * @param string $url The request URL.
      * @return array
      */
-    protected function httpRequestRemovePluginBasename(array $args, string $url) : array
+    protected function httpRequestRemovePluginBasename(array $args, string $url): array
     {
         if (\strpos($url, self::WP_ORG_UPDATE_CHECK) === 0) {
             if (!empty($args['body']['plugins'])) {
