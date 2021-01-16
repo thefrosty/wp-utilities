@@ -8,6 +8,7 @@ cache:
 
 language: php
 php:
+  - '8.0'
   - '7.4'
   - '7.3'
 
@@ -18,7 +19,7 @@ branches:
 
 jobs:
   allow_failures:
-    - php: 7.2
+    - php: 8.0
   fast_finish: true
 
 env:
@@ -26,7 +27,7 @@ env:
     - WORDPRESS_DB_USER=wp
     - WORDPRESS_DB_PASS=password
     - WORDPRESS_DB_NAME=wp_tests
-    - WP_VERSION=5.5.1
+    - WP_VERSION=5.6
     - WP_MULTISITE=0
 
 install:
