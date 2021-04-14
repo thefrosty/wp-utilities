@@ -69,7 +69,7 @@ trait WpQueryTrait
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
      *
-     * @return array An array of all post type IDs
+     * @return int[] An array of all post type IDs
      */
     protected function wpQueryGetAllIds(string $post_type, array $args = []): array
     {
