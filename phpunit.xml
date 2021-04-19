@@ -11,7 +11,7 @@
     </php>
     <testsuites>
         <testsuite name="unit">
-            <directory phpVersion="7.3" phpVersionOperator=">=">./tests/unit/</directory>
+            <directory phpVersion="7.4" phpVersionOperator=">=">./tests/unit/</directory>
         </testsuite>
     </testsuites>
 
