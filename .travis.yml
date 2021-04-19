@@ -10,7 +10,6 @@ language: php
 php:
   - '8.0'
   - '7.4'
-  - '7.3'
 
 branches:
   only:
@@ -27,8 +26,9 @@ env:
     - WORDPRESS_DB_USER=wp
     - WORDPRESS_DB_PASS=password
     - WORDPRESS_DB_NAME=wp_tests
-    - WP_VERSION=5.6
+    - WP_VERSION=5.7.1
     - WP_MULTISITE=0
+    - XDEBUG_MODE=coverage
 
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
