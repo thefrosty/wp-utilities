@@ -7,7 +7,7 @@ use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_Error;
 
 /**
- * Class disablePluginUpdateCheck
+ * Class DisablePluginUpdateCheck
  * @package TheFrosty\WpUtilities\WpAdmin
  */
 class DisablePluginUpdateCheck extends AbstractHookProvider
