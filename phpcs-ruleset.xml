@@ -23,12 +23,12 @@
     <arg name="tab-width" value="4"/>
     <!-- For CI, don't fail on warnings -->
     <config name="ignore_warnings_on_exit" value="1"/>
-    <config name="minimum_supported_wp_version" value="4.9" />
+    <config name="minimum_supported_wp_version" value="5.6" />
 
     <rule ref="PSR2"/>
 
     <!-- Loads the PHP Compatibility ruleset. -->
     <rule ref="PHPCompatibility" />
-    <!-- Check for cross-version support for PHP 7.2 and higher. -->
-    <config name="testVersion" value="7.2-"/>
+    <!-- Check for cross-version support for PHP 7.4 and higher. -->
+    <config name="testVersion" value="7.4-"/>
 </ruleset>
