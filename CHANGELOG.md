@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 PHP version >= 7.4 & WordPress version >= 5.5 will be required by version `2.1`.
 * @todo look at https://github.com/RectorPHP/Rector
 
+## [2.1.0] - 2021-04-19
+### Updated
+- **Bump PHP to `^7.4`!**
+- Update PHPDoc block for `wpQueryGetAllIds` to show array in integers.
+- Add WIP for `DisablePluginUpdateCheck` "Add checks for WordPress' API for plugin info calls and 
+  bypass removing the plugin from update checks if it uses github-updater."
+- Allow PHP `^7.4|^8.0` to composer.json.
+### Added
+- Add third parameter `$expiration` to `wpQueryGetAllIds` to match `wpQueryCached`.
+- Add new `AddPluginIcons` class for the `/WpAdmin/` classes.
+- Add PHP 8 to Travis tests.
+
 ## [2.0.0] - 2020-09-12
 ### Updated
 - Require PHP => 7.3
