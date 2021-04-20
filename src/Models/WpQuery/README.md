@@ -1,8 +1,6 @@
 # QueryArgs
 
-This is a fork of [johnbillion/args](https://github.com/johnbillion/args), one wp-utilities is ready for PHP 7.4+
-we will require that package and stub it here. Alternatively we could use [Rector](https://github.com/RectorPHP/Rector)
-to auto bump support back down to PHP 7.3 ¯\_(ツ)_/¯.
+This is stub to use [johnbillion/args](https://github.com/johnbillion/args).
 
 ```php
 $query = new \WP_Query( [

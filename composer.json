@@ -18,8 +18,9 @@
   "prefer-stable": true,
   "require": {
     "php": "^7.4|^8.0",
+    "ext-json": "*",
     "ext-openssl": "*",
-    "ext-json": "*"
+    "johnbillion/args": "^0.0.2"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
