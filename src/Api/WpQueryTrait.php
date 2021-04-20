@@ -68,10 +68,10 @@ trait WpQueryTrait
      *
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
-     *
-     * @return array An array of all post type IDs
+     * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
+     * @return int[] An array of all post type IDs
      */
-    protected function wpQueryGetAllIds(string $post_type, array $args = []): array
+    protected function wpQueryGetAllIds(string $post_type, array $args = [], ?int $expiration = null): array
     {
         static $paged;
         $post_ids = [];
@@ -85,7 +85,7 @@ trait WpQueryTrait
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
-            $query = $this->wpQueryCached($post_type, \wp_parse_args($args, $defaults));
+            $query = $this->wpQueryCached($post_type, \wp_parse_args($args, $defaults), $expiration);
             if ($query->have_posts()) {
                 foreach ($query->posts as $id) {
                     $post_ids[] = $id;
