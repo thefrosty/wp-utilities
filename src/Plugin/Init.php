@@ -19,7 +19,7 @@ final class Init implements \IteratorAggregate
      * A container for objects that implement WpHooksInterface.
      * @var WpHooksInterface[] $wp_hooks
      */
-    private $wp_hooks = [];
+    private array $wp_hooks = [];
 
     /**
      * Adds an object to $wp_hooks property.
@@ -30,8 +30,7 @@ final class Init implements \IteratorAggregate
     public function register(
         WpHooksInterface $wp_hooks,
         PluginInterface $plugin
-    ): PluginInterface
-    {
+    ): PluginInterface {
         $this->wp_hooks[] = $wp_hooks;
 
         if ($wp_hooks instanceof PluginAwareInterface) {
