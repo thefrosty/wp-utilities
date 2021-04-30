@@ -2,6 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use ArrayIterator;
+
 /**
  * Class Init
  * @package TheFrosty\WpUtilities\Plugin
@@ -60,11 +62,11 @@ final class Init implements \IteratorAggregate
 
     /**
      * Provides an iterator over the $wp_hooks property.
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->wp_hooks);
+        return new ArrayIterator($this->wp_hooks);
     }
 
     /**
