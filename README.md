@@ -6,7 +6,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![Total Downloads](https://img.shields.io/packagist/dt/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![License](https://img.shields.io/packagist/l/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
-[![Build Status](https://travis-ci.org/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.org/thefrosty/wp-utilities)
+[![Build Status](https://travis-ci.com/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.com/github/thefrosty/wp-utilities)
 [![Beerpay](https://beerpay.io/thefrosty/wp-utilities/badge.svg?style=flat)](https://beerpay.io/thefrosty/wp-utilities)
 
 A library containing my standard development resources.
