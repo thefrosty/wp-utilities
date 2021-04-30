@@ -2,6 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Models;
 
+use Exception;
+
 /**
  * Class BaseModel
  *
@@ -38,7 +40,7 @@ abstract class BaseModel
      * logic different from described in getSerializableFields() in child classes
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function toArray(): array
     {
@@ -60,7 +62,7 @@ abstract class BaseModel
 
             return $result;
         }
-        throw new \Exception('If you are going to use toArray() in your model you have
+        throw new Exception('If you are going to use toArray() in your model you have
             to implement custom logic or return a list of fields in getSerializableFields().');
     }
 
@@ -75,7 +77,7 @@ abstract class BaseModel
      * @param BaseModel[] $models
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function toArrayDeep(array $models): array
     {

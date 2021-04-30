@@ -76,10 +76,13 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
             return new WP_Error(
                 'bypass_http_request',
                 \sprintf(
-                    \esc_html__('The plugin `%s` has requested to bypass api.wp.org/plugin/info.', 'wp-utilities'),
+                    \esc_html__(
+                        'The plugin `%s` has requested to bypass api.wp.org/plugin/info.',
+                        'wp-utilities'
+                    ),
                     $this->getPlugin()->getSlug(),
-                    ['status' => \WP_Http::NOT_FOUND]
-                )
+                ),
+                ['status' => \WP_Http::NOT_FOUND]
             );
         }
 

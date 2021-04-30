@@ -18,10 +18,10 @@ class DashboardWidget implements WpHooksInterface
     const OBJECT_NAME = 'DashboardWidget';
 
     /** @var array $args */
-    private $args = [];
+    private array $args;
 
     /** @var Widget $widget */
-    private $widget;
+    private Widget $widget;
 
     /**
      * DashboardWidget constructor.

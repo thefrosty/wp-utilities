@@ -56,7 +56,7 @@ class PostTypeFilter implements WpHooksInterface
     protected function addRestFilters(): void
     {
         $post_types = \array_filter(
-            \apply_filters(\sprintf('%/filter_post_types', Plugin::TAG), $this->post_types)
+            \apply_filters(\sprintf('%s/filter_post_types', Plugin::TAG), $this->post_types)
         );
         \array_walk($post_types, function (string $slug): void {
             $post_type = \get_post_type_object($slug);

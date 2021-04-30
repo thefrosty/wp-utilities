@@ -23,6 +23,7 @@ WordPress >= 5.6
 | < 7.1 | 1.3.x |
 | >= 7.1 && < 7.3 | 1.9.x |
 | 7.3 | 2.0.0 |
+| >= 7.4 | 2.1.0 |
 
 The required WordPress version will always be the most recent point release of
 the previous major release branch.

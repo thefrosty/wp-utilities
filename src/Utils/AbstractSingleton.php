@@ -2,6 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Utils;
 
+use Exception;
+
 /**
  * Class AbstractSingleton
  *
@@ -14,7 +16,7 @@ abstract class AbstractSingleton implements SingletonInterface
      *
      * @var SingletonInterface[] $instances
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @return SingletonInterface
@@ -29,11 +31,11 @@ abstract class AbstractSingleton implements SingletonInterface
     /**
      * Nobody should unserialize this instance.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __wakeup()
     {
-        throw new \Exception(sprintf('Cannot unserialize %s', static::class));
+        throw new Exception(sprintf('Cannot unserialize %s', static::class));
     }
 
     /**

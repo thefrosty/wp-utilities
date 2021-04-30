@@ -19,43 +19,43 @@ abstract class AbstractPlugin implements PluginInterface
      * Ex: plugin-name/plugin-name.php
      * @var string $basename
      */
-    private $basename;
+    private string $basename;
 
     /**
      * Absolute path to the main plugin directory.
      * @var string $directory
      */
-    private $directory;
+    private string $directory;
 
     /**
      * TemplateLoaderInterface object.
      * @var TemplateLoaderInterface $template_loader
      */
-    private $template_loader;
+    private TemplateLoaderInterface $template_loader;
 
     /**
      * Init object.
      * @var Init $init
      */
-    private $init;
+    private Init $init;
 
     /**
      * Absolute path to the main plugin file.
      * @var string $file
      */
-    private $file;
+    private string $file;
 
     /**
      * Plugin identifier.
      * @var string $slug
      */
-    private $slug;
+    private string $slug;
 
     /**
      * URL to the main plugin directory.
      * @var string $url
      */
-    private $url;
+    private string $url;
 
     /**
      * Retrieve the absolute path for the main plugin file.
@@ -348,7 +348,9 @@ abstract class AbstractPlugin implements PluginInterface
     ): void {
         $wp_hooks = empty($args) ? new $wp_hook() : new $wp_hook(...$args);
         if (!($wp_hooks instanceof WpHooksInterface)) {
-            throw new \InvalidArgumentException('Expected a . ' . WpHooksInterface::class . ', got: ' . \get_class($wp_hook)); // phpcs:ignore
+            throw new \InvalidArgumentException(
+                \sprintf('Expected a %s interface, but got %s', WpHooksInterface::class, $wp_hook)
+            );
         }
         $this->getInit()->register($wp_hooks, $this);
         $this->initializeOnHook($tag ?? self::DEFAULT_TAG, $priority ?? self::DEFAULT_PRIORITY);
