@@ -20,8 +20,8 @@ WordPress >= 5.6
 
 | PHP version | WordPress Utilities |
 | ----------- | ------------------- |
-| < 7.1 | 1.3.x. |
-| >= 7.1 && < 7.3 | 1.9.x. |
+| < 7.1 | 1.3.x |
+| >= 7.1 && < 7.3 | 1.9.x |
 | 7.3 | 2.0.0 |
 
 The required WordPress version will always be the most recent point release of
