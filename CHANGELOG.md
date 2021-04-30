@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update README h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/36).
 - Fix Travis badge link  h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/39).
-- Add PHP Stan.
+- Add PHPStan.
 
 ## [2.1.0] - 2021-04-19
 
