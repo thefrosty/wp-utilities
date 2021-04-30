@@ -29,6 +29,7 @@
     "phpunit/phpunit": "^7",
     "roots/wordpress": "^5.6.1",
     "squizlabs/php_codesniffer": "^3.2",
+    "szepeviktor/phpstan-wordpress": "^0.7.5",
     "wp-phpunit/wp-phpunit": "^5.6.1"
   },
   "suggest": {
