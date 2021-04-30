@@ -6,7 +6,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![Total Downloads](https://img.shields.io/packagist/dt/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![License](https://img.shields.io/packagist/l/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
-[![Build Status](https://travis-ci.org/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.org/thefrosty/wp-utilities)
+[![Build Status](https://travis-ci.com/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.com/github/thefrosty/wp-utilities)
 [![Beerpay](https://beerpay.io/thefrosty/wp-utilities/badge.svg?style=flat)](https://beerpay.io/thefrosty/wp-utilities)
 
 A library containing my standard development resources.
@@ -18,9 +18,11 @@ PHP >= 7.4 OR >= 8.0
 WordPress >= 5.6
 ```
 
-For PHP < 7.1, use version 1.3.x.
-For PHP >= 7.1 & < 7.3, use version 1.9.x.
-For PHP = 7.3, use version 2.0.0.
+| PHP version | WordPress Utilities |
+| ----------- | ------------------- |
+| < 7.1 | 1.3.x |
+| >= 7.1 && < 7.3 | 1.9.x |
+| 7.3 | 2.0.0 |
 
 The required WordPress version will always be the most recent point release of
 the previous major release branch.
