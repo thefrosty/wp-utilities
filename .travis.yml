@@ -1,15 +1,4 @@
-os: linux
-dist: trusty
-
-cache:
-  directories:
-    - "$HOME/.composer/cache"
-    - vendor
-
-language: php
-php:
-  - '8.0'
-  - '7.4'
+# TravisCI configuration for thefrosty/wp-utilities
 
 branches:
   only:
@@ -20,10 +9,14 @@ branches:
     - "/^.*[bB]ug\\/.*$/"
     - "/^.*[Hh]otfix\\/.*$/"
 
-jobs:
-  allow_failures:
-    - php: 8.0
-  fast_finish: true
+language: php
+os:
+  - linux
+dist: focal
+
+php:
+  - "8.0"
+  - "7.4"
 
 env:
   global:
@@ -34,11 +27,18 @@ env:
     - WP_MULTISITE=0
     - XDEBUG_MODE=coverage
 
+jobs:
+  fast_finish: true
+
+cache:
+  directories:
+    - "$HOME/.composer/cache"
+
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - export DEV_BIN_PATH=bin
   - source $DEV_BIN_PATH/create-all-branches.sh
-  - composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
+  - composer update --prefer-dist --no-interaction --prefer-stable
 
 before_script:
   - mysql -u root -e "GRANT ALL PRIVILEGES ON $WORDPRESS_DB_NAME.* TO $WORDPRESS_DB_USER IDENTIFIED BY '$WORDPRESS_DB_PASS';"
