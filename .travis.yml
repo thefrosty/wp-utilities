@@ -17,9 +17,6 @@ os:
   - linux
 dist: focal
 
-php:
-  - "7.4"
-
 env:
   global:
     - WP_VERSION=5.7.1
@@ -29,6 +26,7 @@ env:
 jobs:
   fast_finish: true
   include:
+    - php: "7.4"
     - php: "8.0"
       install:
         - composer require --prefer-dist --no-interaction --prefer-stable 'phpunit/phpunit:^8.0'
