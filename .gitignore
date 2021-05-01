@@ -4,3 +4,4 @@ coverage/
 vendor/
 wordpress/
 composer.lock
+.phpunit.result.cache
