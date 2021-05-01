@@ -32,7 +32,7 @@ class Updater implements WpHooksInterface
 
     use HooksTrait;
 
-    private const VERSION = 2.0;
+    private const VERSION = '2.0';
 
     /**
      * Updater config data array.
@@ -190,36 +190,34 @@ class Updater implements WpHooksInterface
 
     /**
      * Hook into the plugin update check and connect to GitHub
-     * @param object $value the plugin data transient
+     * @param mixed $value the plugin data transient
      * @return object $transient updated plugin data transient
      */
     protected function apiCheck($value)
     {
-        if (!isset($value) ||
-            !\is_object($value) ||
-            (empty($value->response) && !\is_array($value->response)) ||
-            !empty($value->checked)
+        if (!\is_object($value) ||
+            empty($value->response) ||
+            !\is_array($value->response) ||
+            empty($value->checked)
         ) {
             return $value;
         }
 
-        // Check if the transient contains the 'checked' information
-        if (empty($value->checked)) {
+        // check the version and decide if it's new
+        $updated = \version_compare($this->config['new_version'], $this->config['version'], '>');
+
+        if (!$updated) {
             return $value;
         }
 
-        // check the version and decide if it's new
-        $update = \version_compare($this->config['new_version'], $this->config['version']);
+        $response = [
+            'new_version' => $this->config['new_version'],
+            'slug' => $this->config['proper_folder_name'],
+            'url' => $this->config['github_url'],
+            'package' => $this->config['zip_url'],
+        ];
 
-        if ($update === 1) {
-            $response = new \stdClass();
-            $response->new_version = $this->config['new_version'];
-            $response->slug = $this->config['proper_folder_name'];
-            $response->url = $this->config['github_url'];
-            $response->package = $this->config['zip_url'];
-
-            $value->response[$this->config['slug']] = $response;
-        }
+        $value->response[$this->config['slug']] = (object)$response;
 
         return $value;
     }
