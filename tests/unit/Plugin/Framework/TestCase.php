@@ -14,7 +14,7 @@ class TestCase extends PhpUnitTestCase
     /**
      * Set up.
      */
-    public function setUp() // @codingStandardsIgnoreLine
+    public function setUp(): void // @codingStandardsIgnoreLine
     {
         parent::setUp();
     }
@@ -22,7 +22,7 @@ class TestCase extends PhpUnitTestCase
     /**
      * Tear down.
      */
-    public function tearDown() // @codingStandardsIgnoreLine
+    public function tearDown(): void // @codingStandardsIgnoreLine
     {
         parent::tearDown();
     }
