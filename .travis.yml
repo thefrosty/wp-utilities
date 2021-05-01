@@ -18,7 +18,6 @@ os:
 dist: focal
 
 php:
-  - "8.0"
   - "7.4"
 
 env:
@@ -29,6 +28,10 @@ env:
 
 jobs:
   fast_finish: true
+  include:
+    - php: "8.0"
+      install:
+        - composer require --prefer-dist --no-interaction --prefer-stable 'phpunit/phpunit:^8.0'
 
 cache:
   directories:
