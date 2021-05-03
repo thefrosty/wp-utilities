@@ -12,7 +12,6 @@ use WP_Query;
  */
 trait WpQueryTrait
 {
-
     use WpCacheTrait;
 
     /**

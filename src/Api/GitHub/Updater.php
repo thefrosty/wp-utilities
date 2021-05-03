@@ -29,7 +29,6 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  */
 class Updater implements WpHooksInterface
 {
-
     use HooksTrait;
 
     private const VERSION = '2.0';
@@ -39,20 +38,20 @@ class Updater implements WpHooksInterface
      * @var array $config
      * @access public
      */
-    private $config;
+    private array $config;
 
     /**
      * Missing required config data array.
      * @var array $missing_config any config that is missing from the initialization of this instance
      */
-    private $missing_config;
+    private array $missing_config;
 
     /**
      * GitHub response data.
      * @var array $github_data Temp data fetched from GitHub,
      * allows us to only load the data once per class instance
      */
-    private $github_data;
+    private array $github_data;
 
     /**
      * Updater constructor
@@ -191,15 +190,11 @@ class Updater implements WpHooksInterface
     /**
      * Hook into the plugin update check and connect to GitHub
      * @param mixed $value the plugin data transient
-     * @return object $transient updated plugin data transient
+     * @return mixed|object $transient updated plugin data transient
      */
     protected function apiCheck($value)
     {
-        if (!\is_object($value) ||
-            empty($value->response) ||
-            !\is_array($value->response) ||
-            empty($value->checked)
-        ) {
+        if (!\is_object($value) || empty($value->response) || !\is_array($value->response) || empty($value->checked)) {
             return $value;
         }
 

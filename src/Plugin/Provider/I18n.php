@@ -9,12 +9,10 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 
 /**
  * Internationalization class.
- *
  * @package TheFrosty\WpUtilities\Plugin
  */
 class I18n implements PluginAwareInterface, WpHooksInterface
 {
-
     use HooksTrait, PluginAwareTrait;
 
     /**
@@ -25,17 +23,17 @@ class I18n implements PluginAwareInterface, WpHooksInterface
     public function addHooks(): void
     {
         if (\did_action('plugins_loaded')) {
-            $this->loadTextdomain();
+            $this->loadTextDomain();
 
             return;
         }
-        $this->addAction('plugins_loaded', [$this, 'loadTextdomain']);
+        $this->addAction('plugins_loaded', [$this, 'loadTextDomain']);
     }
 
     /**
      * Load the text domain to localize the plugin.
      */
-    protected function loadTextdomain(): void
+    protected function loadTextDomain(): void
     {
         \load_plugin_textdomain(
             $this->getPlugin()->getSlug(),

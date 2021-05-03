@@ -12,7 +12,6 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  */
 abstract class RouteService implements RestRouteInterface, WpHooksInterface
 {
-
     use HooksTrait;
 
     protected const ARG_METHODS = 'methods';
