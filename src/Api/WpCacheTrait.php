@@ -9,7 +9,6 @@ namespace TheFrosty\WpUtilities\Api;
  */
 trait WpCacheTrait
 {
-
     use Hash;
 
     /**
@@ -17,7 +16,7 @@ trait WpCacheTrait
      *
      * @var string|null $group
      */
-    private $group;
+    private ?string $group;
 
     /**
      * Get the cache group.

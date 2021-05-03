@@ -10,7 +10,7 @@ class PluginFactory
 {
 
     /** @var Plugin[] $instances */
-    private static $instances;
+    private static array $instances;
 
     /**
      * Get the plugin instance.
@@ -70,9 +70,7 @@ class PluginFactory
     private static function setContainer(Plugin $plugin): Plugin
     {
         try {
-            if (\class_exists('\Pimple\Container') &&
-                \interface_exists('\Psr\Container\ContainerInterface')
-            ) {
+            if (\class_exists('\Pimple\Container') && \interface_exists('\Psr\Container\ContainerInterface')) {
                 $plugin->setContainer(new Container());
             }
         } catch (\InvalidArgumentException $exception) {

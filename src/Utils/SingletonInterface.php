@@ -4,7 +4,6 @@ namespace TheFrosty\WpUtilities\Utils;
 
 /**
  * Interface SingletonInterface
- *
  * @package TheFrosty\WpUtilities\Utils
  */
 interface SingletonInterface
@@ -12,5 +11,5 @@ interface SingletonInterface
     /**
      * @return SingletonInterface
      */
-    public static function getInstance() : SingletonInterface;
+    public static function getInstance(): SingletonInterface;
 }
