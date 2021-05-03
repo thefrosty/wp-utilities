@@ -15,7 +15,7 @@ class DashboardWidget implements WpHooksInterface
 {
     use HooksTrait;
 
-    const OBJECT_NAME = 'DashboardWidget';
+    public const OBJECT_NAME = 'DashboardWidget';
 
     /** @var array $args */
     private array $args;

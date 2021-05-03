@@ -8,7 +8,6 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 abstract class AbstractHookProvider implements WpHooksInterface, PluginAwareInterface
 {
-
     use HooksTrait, PluginAwareTrait;
 
     /**

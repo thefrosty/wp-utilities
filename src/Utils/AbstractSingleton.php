@@ -6,14 +6,12 @@ use Exception;
 
 /**
  * Class AbstractSingleton
- *
  * @package TheFrosty\WpUtilities\Utils
  */
 abstract class AbstractSingleton implements SingletonInterface
 {
     /**
      * Array of `SingletonInterface` objects.
-     *
      * @var SingletonInterface[] $instances
      */
     private static array $instances = [];
@@ -21,7 +19,7 @@ abstract class AbstractSingleton implements SingletonInterface
     /**
      * @return SingletonInterface
      */
-    public static function getInstance() : SingletonInterface
+    public static function getInstance(): SingletonInterface
     {
         self::$instances[static::class] = self::$instances[static::class] ?? new static();
 
@@ -30,7 +28,6 @@ abstract class AbstractSingleton implements SingletonInterface
 
     /**
      * Nobody should unserialize this instance.
-     *
      * @throws Exception
      */
     public function __wakeup()

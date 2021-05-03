@@ -13,7 +13,6 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  */
 class PostTypeFilter implements WpHooksInterface
 {
-
     use HooksTrait;
 
     public const QUERY_PARAM = 'filter';
@@ -31,7 +30,7 @@ class PostTypeFilter implements WpHooksInterface
      *
      * @var string[]
      */
-    private $post_types = [];
+    private array $post_types;
 
     /**
      * Filters constructor.
@@ -83,7 +82,8 @@ class PostTypeFilter implements WpHooksInterface
             return $args;
         }
         $filter = $request->get_params()[self::QUERY_PARAM];
-        if (isset($filter['posts_per_page']) &&
+        if (
+            isset($filter['posts_per_page']) &&
             ((int)$filter['posts_per_page'] >= 1 && (int)$filter['posts_per_page'] <= 100)
         ) {
             $args['posts_per_page'] = $filter['posts_per_page'];
