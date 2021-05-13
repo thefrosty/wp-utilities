@@ -9,8 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update README h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/36).
 - Fix Travis badge link  h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/39).
-- Add PHPStan.
-- Code cleanup from update PHPCS & PHPMD rules across the complete package. 
+- Add PHPStan to composer scripts (not added to complete test suite yet).
+- Code cleanup from update PHPCS & PHPMD rules across the complete package.
+- Bump PHPUnit to ^8 while utilizing `yoast/phpunit-polyfills`.
+- Moving constants from AbstractPlugin into the PluginInterface interface.
+- Change PluginInterface::addOnCondition's third param to be a nullable array (rename it to $func_args).
+- Add Init::getWpHookObject(string) to retrieve the "singleton" object of an initiated class.
+- Update TemplateLoader, and it's interface for PHP ^7.4
 
 ## [2.1.0] - 2021-04-19
 
