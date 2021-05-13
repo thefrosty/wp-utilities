@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use TheFrosty\WpUtilities\Plugin\ContainerAwareTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
@@ -14,12 +15,46 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 class PluginTest extends TestCase
 {
 
+    private Plugin $plugin;
+
+    /**
+     * Set up.
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->plugin = new Plugin();
+        $this->reflection = new \ReflectionObject($this->plugin);
+    }
+
+    /**
+     * Tear down.
+     */
+    public function tearDown(): void
+    {
+        unset($this->plugin);
+        parent::tearDown();
+    }
+
     /**
      * Test PluginInterface.
      */
-    public function test_implements_plugin_interface()
+    public function testPluginInterface(): void
     {
-        $plugin = new Plugin();
-        $this->assertInstanceOf(PluginInterface::class, $plugin);
+        $this->assertInstanceOf(PluginInterface::class, $this->plugin);
+    }
+
+    /**
+     * Test Plugin().
+     */
+    public function testPlugin(): void
+    {
+        $traits = \class_uses($this->plugin);
+        $this->assertIsArray($traits);
+        $this->assertCount(1, $traits);
+        $this->assertArrayHasKey(ContainerAwareTrait::class, $traits);
+        $constants = $this->getClassConstants();
+        $this->assertCount(1, $constants);
+        $this->assertArrayHasKey($this->plugin::TAG, $constants);
     }
 }
