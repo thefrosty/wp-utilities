@@ -9,9 +9,6 @@ branches:
     - "/^.*[bB]ug\\/.*$/"
     - "/^.*[Hh]otfix\\/.*$/"
 
-git:
-  depth: false
-
 language: php
 os:
   - linux
@@ -19,7 +16,7 @@ dist: focal
 
 env:
   global:
-    - WP_VERSION=5.7.1
+    - WP_VERSION=5.7.2
     - WP_MULTISITE=0
     - XDEBUG_MODE=coverage
 
