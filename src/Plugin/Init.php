@@ -77,4 +77,25 @@ final class Init implements \IteratorAggregate
     {
         return $this->wp_hooks;
     }
+
+    /**
+     * Return the instance of the hook.
+     * @param string $class_name
+     * @return WpHooksInterface|null
+     */
+    public function getWpHookObject(string $class_name): ?WpHooksInterface
+    {
+        $instance = null;
+        $wp_hooks = $this->getWpHooks();
+        \array_walk(
+            $wp_hooks,
+            static function (WpHooksInterface $object, int $key) use ($class_name, &$instance, &$wp_hooks): void {
+                if (($object instanceof WpHooksInterface) && \get_class($object) === $class_name) {
+                    $instance = $wp_hooks[$key];
+                }
+            }
+        );
+
+        return $instance;
+    }
 }
