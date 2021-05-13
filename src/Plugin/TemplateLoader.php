@@ -17,7 +17,7 @@ class TemplateLoader implements TemplateLoaderInterface
      *
      * @var Plugin $plugin
      */
-    private $plugin;
+    private Plugin $plugin;
 
     /**
      * Store variable names used for template data.
@@ -25,14 +25,14 @@ class TemplateLoader implements TemplateLoaderInterface
      *
      * @var array $template_data_var_names
      */
-    private $template_data_var_names = [self::VAR];
+    private array $template_data_var_names = [self::VAR];
 
     /**
      * Store located template paths.
      *
      * @var array $template_path_cache
      */
-    private $template_path_cache = [];
+    private array $template_path_cache = [];
 
     /**
      * TemplateLoader constructor.
@@ -56,7 +56,7 @@ class TemplateLoader implements TemplateLoaderInterface
      * Helper to get the data
      * @param string|null $var
      *
-     * @return array|null
+     * @return mixed
      */
     public static function getData(?string $var = null)
     {
@@ -73,7 +73,7 @@ class TemplateLoader implements TemplateLoaderInterface
      *
      * @return $this
      */
-    public function setTemplateData(array $data = [], ?string $var = null): TemplateLoaderInterface
+    public function setTemplateData(array $data = [], ?string $var = null): self
     {
         if (!empty($data)) {
             \set_query_var($var ?? self::VAR, $data);
@@ -162,7 +162,7 @@ class TemplateLoader implements TemplateLoaderInterface
      *
      * @return array
      */
-    protected function getTemplatePaths()
+    protected function getTemplatePaths(): array
     {
         $file_paths = [
             100 => $this->plugin->getPath('/views'),

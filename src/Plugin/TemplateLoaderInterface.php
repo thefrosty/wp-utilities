@@ -41,5 +41,5 @@ interface TemplateLoaderInterface
      *
      * @return $this
      */
-    public function setTemplateData(array $data = [], ?string $var = null): TemplateLoaderInterface;
+    public function setTemplateData(array $data = [], ?string $var = null): self;
 }
