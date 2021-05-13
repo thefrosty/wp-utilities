@@ -45,7 +45,8 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
         }
         if (\strpos($url, self::WP_ORG_PLUGINS_INFO) === 0) {
             \parse_str(\parse_url($url, \PHP_URL_QUERY), $result);
-            if (!empty($result['request']) &&
+            if (
+                !empty($result['request']) &&
                 !empty($result['request']['slug']) &&
                 $result['request']['slug'] === $this->getPlugin()->getSlug() &&
                 \__return_true() === false // Re-enable when we can validate this works.
@@ -69,17 +70,21 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      */
     protected function bypassHttpRequest($preempt, array $parsed_args, string $url)
     {
-        if (\strpos($url, self::WP_ORG_PLUGINS_INFO) === 0 &&
+        if (
+            \strpos($url, self::WP_ORG_PLUGINS_INFO) === 0 &&
             !empty($parsed_args[self::BYPASS_KEY]) &&
             $parsed_args[self::BYPASS_KEY] === $this->getPlugin()->getSlug()
         ) {
             return new WP_Error(
                 'bypass_http_request',
                 \sprintf(
-                    \esc_html__('The plugin `%s` has requested to bypass api.wp.org/plugin/info.', 'wp-utilities'),
+                    \esc_html__(
+                        'The plugin `%s` has requested to bypass api.wp.org/plugin/info.',
+                        'wp-utilities'
+                    ),
                     $this->getPlugin()->getSlug(),
-                    ['status' => \WP_Http::NOT_FOUND]
-                )
+                ),
+                ['status' => \WP_Http::NOT_FOUND]
             );
         }
 

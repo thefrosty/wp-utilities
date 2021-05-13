@@ -12,11 +12,15 @@ class AddPluginIcons extends AbstractHookProvider
 {
     /**
      * Path to plugin icon. Often using `plugin_dir_url`.
-     * Example: ['svg' => '<url>]/icon.svg', '1x' => '<url>]/icon-128x128.png|jpg', '2x' => '<url>]/icon-256x256.png|jpg']
+     * Example: [
+     *  'svg' => '<url>]/icon.svg',
+     *  '1x' => '<url>]/icon-128x128.png|jpg',
+     *  '2x' => '<url>]/icon-256x256.png|jpg'
+     * ]
      * @var array $icons
      */
-    private $icons = [];
-    
+    private array $icons;
+
     /**
      * AddPluginIcon constructor.
      * @param array $icons
@@ -25,7 +29,7 @@ class AddPluginIcons extends AbstractHookProvider
     {
         $this->icons = $icons;
     }
-    
+
     /**
      * Add class hooks
      */
@@ -35,7 +39,7 @@ class AddPluginIcons extends AbstractHookProvider
             $this->addFilter('all_plugins', [$this, 'filterAllPlugins']);
         }
     }
-    
+
     /**
      * Disable plugin update checks for the current plugin
      * @link https://gist.github.com/robincornett/1fe6045b1acc64a329460e5c6023853e
@@ -53,7 +57,7 @@ class AddPluginIcons extends AbstractHookProvider
                 $plugins[$this->getPlugin()->getBasename()]['icons'][$key] = $this->icons[$key];
             }
         }
-        
+
         return $plugins;
     }
 }

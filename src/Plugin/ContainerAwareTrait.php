@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -19,14 +20,13 @@ trait ContainerAwareTrait
      * Container.
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * Proxy access to container services.
      *
      * @param string $name Service name.
      * @return mixed
-     * @inheritdoc
      */
     public function __get(string $name)
     {
@@ -39,7 +39,7 @@ trait ContainerAwareTrait
      * @param string $name Service name.
      * @return bool
      */
-    public function __isset($name): bool
+    public function __isset(string $name): bool
     {
         return $this->getContainer()->has($name);
     }
@@ -51,7 +51,6 @@ trait ContainerAwareTrait
      * @param string $method Method name.
      * @param array $args Method arguments.
      * @return mixed
-     * @inheritdoc
      */
     public function __call(string $method, array $args)
     {
@@ -80,12 +79,12 @@ trait ContainerAwareTrait
      *
      * @param ContainerInterface $container Dependency injection container.
      * @return $this
-     * @throws \InvalidArgumentException If the object is incorrect.
+     * @throws InvalidArgumentException If the object is incorrect.
      */
-    public function setContainer(ContainerInterface $container): parent
+    public function setContainer(ContainerInterface $container): self
     {
         if (!($container instanceof ContainerInterface)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 \sprintf('Expected a %s, got a %s.', ContainerInterface::class, \get_class($container))
             );
         }

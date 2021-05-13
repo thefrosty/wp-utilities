@@ -12,7 +12,6 @@ use WP_Query;
  */
 trait WpQueryTrait
 {
-
     use WpCacheTrait;
 
     /**
@@ -70,6 +69,7 @@ trait WpQueryTrait
      * @param array $args Additional WP_Query parameters.
      * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
      * @return int[] An array of all post type IDs
+     * @SuppressWarnings(PHPMD.UndefinedVariable)
      */
     protected function wpQueryGetAllIds(string $post_type, array $args = [], ?int $expiration = null): array
     {

@@ -31,9 +31,9 @@ trait Hash
     protected function decrypt(string $data, string $encryption_key): string
     {
         $key = $this->getHashedKey($encryption_key);
-        $iv = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
+        $vector = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return \openssl_decrypt(\base64_decode($data), 'AES-256-CBC', $key, 0, $iv);
+        return \openssl_decrypt(\base64_decode($data), 'AES-256-CBC', $key, 0, $vector);
     }
 
     /**
@@ -46,8 +46,8 @@ trait Hash
     protected function encrypt(string $data, string $encryption_key): string
     {
         $key = $this->getHashedKey($encryption_key);
-        $iv = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
+        $vector = \substr($this->getHashedKey(\sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return \base64_encode(\openssl_encrypt($data, 'AES-256-CBC', $key, 0, $iv));
+        return \base64_encode(\openssl_encrypt($data, 'AES-256-CBC', $key, 0, $vector));
     }
 }

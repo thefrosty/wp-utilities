@@ -9,18 +9,17 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class PluginRegisterHooksTest
- *
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
 class PluginRegisterHooksTest extends TestCase
 {
 
     /**
-     * Test register_hooks()
+     * Test AbstractHookProvider
      */
-    public function test_register_hooks()
+    public function test_register_hooks(): void
     {
-        $provider = $this->get_mock_provider();
+        $provider = $this->getMockProviderForAbstractClass(AbstractHookProvider::class);
 
         try {
             $class = new \ReflectionClass($provider);
@@ -39,15 +38,5 @@ class PluginRegisterHooksTest extends TestCase
         $plugin->add($provider);
 
         $this->assertSame($plugin, $property->getValue($provider));
-    }
-
-    /**
-     * Get's a mocked `AbstractHookProvider` object.
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function get_mock_provider()
-    {
-        return $this->getMockBuilder(AbstractHookProvider::class)->getMockForAbstractClass();
     }
 }

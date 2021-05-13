@@ -9,29 +9,18 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 
 /**
  * Class AbstractHookProviderTest
- *
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
 class AbstractHookProviderTest extends TestCase
 {
 
     /**
-     * Test.
+     * Test AbstractHookProvider.
      */
-    public function test_implements_interfaces()
+    public function testImplementsInterfaces(): void
     {
-        $provider = $this->get_mock_provider();
+        $provider = $this->getMockProviderForAbstractClass(AbstractHookProvider::class);
         $this->assertInstanceOf(WpHooksInterface::class, $provider);
         $this->assertInstanceOf(PluginAwareInterface::class, $provider);
-    }
-
-    /**
-     * Get's a mock `AbstractHookProvider`.
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function get_mock_provider()
-    {
-        return $this->getMockBuilder(AbstractHookProvider::class)->getMockForAbstractClass();
     }
 }

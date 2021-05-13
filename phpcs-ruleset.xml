@@ -25,7 +25,13 @@
     <config name="ignore_warnings_on_exit" value="1"/>
     <config name="minimum_supported_wp_version" value="5.6" />
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR12">
+        <exclude name="PSR12.Files.FileHeader.IncorrectOrder"/>
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+        <exclude name="PSR12.Files.OpenTag.NotAlone"/>
+        <exclude name="PSR12.Traits.UseDeclaration.MultipleImport"/>
+        <exclude name="PSR12.Traits.UseDeclaration.UseAfterBrace"/>
+    </rule>
 
     <!-- Loads the PHP Compatibility ruleset. -->
     <rule ref="PHPCompatibility" />
