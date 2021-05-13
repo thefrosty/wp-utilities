@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Change PluginInterface::addOnCondition's third param to be a nullable array (rename it to $func_args).
 - Add Init::getWpHookObject(string) to retrieve the "singleton" object of an initiated class.
 - Update TemplateLoader, and it's interface for PHP ^7.4
+- Update all unit tests & coding standards.
 
 ## [2.1.0] - 2021-04-19
 

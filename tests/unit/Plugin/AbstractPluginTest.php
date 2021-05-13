@@ -14,34 +14,34 @@ class AbstractPluginTest extends TestCase
 {
 
     /**
-     * Test.
+     * Test AbstractPlugin.
      */
-    public function test_implements_plugin_interface()
+    public function testImplementsPluginInterface(): void
     {
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $this->assertInstanceOf(PluginInterface::class, $plugin);
     }
 
     /**
-     * Test.
+     * Test getBasename().
      */
-    public function test_basename_accessor_and_mutator()
+    public function testGetBasename(): void
     {
         $basename = 'plugin/plugin.php';
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setBasename($basename);
-        $this->assertInstanceOf(get_class($plugin), $plugin);
+        $this->assertInstanceOf(\get_class($plugin), $plugin);
         $this->assertSame($basename, $plugin->getBasename());
     }
 
     /**
-     * Test.
+     * Test getDirectory().
      */
-    public function test_directory_accessor_and_mutator()
+    public function testGetDirectory(): void
     {
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setDirectory('/wp-content/plugins');
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame('/wp-content/plugins/', $plugin->getDirectory());
@@ -52,25 +52,25 @@ class AbstractPluginTest extends TestCase
     }
 
     /**
-     * Test.
+     * Test getFile().
      */
-    public function test_file_accessor_and_mutator()
+    public function testGetFile(): void
     {
         $file = '/wp-content/plugins/plugin/plugin.php';
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setFile($file);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($file, $plugin->getFile());
     }
 
     /**
-     * Test.
+     * Test getPath().
      */
-    public function test_path_accessor()
+    public function testGetPath(): void
     {
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setDirectory('/wp-content/plugins');
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame('/wp-content/plugins/name', $plugin->getPath('name'));
@@ -78,26 +78,26 @@ class AbstractPluginTest extends TestCase
     }
 
     /**
-     * Test.
+     * Test getSlug().
      */
-    public function test_slug_accessor_and_mutator()
+    public function testGetSlug(): void
     {
         $slug = 'crate';
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setSlug($slug);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($slug, $plugin->getSlug());
     }
 
     /**
-     * Test.
+     * Test getUrl().
      */
-    public function test_url_accessor_and_mutator()
+    public function testGetUrl(): void
     {
         $url = 'https://example.com/wp-content/plugins/plugin';
         /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->get_mock_plugin();
+        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
         $plugin->setUrl($url);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($url . '/', $plugin->getUrl());
@@ -106,15 +106,5 @@ class AbstractPluginTest extends TestCase
         $url = 'https://example.com/wp-content/plugins/plugin/';
         $plugin->setUrl($url);
         $this->assertSame($url, $plugin->getUrl());
-    }
-
-    /**
-     * Get mocked `AbstractPlugin` object.
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function get_mock_plugin()
-    {
-        return $this->getMockBuilder(AbstractPlugin::class)->getMockForAbstractClass();
     }
 }
