@@ -15,15 +15,15 @@ abstract class AbstractPlugin implements PluginInterface
      * Plugin basename.
      *
      * Ex: plugin-name/plugin-name.php
-     * @var string $basename
+     * @var string|null $basename
      */
-    private string $basename;
+    private ?string $basename = null;
 
     /**
      * Absolute path to the main plugin directory.
-     * @var string $directory
+     * @var string|null $directory
      */
-    private string $directory;
+    private ?string $directory = null;
 
     /**
      * TemplateLoaderInterface object.
@@ -39,21 +39,21 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Absolute path to the main plugin file.
-     * @var string $file
+     * @var string|null $file
      */
-    private string $file;
+    private ?string $file = null;
 
     /**
      * Plugin identifier.
-     * @var string $slug
+     * @var string|null $slug
      */
-    private string $slug;
+    private ?string $slug = null;
 
     /**
      * URL to the main plugin directory.
-     * @var string $url
+     * @var string|null $url
      */
-    private string $url;
+    private ?string $url = null;
 
     /**
      * Retrieve the absolute path for the main plugin file.
