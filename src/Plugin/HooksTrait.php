@@ -15,7 +15,7 @@ trait HooksTrait
      * Internal property to track closures attached to WordPress hooks.
      * @var \Closure[]
      */
-    protected $filter_map = [];
+    protected array $filter_map = [];
 
     /**
      * Add a WordPress filter.

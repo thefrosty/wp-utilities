@@ -12,7 +12,7 @@ trait PluginAwareTrait
      * Main plugin instance.
      * @var PluginInterface $plugin
      */
-    private $plugin;
+    private PluginInterface $plugin;
 
     /**
      * Get the main plugin instance.
