@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.3.0] - 2021-06-08
+
+- Update HooksTrait with new methods: `addFilterOnce`, `addActionOnce`, `doAction`, and `applyFilters`.
+- Add `AbstractContainerProvider`.
+- Add tests for the new class, and update base tests including replacement of deprecation PHPUnit methods.
+
 ## [2.2.1] - 2021-05-17
 
 - Fix for "Typed property must not be accessed before initialization"
