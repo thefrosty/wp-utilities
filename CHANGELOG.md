@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update HooksTrait with new methods: `addFilterOnce`, `addActionOnce`, `doAction`, and `applyFilters`.
 - Add `AbstractContainerProvider`.
 - Add tests for the new class, and update base tests including replacement of deprecation PHPUnit methods.
+- Update johnbillion/args requirement from ^0.0.4 to ^0.2.0 [#54](https://github.com/thefrosty/wp-utilities/pull/54)
 
 ## [2.2.1] - 2021-05-17
 
