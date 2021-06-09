@@ -7,14 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.3.0] - 2021-06-08
+
+- Update HooksTrait with new methods: `addFilterOnce`, `addActionOnce`, `doAction`, and `applyFilters`.
+- Add `AbstractContainerProvider`.
+- Add tests for the new class, and update base tests including replacement of deprecation PHPUnit methods.
+- Update johnbillion/args requirement from ^0.0.4 to ^0.2.0 [#54](https://github.com/thefrosty/wp-utilities/pull/54)
+
+## [2.2.1] - 2021-05-17
+
+- Fix for "Typed property must not be accessed before initialization"
+  [#52](https://github.com/thefrosty/wp-utilities/pull/52).
+
 ## [2.2.0] - 2021-05-13
 
 - Update README h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/36).
-- Fix Travis badge link  h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/39).
+- Fix Travis badge link h/t [szepeviktor](https://github.com/thefrosty/wp-utilities/pull/39).
 - Add PHPStan to composer scripts (not added to complete test suite yet).
 - Code cleanup from update PHPCS & PHPMD rules across the complete package.
 - Bump PHPUnit to ^8 while utilizing `yoast/phpunit-polyfills`.
-- Update `johnbillion/args` to `^0.4`.  
+- Update `johnbillion/args` to `^0.4`.
 - Moving constants from AbstractPlugin into the PluginInterface interface.
 - Change PluginInterface::addOnCondition's third param to be a nullable array (rename it to $func_args).
 - Add Init::getWpHookObject(string) to retrieve the "singleton" object of an initiated class.

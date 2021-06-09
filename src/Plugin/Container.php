@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
  * Container class.
  * Extends Pimple to satisfy the ContainerInterface.
  * @package TheFrosty\WpUtilities\Plugin
+ * @SuppressWarnings(PHPMD.ShortVariable)
  */
 class Container extends Pimple implements ContainerInterface
 {
@@ -16,22 +17,22 @@ class Container extends Pimple implements ContainerInterface
     /**
      * Finds an entry of the container by its identifier and returns it.
      *
-     * @param string $container_id Identifier of the entry to look for.
+     * @param string $id Identifier of the entry to look for.
      * @return mixed Entry.
      */
-    public function get($container_id)
+    public function get(string $id)
     {
-        return $this->offsetGet($container_id);
+        return $this->offsetGet($id);
     }
 
     /**
      * Whether the container has an entry for the given identifier.
      *
-     * @param string $container_id Identifier of the entry to look for.
+     * @param string $id Identifier of the entry to look for.
      * @return bool
      */
-    public function has($container_id): bool
+    public function has(string $id): bool
     {
-        return $this->offsetExists($container_id);
+        return $this->offsetExists($id);
     }
 }
