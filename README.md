@@ -37,7 +37,7 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:^2.1
+composer require thefrosty/wp-utilities:^2.4
 ```
 
 Then follow examples in the [Plugin README](./src/Plugin/README.md)
