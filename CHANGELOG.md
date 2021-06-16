@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.4.0] - 2021-06-16
+
 - Add deprecation notice for parameter `$expiration` in `WpQueryTrait::wpQueryGetAllIds`.
 - Add `WpQueryTrait::wpQueryGetAllIdsCached` to compliment `WpQueryTrait::wpQueryGetAllIds` without 
   utilizing cached query calls, if desired.
