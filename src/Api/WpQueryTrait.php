@@ -12,6 +12,7 @@ use WP_Query;
  */
 trait WpQueryTrait
 {
+
     use WpCacheTrait;
 
     /**
@@ -62,17 +63,60 @@ trait WpQueryTrait
     }
 
     /**
+     * Return an array of WP_Query post ID's.
+     *
+     * @param string $post_type
+     * @param array $args Additional WP_Query parameters.
+     * @param int|null $expiration Deprecated, use `$this->wpQueryGetAllIdsCached()` instead.
+     * @return int[] An array of all post type IDs
+     */
+    protected function wpQueryGetAllIds(string $post_type, array $args = [], ?int $expiration = null): array
+    {
+        if (\is_int($expiration)) {
+            \_deprecated_argument(
+                __FUNCTION__,
+                '2.4.0',
+                \esc_html__(
+                    'Usage of expiration is deprecated. Use `WpQueryTrait::wpQueryGetAllIdsCached` if cache is desired.',
+                    'wp-utilities'
+                )
+            );
+        }
+
+        return $this->wpGetAllIds([$this, 'wpQuery'], $post_type, $args, $expiration);
+    }
+
+    /**
+     * Return an array of cached WP_Query post ID's.
+     *
+     * @param string $post_type
+     * @param array $args Additional WP_Query parameters.
+     * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
+     * @return int[] An array of all post type IDs
+     */
+    protected function wpQueryGetAllIdsCached(string $post_type, array $args = [], ?int $expiration = null): array
+    {
+        return $this->wpGetAllIds([$this, 'wpQueryCached'], $post_type, $args, $expiration);
+    }
+
+    /**
      * Return an array of cached WP_Query post ID's. This will do a large loop to get *all* posts within
      * the `$post_type`. So when you are aware of thousands of posts, and might need them all use this method.
      *
+     * @param callable $callback
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
      * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
      * @return int[] An array of all post type IDs
      * @SuppressWarnings(PHPMD.UndefinedVariable)
      */
-    protected function wpQueryGetAllIds(string $post_type, array $args = [], ?int $expiration = null): array
-    {
+    private function wpGetAllIds(
+        callable $callback,
+        string $post_type,
+        array $args = [],
+        ?int $expiration = null
+    ): array {
+
         static $paged;
         $post_ids = [];
         do {
@@ -85,7 +129,7 @@ trait WpQueryTrait
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
-            $query = $this->wpQueryCached($post_type, \wp_parse_args($args, $defaults), $expiration);
+            $query = \call_user_func($callback, $post_type, \wp_parse_args($args, $defaults), $expiration);
             if ($query->have_posts()) {
                 foreach ($query->posts as $id) {
                     $post_ids[] = $id;

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.4.0] - 2021-06-16
+
+- Add deprecation notice for parameter `$expiration` in `WpQueryTrait::wpQueryGetAllIds`.
+- Add `WpQueryTrait::wpQueryGetAllIdsCached` to compliment `WpQueryTrait::wpQueryGetAllIds` without 
+  utilizing cached query calls, if desired.
+- Update johnbillion/args requirement from ^0.2.0 to ^0.4.0 [#57](https://github.com/thefrosty/wp-utilities/pull/57)
+
 ## [2.3.0] - 2021-06-08
 
 - Update HooksTrait with new methods: `addFilterOnce`, `addActionOnce`, `doAction`, and `applyFilters`.
