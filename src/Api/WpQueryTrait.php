@@ -71,7 +71,7 @@ trait WpQueryTrait
             \_deprecated_argument(
                 __FUNCTION__,
                 '2.4.0',
-                \esc_html__(
+                \esc_html__( // phpcs:ignore Generic.Files.LineLength.TooLong
                     'Usage of expiration is deprecated. Use `WpQueryTrait::wpQueryGetAllIdsCached` if cache is desired.',
                     'wp-utilities'
                 )
