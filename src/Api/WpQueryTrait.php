@@ -143,13 +143,17 @@ trait WpQueryTrait
     private function getDefaults(?string $post_type = null): array
     {
         return \array_filter(
-            \apply_filters(\sprintf('%s/wp_query_defaults', Plugin::TAG), [
-                'post_type' => $post_type,
-                'posts_per_page' => 100,
-                'post_status' => ['publish', 'future', 'draft'],
-                'ignore_sticky_posts' => true,
-                'no_found_rows' => true,
-            ])
+            \apply_filters(
+                \sprintf('%s/wp_query_defaults', Plugin::TAG),
+                [
+                    'post_type' => $post_type,
+                    'posts_per_page' => 100,
+                    'post_status' => ['publish', 'future', 'draft'],
+                    'ignore_sticky_posts' => true,
+                    'no_found_rows' => true,
+                ],
+                $post_type
+            )
         );
     }
 }
