@@ -25,13 +25,7 @@ trait WpQueryTrait
      */
     protected function wpQuery(string $post_type, array $args = []): WP_Query
     {
-        $defaults = [
-            'post_type' => $post_type,
-            'posts_per_page' => 99,
-            'post_status' => ['publish', 'pending', 'future', 'draft'],
-            'ignore_sticky_posts' => true,
-            'no_found_rows' => true,
-        ];
+        $defaults = $this->getDefaults($post_type);
 
         return new WP_Query(\wp_parse_args($args, $defaults));
     }
@@ -47,8 +41,9 @@ trait WpQueryTrait
      */
     protected function wpQueryCached(string $post_type, array $args = [], ?int $expiration = null): WP_Query
     {
+        $defaults = $this->getDefaults($post_type);
         $cache_key = $this->getHashedKey(
-            \sprintf('%s/query_%s_by_%s', Plugin::TAG, $post_type, \md5(\json_encode($args)))
+            \sprintf('%s/query_%s', Plugin::TAG, \md5(\json_encode(\wp_parse_args($args, $defaults))))
         );
         $query = $this->getCache($cache_key);
         if ($query === false || !($query instanceof WP_Query)) {
@@ -76,7 +71,7 @@ trait WpQueryTrait
             \_deprecated_argument(
                 __FUNCTION__,
                 '2.4.0',
-                \esc_html__(
+                \esc_html__( // phpcs:ignore Generic.Files.LineLength.TooLong
                     'Usage of expiration is deprecated. Use `WpQueryTrait::wpQueryGetAllIdsCached` if cache is desired.',
                     'wp-utilities'
                 )
@@ -117,20 +112,19 @@ trait WpQueryTrait
         ?int $expiration = null
     ): array {
 
-        static $paged;
+        $paged = 0;
         $post_ids = [];
         do {
-            $paged++; // phpcs:ignore
             $defaults = [
                 'fields' => 'ids',
                 'posts_per_page' => 100,
                 'no_found_rows' => false, // We need pagination & the count for all posts found.
-                'paged' => $paged,
+                'paged' => $paged++, // phpcs:ignore
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
             $query = \call_user_func($callback, $post_type, \wp_parse_args($args, $defaults), $expiration);
-            if ($query->have_posts()) {
+            if ($query instanceof WP_Query && $query->have_posts()) {
                 foreach ($query->posts as $id) {
                     $post_ids[] = $id;
                 }
@@ -138,5 +132,27 @@ trait WpQueryTrait
         } while ($query->max_num_pages > $paged);
 
         return $post_ids;
+    }
+
+    /**
+     * Get the default WP_Query arguments and allow them to be filtered
+     * @param string|null $post_type The post_type
+     * @return array
+     */
+    private function getDefaults(?string $post_type = null): array
+    {
+        return \array_filter(
+            \apply_filters(
+                \sprintf('%s/wp_query_defaults', Plugin::TAG),
+                [
+                    'post_type' => $post_type,
+                    'posts_per_page' => 100,
+                    'post_status' => ['publish', 'future', 'draft'],
+                    'ignore_sticky_posts' => true,
+                    'no_found_rows' => true,
+                ],
+                $post_type
+            )
+        );
     }
 }

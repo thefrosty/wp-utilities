@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.4.2] - 2021-08-12
+
+- Remove the `static` from the `$paged` variable in `WpQueryTrait::wpGetAllIds()` allowing multiple calls to 
+  `wpGetAllIds` without affecting current scope count.
+
+## [2.4.1] - 2021-07-01
+
+- Set defaults in a method in `WpQueryTrait` that can be filtered with `thefrosty/wp_utilities/wp_query_defaults`. 
+  Also apply defaults before `wpQueryCached` hash.
+- Update johnbillion/args requirement from ^0.4.0 to ^0.7.0 [#63](https://github.com/thefrosty/wp-utilities/pull/63)
+
 ## [2.4.0] - 2021-06-16
 
 - Add deprecation notice for parameter `$expiration` in `WpQueryTrait::wpQueryGetAllIds`.

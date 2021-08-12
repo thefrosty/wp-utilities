@@ -20,7 +20,7 @@
     "php": "^7.4|^8.0",
     "ext-json": "*",
     "ext-openssl": "*",
-    "johnbillion/args": "^0.4.0"
+    "johnbillion/args": "^0.7.0"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
@@ -30,7 +30,7 @@
     "roots/wordpress": "^5.6.1",
     "squizlabs/php_codesniffer": "^3.2",
     "szepeviktor/phpstan-wordpress": "^0.7.5",
-    "yoast/phpunit-polyfills": "^0.2.0",
+    "yoast/phpunit-polyfills": "^1.0.1",
     "wp-phpunit/wp-phpunit": "^5.6.1"
   },
   "suggest": {
