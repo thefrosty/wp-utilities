@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.4.2] - 2021-08-12
+
+- Remove the `static` from the `$paged` variable in `WpQueryTrait::wpGetAllIds()` allowing multiple calls to 
+  `wpGetAllIds` without affecting current scope count.
+
 ## [2.4.1] - 2021-07-01
 
 - Set defaults in a method in `WpQueryTrait` that can be filtered with `thefrosty/wp_utilities/wp_query_defaults`. 

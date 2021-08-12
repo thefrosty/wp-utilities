@@ -112,15 +112,14 @@ trait WpQueryTrait
         ?int $expiration = null
     ): array {
 
-        static $paged;
+        $paged = 0;
         $post_ids = [];
         do {
-            $paged++; // phpcs:ignore
             $defaults = [
                 'fields' => 'ids',
                 'posts_per_page' => 100,
                 'no_found_rows' => false, // We need pagination & the count for all posts found.
-                'paged' => $paged,
+                'paged' => $paged++, // phpcs:ignore
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
