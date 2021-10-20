@@ -269,6 +269,26 @@ abstract class AbstractPlugin implements PluginInterface
     }
 
     /**
+     * Register a hook provider when a specific condition is met after a deferred action is met on a custom hook.
+     * Useful when a function might not be loaded until after `plugins_loaded` or `init`.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addIfConditionDeferred(
+        string $wp_hook,
+        bool $condition,
+        string $deferred_tag = 'plugins_loaded'
+    ): self {
+        \add_action($deferred_tag, function () use ($wp_hook, $condition): void {
+            $this->addIfCondition($wp_hook, $condition);
+        });
+
+        return $this;
+    }
+
+    /**
      * Register a hook provider when a specific condition is met on a custom hook.
      *
      * {@inheritdoc}
@@ -288,6 +308,34 @@ abstract class AbstractPlugin implements PluginInterface
         if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
         }
+
+        return $this;
+    }
+
+    /**
+     * Register a hook provider when a specific condition after a deferred action is met on a custom hook.
+     * Useful when a function might not be loaded until after `plugins_loaded` or `init`.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addOnConditionDeferred(
+        string $wp_hook,
+        callable $function,
+        ?array $func_args = null,
+        string $deferred_tag = 'plugins_loaded',
+        string $tag = null,
+        int $priority = null,
+        bool $admin_only = null,
+        array $args = []
+    ): self {
+        \add_action(
+            $deferred_tag,
+            function () use ($wp_hook, $function, $func_args, $tag, $priority, $admin_only, $args): void {
+                $this->addOnCondition($wp_hook, $function, $func_args, $tag, $priority, $admin_only, $args);
+            }
+        );
 
         return $this;
     }

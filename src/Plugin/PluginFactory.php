@@ -47,7 +47,8 @@ class PluginFactory
             // @codingStandardsIgnoreEnd
         }
 
-        $plugin = (new Plugin())->setInit(new Init())
+        $plugin = (new Plugin())
+            ->setInit(new Init())
             ->setBasename(\plugin_basename($filename))
             ->setDirectory(\plugin_dir_path($filename))
             ->setFile($filename)
@@ -69,19 +70,8 @@ class PluginFactory
      */
     private static function setContainer(Plugin $plugin): Plugin
     {
-        try {
-            if (\class_exists('\Pimple\Container') && \interface_exists('\Psr\Container\ContainerInterface')) {
-                $plugin->setContainer(new Container());
-            }
-        } catch (\InvalidArgumentException $exception) {
-            if (\defined('WP_DEBUG_LOG') && \WP_DEBUG_LOG) {
-                \error_log(
-                    \sprintf(
-                        '[DEBUG] The `Psr\Container\ContainerInterface` couldn\'t initiate. message: %s',
-                        $exception->getMessage()
-                    )
-                );
-            }
+        if (\class_exists('\Pimple\Container') && \interface_exists('\Psr\Container\ContainerInterface')) {
+            $plugin->setContainer(new Container());
         }
 
         return $plugin;
