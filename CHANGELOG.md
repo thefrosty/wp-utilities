@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.0] - 2021-10-20
+
+- Add new methods for deferring conditionally loading `WpHooksInterfaces` too `AbstractPlugin`:
+   - `addIfConditionDeferred` & `addOnConditionDeferred`.
+- Code cleanup on "Conditions always 'true' because something might be evaluated at this point".
+
 ## [2.4.2] - 2021-08-12
 
 - Remove the `static` from the `$paged` variable in `WpQueryTrait::wpGetAllIds()` allowing multiple calls to 
