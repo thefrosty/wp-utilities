@@ -323,8 +323,8 @@ abstract class AbstractPlugin implements PluginInterface
     public function addOnConditionDeferred(
         string $wp_hook,
         callable $function,
-        string $deferred_tag = 'plugins_loaded',
         ?array $func_args = null,
+        string $deferred_tag = 'plugins_loaded',
         string $tag = null,
         int $priority = null,
         bool $admin_only = null,
