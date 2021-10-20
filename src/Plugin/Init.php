@@ -90,7 +90,7 @@ final class Init implements \IteratorAggregate
         \array_walk(
             $wp_hooks,
             static function (WpHooksInterface $object, int $key) use ($class_name, &$instance, &$wp_hooks): void {
-                if (($object instanceof WpHooksInterface) && \get_class($object) === $class_name) {
+                if (\get_class($object) === $class_name) {
                     $instance = $wp_hooks[$key];
                 }
             }
