@@ -20,7 +20,7 @@ class Container extends Pimple implements ContainerInterface
      * @param string $id Identifier of the entry to look for.
      * @return mixed Entry.
      */
-    public function get(string $id)
+    public function get($id)
     {
         return $this->offsetGet($id);
     }
@@ -31,7 +31,7 @@ class Container extends Pimple implements ContainerInterface
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */
-    public function has(string $id): bool
+    public function has($id): bool
     {
         return $this->offsetExists($id);
     }
