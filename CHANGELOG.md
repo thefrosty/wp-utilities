@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.1] - 2021-11-20
+
+- Fix: compatible with Psr\Container\ContainerInterface where certain legacy packages have composer.lock 
+ at `psr/container:1.0.0`, fixes #73
+
 ## [2.5.0] - 2021-10-20
 
 - Add new methods for deferring conditionally loading `WpHooksInterfaces` too `AbstractPlugin`:
