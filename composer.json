@@ -17,10 +17,11 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": "^7.4|^8.0",
+    "php": "^7.4 || ^8.0",
     "ext-json": "*",
     "ext-openssl": "*",
-    "johnbillion/args": "^0.7.0"
+    "johnbillion/args": "^0.7.0",
+    "psr/container": "^2.0.2"
   },
   "require-dev": {
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",

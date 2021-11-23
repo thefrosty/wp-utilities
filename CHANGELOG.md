@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.2] - 2021-11-23
+
+- Fix #76: Require `psr/container:^2.0` which locks in the PSR-11 container implementation.
+
 ## [2.5.1] - 2021-11-20
 
 - Fix: compatible with Psr\Container\ContainerInterface where certain legacy packages have composer.lock 
