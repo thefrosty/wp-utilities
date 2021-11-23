@@ -3,7 +3,9 @@
 namespace TheFrosty\WpUtilities\Plugin;
 
 use Pimple\Container as Pimple;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Container class.
@@ -18,20 +20,27 @@ class Container extends Pimple implements ContainerInterface
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.
+     *
      * @return mixed Entry.
+     * @throws ContainerExceptionInterface Error while retrieving the entry.
+     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
-    public function get($id)
+    public function get(string $id)
     {
         return $this->offsetGet($id);
     }
 
     /**
-     * Whether the container has an entry for the given identifier.
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
+     *
+     * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
+     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
      *
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */
-    public function has($id): bool
+    public function has(string $id): bool
     {
         return $this->offsetExists($id);
     }
