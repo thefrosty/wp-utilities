@@ -2,6 +2,11 @@
 
 namespace TheFrosty\WpUtilities\Api;
 
+use function md5;
+use function set_transient;
+use function strlen;
+use function substr;
+
 /**
  * Trait TransientsTrait
  *
@@ -10,22 +15,22 @@ namespace TheFrosty\WpUtilities\Api;
 trait TransientsTrait
 {
 
+    use WpCacheTrait;
+
     /**
      * Transient key prefix.
-     *
      * @var string $prefix
      */
-    private $prefix = '_wp_utilities_';
+    private string $prefix = '_wp_utilities_';
 
     /**
      * Max allowable characters in the WP database.
-     *
      * @var int $wp_max_transient_chars
      */
-    private $wp_max_transient_chars = 45;
+    private int $wp_max_transient_chars = 45;
 
     /**
-     * Get's the cached transient key.
+     * Gets the cached transient key.
      *
      * @param string $input
      * @param string|null $key_prefix
@@ -36,12 +41,14 @@ trait TransientsTrait
     {
         $key = $key_prefix ?? $this->prefix;
 
-        return $key . \substr(\md5($input), 0, $this->wp_max_transient_chars - \strlen($key));
+        return $this->setQueryCacheKey(
+            $key . substr(md5($input), 0, $this->wp_max_transient_chars - strlen($key))
+        );
     }
 
     /**
      * @param string $transient Transient name. Expected to not be SQL-escaped.
-     *  Must be 172 characters or fewer in length.
+     *  Must be 172 characters or fewer.
      * @param mixed $value Transient value. Must be serializable if non-scalar.
      *  Expected to not be SQL-escaped.
      * @param int $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
@@ -50,6 +57,6 @@ trait TransientsTrait
      */
     protected function setTransient(string $transient, $value, int $expiration = 0): bool
     {
-        return \set_transient($transient, $value, $expiration);
+        return set_transient($transient, $value, $expiration);
     }
 }
