@@ -26,6 +26,7 @@
     <config name="minimum_supported_wp_version" value="5.6" />
 
     <rule ref="PSR12">
+        <exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
         <exclude name="PSR12.Files.FileHeader.IncorrectOrder"/>
         <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
         <exclude name="PSR12.Files.OpenTag.NotAlone"/>

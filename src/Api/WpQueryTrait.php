@@ -4,6 +4,17 @@ namespace TheFrosty\WpUtilities\Api;
 
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_Query;
+use function _deprecated_argument;
+use function apply_filters;
+use function array_filter;
+use function esc_html__;
+use function is_int;
+use function json_encode;
+use function md5;
+use function sprintf;
+use function wp_parse_args;
+use function wp_reset_postdata;
+use const MINUTE_IN_SECONDS;
 
 /**
  * Trait WpQueryTrait.
@@ -27,7 +38,7 @@ trait WpQueryTrait
     {
         $defaults = $this->getDefaults($post_type);
 
-        return new WP_Query(\wp_parse_args($args, $defaults));
+        return new WP_Query(wp_parse_args($args, $defaults));
     }
 
     /**
@@ -42,15 +53,17 @@ trait WpQueryTrait
     protected function wpQueryCached(string $post_type, array $args = [], ?int $expiration = null): WP_Query
     {
         $defaults = $this->getDefaults($post_type);
-        $cache_key = $this->getHashedKey(
-            \sprintf('%s/query_%s', Plugin::TAG, \md5(\json_encode(\wp_parse_args($args, $defaults))))
+        $cache_key = $this->setQueryCacheKey(
+            $this->getHashedKey(
+                sprintf('%s/query_%s', Plugin::TAG, md5(json_encode(wp_parse_args($args, $defaults))))
+            )
         );
         $query = $this->getCache($cache_key);
-        if ($query === false || !($query instanceof WP_Query)) {
+        if (!($query instanceof WP_Query)) {
             $query = $this->wpQuery($post_type, $args);
             if ($query->have_posts()) {
-                $this->setCache($cache_key, $query, $this->getCacheGroup(), $expiration ?? \MINUTE_IN_SECONDS);
-                \wp_reset_postdata();
+                $this->setCache($cache_key, $query, $this->getCacheGroup(), $expiration ?? MINUTE_IN_SECONDS);
+                wp_reset_postdata();
             }
         }
 
@@ -67,14 +80,14 @@ trait WpQueryTrait
      */
     protected function wpQueryGetAllIds(string $post_type, array $args = [], ?int $expiration = null): array
     {
-        if (\is_int($expiration)) {
-            \_deprecated_argument(
+        if (is_int($expiration)) {
+            _deprecated_argument(
                 __FUNCTION__,
                 '2.4.0',
-                \esc_html__( // phpcs:ignore Generic.Files.LineLength.TooLong
+                esc_html__( // phpcs:disable Generic.Files.LineLength.TooLong
                     'Usage of expiration is deprecated. Use `WpQueryTrait::wpQueryGetAllIdsCached` if cache is desired.',
                     'wp-utilities'
-                )
+                ) // phpcs:enable
             );
         }
 
@@ -123,7 +136,7 @@ trait WpQueryTrait
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
-            $query = \call_user_func($callback, $post_type, \wp_parse_args($args, $defaults), $expiration);
+            $query = \call_user_func($callback, $post_type, wp_parse_args($args, $defaults), $expiration);
             if ($query instanceof WP_Query && $query->have_posts()) {
                 foreach ($query->posts as $id) {
                     $post_ids[] = $id;
@@ -141,9 +154,9 @@ trait WpQueryTrait
      */
     private function getDefaults(?string $post_type = null): array
     {
-        return \array_filter(
-            \apply_filters(
-                \sprintf('%s/wp_query_defaults', Plugin::TAG),
+        return array_filter(
+            apply_filters(
+                sprintf('%s/wp_query_defaults', Plugin::TAG),
                 [
                     'post_type' => $post_type,
                     'posts_per_page' => 100,

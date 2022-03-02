@@ -2,6 +2,10 @@
 
 namespace TheFrosty\WpUtilities\Api;
 
+use function wp_cache_delete;
+use function wp_cache_get;
+use function wp_cache_set;
+
 /**
  * Trait WpCacheTrait
  *
@@ -12,28 +16,55 @@ trait WpCacheTrait
     use Hash;
 
     /**
-     * Cache group value.
-     *
-     * @var string|null $group
+     * Cache key value.
+     * @var string|null $queryCacheKey
      */
-    private ?string $group;
+    private ?string $queryCacheKey;
 
     /**
-     * Get the cache group.
+     * Cache group value.
+     * @var string|null $queryCacheGroup
      */
-    protected function getCacheGroup(): string
+    private ?string $queryCacheGroup;
+
+    /**
+     * Get the cache key for the current query.
+     * With this value you should be able to delete the cache for a specific query (if needed).
+     * @return string|null
+     */
+    protected function getQueryCacheKey(): ?string
     {
-        return $this->group ?? static::class;
+        return $this->queryCacheKey;
     }
 
     /**
-     * Optional. Set the cache group.
+     * Set the cache key for the current query.
+     * @param string $queryCacheKey
+     * @return string
+     */
+    protected function setQueryCacheKey(string $queryCacheKey): string
+    {
+        $this->queryCacheKey = $queryCacheKey;
+
+        return $this->queryCacheKey;
+    }
+
+    /**
+     * Get the cache group the current query.
+     */
+    protected function getCacheGroup(): string
+    {
+        return $this->queryCacheGroup ?? static::class;
+    }
+
+    /**
+     * Optional. Set the cache group the current query.
      *
      * @param string $group
      */
     protected function setCacheGroup(string $group): void
     {
-        $this->group = $group;
+        $this->queryCacheGroup = $group;
     }
 
     /**
@@ -43,7 +74,7 @@ trait WpCacheTrait
      * @param string|null $group The group value appended to the $key.
      * @param bool $force Optional. Whether to force an update of the local cache from the persistent
      *                                cache. Default false.
-     * @param bool $found Optional. Whether the key was found in the cache. Disambiguates a return of false,
+     * @param bool $found Optional. Whether the key was found in the cache. Disambiguate a return of false,
      *                                a storable value. Passed by reference. Default null.
      *
      * @return mixed Cached object value.
@@ -51,7 +82,7 @@ trait WpCacheTrait
      */
     protected function getCache(string $key, ?string $group = null, bool $force = false, ?bool &$found = null)
     {
-        return \wp_cache_get($key, $group ?? $this->getCacheGroup(), $force, $found);
+        return wp_cache_get($key, $group ?? $this->getCacheGroup(), $force, $found);
     }
 
     /**
@@ -66,7 +97,7 @@ trait WpCacheTrait
      */
     protected function setCache(string $key, $value, ?string $group = null, int $expiration = 0): bool
     {
-        return \wp_cache_set($key, $value, $group ?? $this->getCacheGroup(), $expiration);
+        return wp_cache_set($key, $value, $group ?? $this->getCacheGroup(), $expiration);
     }
 
     /**
@@ -79,6 +110,6 @@ trait WpCacheTrait
      */
     protected function deleteCache(string $key, ?string $group = null): bool
     {
-        return \wp_cache_delete($key, $group ?? $this->getCacheGroup());
+        return wp_cache_delete($key, $group ?? $this->getCacheGroup());
     }
 }
