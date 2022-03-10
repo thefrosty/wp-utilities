@@ -5,9 +5,9 @@ namespace TheFrosty\WpUtilities\Api;
 use function apply_filters;
 use function array_filter;
 use function array_merge;
+use function esc_attr;
 use function esc_url;
 use function get_bloginfo;
-use function get_transient;
 use function is_wp_error;
 use function sprintf;
 use function wp_remote_get;
@@ -55,21 +55,23 @@ trait WpRemote
         ?string $user_agent = null,
         ?string $version = null
     ) {
-        if ($version === null) {
-            $version = $GLOBALS['wp_version'];
-        }
-
         $key = $this->getHashedKey($url);
         $body = $this->getCache($key);
         if (empty($body)) {
             if ($user_agent !== null) {
-                $args['user-agent'] = sprintf('%s/%s; %s', $user_agent, $version, get_bloginfo('url'));
+                $args = [
+                    'user-agent' => esc_attr(sprintf(
+                        '%s/%s; %s',
+                        $user_agent,
+                        $version ?? $GLOBALS['wp_version'],
+                        get_bloginfo('url')
+                    )),
+                ];
             }
             $body = $this->retrieveBody($url, $args ?? []);
-            if (empty($body)) {
-                return false;
+            if (!empty($body)) {
+                $this->setCache($key, $body, null, $expiration ?? DAY_IN_SECONDS);
             }
-            $this->setCache($key, $body, null, $expiration ?? DAY_IN_SECONDS);
 
             return $body;
         }
