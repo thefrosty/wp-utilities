@@ -4,6 +4,7 @@ namespace TheFrosty\WpUtilities\WpAdmin\Dashboard;
 
 use TheFrosty\WpUtilities\Models\BaseModel;
 use function in_array;
+use function strtolower;
 
 /**
  * Class Widget
@@ -13,16 +14,12 @@ use function in_array;
 class Widget extends BaseModel
 {
 
-    public const COUNT = 'count';
     public const FEED_URL = 'feed_url';
     public const TYPE = 'type';
     public const TYPE_REST = 'rest';
     public const TYPE_RSS = 'rss';
     public const WIDGET_ID = 'widget_id';
     public const WIDGET_NAME = 'widget_name';
-
-    /** @var int $count */
-    private int $count = 1;
 
     /** @var string $feed_url */
     private string $feed_url;
@@ -35,24 +32,6 @@ class Widget extends BaseModel
 
     /** @var string $widget_name */
     private string $widget_name;
-
-    /**
-     * Set the max count.
-     * @param int $count
-     */
-    protected function setCount(int $count): void
-    {
-        $this->count = $count;
-    }
-
-    /**
-     * Get the max count.
-     * @return int
-     */
-    public function getCount(): int
-    {
-        return $this->count;
-    }
 
     /**
      * Set the feed URL.
@@ -96,7 +75,7 @@ class Widget extends BaseModel
      */
     protected function setType(string $type): void
     {
-        if (!in_array(\strtolower($type), [self::TYPE_REST, self::TYPE_RSS], true)) {
+        if (!in_array(strtolower($type), [self::TYPE_REST, self::TYPE_RSS], true)) {
             return;
         }
         $this->type = $type;
