@@ -4,6 +4,7 @@ $simplePie = new class {
 
     use TheFrosty\WpUtilities\WpAdmin\Dashboard\SimplePie;
 };
+/** @var $this TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
 $posts = $simplePie->getFeedItems(1, $this->getWidget()->getFeedUrl());
 static $count;
 
@@ -34,4 +35,4 @@ if (empty($posts)) {
     unset($count);
 }
 
-return $content;
+echo $content;

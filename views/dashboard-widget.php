@@ -11,15 +11,13 @@ if (!($this instanceof DashboardWidget)) {
     wp_die(sprintf('Please don\'t load this file outside of <code>%s.</code>', esc_attr(DashboardWidget::class)));
 }
 
-$content = '<div class="rss-widget"><ul>';
+echo '<div class="rss-widget"><ul>';
 switch ($this->getWidget()->getType()) {
     case Widget::TYPE_REST:
-        $content .= include __DIR__ . '/dashboard-widget-rest.php';
+        include __DIR__ . '/dashboard-widget-rest.php';
         break;
     case Widget::TYPE_RSS:
-        $content .= include __DIR__ . '/dashboard-widget-rss.php';
+        include __DIR__ . '/dashboard-widget-rss.php';
         break;
 }
-$content .= '</ul></div>';
-
-echo $content;
+echo '</ul></div>';

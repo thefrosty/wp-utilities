@@ -4,6 +4,7 @@ $wpRemote = new class {
 
     use TheFrosty\WpUtilities\Api\WpRemote;
 };
+/** @var $this TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
 $posts = $wpRemote->retrieveBody($this->getWidget()->getFeedUrl());
 static $count;
 
@@ -31,4 +32,4 @@ if (empty($posts)) {
     unset($count);
 }
 
-return $content;
+echo $content;
