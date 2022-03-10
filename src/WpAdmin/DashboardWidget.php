@@ -3,6 +3,7 @@
 namespace TheFrosty\WpUtilities\WpAdmin;
 
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
+use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use function wp_add_dashboard_widget;
@@ -17,6 +18,7 @@ class DashboardWidget implements WpHooksInterface
     use HooksTrait;
 
     public const OBJECT_NAME = 'DashboardWidget';
+    public const HOOK_NAME = Plugin::TAG . '/render/dashboard_widget';
 
     /** @var array $args */
     private array $args;
