@@ -30,7 +30,7 @@ echo $div_close;
  * Render additional content.
  * @param string $div_open The opening div tag.
  * @param string $div_close The closing div tag.
- * @param Widget $widget The widget object.
  * @param string $template The template file to use.
+ * @param Widget $widget The widget object.
  */
-do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $this->getWidget(), $template);
+do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $template, $this->getWidget());
