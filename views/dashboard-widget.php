@@ -13,7 +13,6 @@ if (!($this instanceof DashboardWidget)) {
 
 $div_open = '<div class="rss-widget"><ul>';
 $div_close = '</ul></div>';
-ob_start();
 echo $div_open;
 switch ($this->getWidget()->getType()) {
     case Widget::TYPE_REST:
@@ -24,15 +23,11 @@ switch ($this->getWidget()->getType()) {
         break;
 }
 echo $div_close;
-$content = ob_get_clean();
 
 /**
- * Render the content.
- * @param string $content
+ * Render additional content.
  * @param string $div_open
  * @param string $div_close
  * @param Widget $this->getWidget()
  */
-do_action(DashboardWidget::HOOK_NAME, $content, $div_open, $div_close, $this->getWidget());
-
-echo $content;
+do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $this->getWidget());
