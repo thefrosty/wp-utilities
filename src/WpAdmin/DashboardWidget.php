@@ -62,7 +62,7 @@ class DashboardWidget implements WpHooksInterface
         wp_add_dashboard_widget(
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
-            function (): void {
+            static function (): void {
                 include __DIR__ . '/../../views/dashboard-widget.php';
             }
         );
