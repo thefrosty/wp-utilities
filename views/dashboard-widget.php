@@ -16,18 +16,21 @@ $div_close = '</ul></div>';
 echo $div_open;
 switch ($this->getWidget()->getType()) {
     case Widget::TYPE_REST:
-        include __DIR__ . '/dashboard-widget-rest.php';
+    default:
+        $template = __DIR__ . '/dashboard-widget-rest.php';
         break;
     case Widget::TYPE_RSS:
-        include __DIR__ . '/dashboard-widget-rss.php';
+        $template = __DIR__ . '/dashboard-widget-rss.php';
         break;
 }
+include $template;
 echo $div_close;
 
 /**
  * Render additional content.
- * @param string $div_open
- * @param string $div_close
- * @param Widget $this->getWidget()
+ * @param string $div_open The opening div tag.
+ * @param string $div_close The closing div tag.
+ * @param Widget $widget The widget object.
+ * @param string $template The template file to use.
  */
-do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $this->getWidget());
+do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $this->getWidget(), $template);
