@@ -5,7 +5,7 @@ $wpRemote = new class {
     use TheFrosty\WpUtilities\Api\WpRemote;
 };
 /** @var $this TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
-$posts = $wpRemote->retrieveBody($this->getWidget()->getFeedUrl());
+$posts ??= $wpRemote->retrieveBodyCached($this->getWidget()->getFeedUrl(), DAY_IN_SECONDS);
 static $count;
 
 $content = '';
@@ -13,7 +13,6 @@ if (empty($posts)) {
     $content .= '<li>' . __('Error fetching feed') . '</li>';
 } else {
     foreach ($posts as $item) {
-
         $count++;
         $content .= '<li>';
         $content .= '<a class="rsswidget" href="' . esc_url(add_query_arg([
