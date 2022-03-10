@@ -13,7 +13,7 @@ use function in_array;
 class Widget extends BaseModel
 {
 
-    public const CACHE = 'cache';
+    public const COUNT = 'count';
     public const FEED_URL = 'feed_url';
     public const TYPE = 'type';
     public const TYPE_REST = 'rest';
@@ -21,8 +21,8 @@ class Widget extends BaseModel
     public const WIDGET_ID = 'widget_id';
     public const WIDGET_NAME = 'widget_name';
 
-    /** @var string|null $cache */
-    private ?string $cache;
+    /** @var int $count */
+    private int $count = 1;
 
     /** @var string $feed_url */
     private string $feed_url;
@@ -37,21 +37,21 @@ class Widget extends BaseModel
     private string $widget_name;
 
     /**
-     * Set the cache type.
-     * @param string|null $cache
+     * Set the max count.
+     * @param int $count
      */
-    protected function setCache(?string $cache = null): void
+    protected function setCount(int $count): void
     {
-        $this->cache = $cache;
+        $this->count = $count;
     }
 
     /**
-     * Get the cache type.
-     * @return string
+     * Get the max count.
+     * @return int
      */
-    public function getCache(): ?string
+    public function getCount(): int
     {
-        return $this->cache;
+        return $this->count;
     }
 
     /**
