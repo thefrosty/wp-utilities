@@ -15,12 +15,12 @@ $div_open = '<div class="rss-widget"><ul>';
 $div_close = '</ul></div>';
 echo $div_open;
 switch ($this->getWidget()->getType()) {
+    case Widget::TYPE_RSS:
+        $template = __DIR__ . '/dashboard-widget/rss.php';
+        break;
     case Widget::TYPE_REST:
     default:
-        $template = __DIR__ . '/dashboard-widget-rest.php';
-        break;
-    case Widget::TYPE_RSS:
-        $template = __DIR__ . '/dashboard-widget-rss.php';
+        $template = __DIR__ . '/dashboard-widget/rest.php';
         break;
 }
 include $template;
@@ -33,4 +33,4 @@ echo $div_close;
  * @param string $template The template file to use.
  * @param Widget $widget The widget object.
  */
-do_action(DashboardWidget::HOOK_NAME, $div_open, $div_close, $template, $this->getWidget());
+do_action(DashboardWidget::HOOK_NAME_RENDER, $div_open, $div_close, $template, $this->getWidget());
