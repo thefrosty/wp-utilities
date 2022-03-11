@@ -10,6 +10,7 @@ static $count;
 
 $content = '';
 if (empty($posts)) {
+    $wpRemote->deleteCache($wpRemote->getQueryCacheKey() ?? '');
     $content .= '<li>' . __('Error fetching feed') . '</li>';
 } else {
     foreach ($posts as $item) {
@@ -19,7 +20,7 @@ if (empty($posts)) {
                 'utm_medium' => 'wpadmin_dashboard',
                 'utm_term' => 'newsitem',
                 'utm_campaign' => $this->getWidget()->getWidgetId(),
-            ], $item->guid->rendered)) . '">' . esc_html($item->title->rendered) . '</a>';
+            ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
 
         if ($count === 1) {
             $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .

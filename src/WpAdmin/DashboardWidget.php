@@ -6,6 +6,9 @@ use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
+use function apply_filters;
+use function sanitize_key;
+use function sprintf;
 use function wp_add_dashboard_widget;
 
 /**
@@ -18,7 +21,8 @@ class DashboardWidget implements WpHooksInterface
     use HooksTrait;
 
     public const OBJECT_NAME = 'DashboardWidget';
-    public const HOOK_NAME = Plugin::TAG . '/render/dashboard_widget';
+    public const HOOK_NAME_ALLOWED_S = Plugin::TAG . '/%s/dashboard_allowed';
+    public const HOOK_NAME_RENDER = Plugin::TAG . '/render/dashboard_widget';
 
     /** @var array $args */
     private array $args;
@@ -94,9 +98,9 @@ class DashboardWidget implements WpHooksInterface
      */
     private function isDashboardAllowed(): bool
     {
-        $allowed = \apply_filters(\sprintf(
-            'thefrosty_wp_util_%s_dashboard_allowed',
-            \sanitize_key($this->getWidget()->getWidgetId())
+        $allowed = apply_filters(sprintf(
+            self::HOOK_NAME_ALLOWED_S,
+            sanitize_key($this->getWidget()->getWidgetId())
         ), true);
 
         return $allowed === true;
