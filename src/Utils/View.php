@@ -48,7 +48,7 @@ final class View
         $this->setDefaultPaths();
 
         // Add a file extension the view
-        $file = $view . '.php';
+        $file = $this->sanitizeFileExtension($view . '.php');
 
         return $this->getViewPath($file);
     }
@@ -60,10 +60,7 @@ final class View
      */
     public function render(string $filename, array $viewData = []): void
     {
-        $this->load([
-            'view' => $filename,
-            'data' => $viewData,
-        ]);
+        $this->load([$filename, $viewData]);
 
         /*
          * Clear view data, so we can use the same object
@@ -110,7 +107,7 @@ final class View
 
     /**
      * Internal view loader
-     * @param array $args
+     * @param array<string, array> $args
      * @throws RuntimeException
      */
     private function load(array $args): void
@@ -119,7 +116,7 @@ final class View
         [$view, $data] = $args;
 
         // Add a file extension the view
-        $file = $view . '.php';
+        $file = $this->sanitizeFileExtension($view . '.php');
 
         // Get the view path
         $viewPath = $this->getViewPath($file);
@@ -129,7 +126,7 @@ final class View
             $this->viewNotFoundError($file);
         }
 
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             $this->viewData = array_merge($this->viewData, $data);
         }
 
@@ -149,12 +146,23 @@ final class View
     }
 
     /**
+     * Sanitize the file extension.
+     * @param string $file
+     * @return string
+     */
+    private function sanitizeFileExtension(string $file): string
+    {
+        return str_replace('.php.php', '.php', $file);
+    }
+
+    /**
      * Get the view path.
      * @param string $file
      * @return string|null
      */
     private function getViewPath(string $file): ?string
     {
+        $file = $this->sanitizeFileExtension($file);
         foreach ($this->viewPaths as $viewDir) {
             if (file_exists($viewDir . $file)) {
                 return $viewDir . $file;
