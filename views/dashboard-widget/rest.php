@@ -27,7 +27,8 @@ if (empty($posts)) {
         if ($count === 1 && $renderContent) {
             $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
                 date_i18n(get_option('date_format'), strtotime($item->date)) . '</span>';
-            $content .= '<div class="rssSummary">' . strip_tags(wp_trim_words($item->content->rendered, 28)) . '</div>';
+            $content .= '<div class="rssSummary">' .
+                strip_tags(wp_trim_words($item->content->rendered, 28)) . '</div>';
         }
         $content .= '</li>';
     }
