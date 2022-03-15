@@ -2,8 +2,10 @@
 
 namespace TheFrosty\WpUtilities\Utils;
 
+use function dirname;
 use function extract;
 use function file_exists;
+use function sprintf;
 
 /**
  * Class View
@@ -13,26 +15,26 @@ final class View
 {
 
     /**
-     * Render a view file.
-     * @param string $view The view file to render from the `views` directory.
+     * Return a view file.
+     * @param string $filename The view file to render from the `views` directory.
      * @return string
      */
-    public static function get(string $view): string
+    public function get(string $filename): string
     {
-        return __DIR__ . "../../views/$view";
+        return sprintf('%1$s/views/%2$s', dirname(__DIR__, 2), $filename);
     }
 
     /**
      * Render a view file.
-     * @param string $view The view file to render from the `views` directory.
+     * @param string $filename The view file to render from the `views` directory.
      * @param array $args
      */
-    public static function render(string $view, array $args = []): void
+    public function render(string $filename, array $args = []): void
     {
-        $view = self::get($view);
-        if (file_exists($view)) {
+        $filename = $this->get($filename);
+        if (file_exists($filename)) {
             extract($args);
-            include $view;
+            include $filename;
         }
     }
 }
