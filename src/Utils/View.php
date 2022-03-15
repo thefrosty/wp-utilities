@@ -12,6 +12,8 @@ use function file_exists;
 use function get_object_vars;
 use function is_array;
 use function is_object;
+use function ob_get_clean;
+use function ob_start;
 use function realpath;
 use function sprintf;
 use function str_replace;
@@ -39,22 +41,27 @@ final class View
     private array $viewData = [];
 
     /**
+     * View constructor.
+     */
+    public function __construct()
+    {
+        $this->setDefaultPaths();
+    }
+
+    /**
      * Return a view file.
      * @param string $view The view file to render from the `views` directory.
      * @return string|null
      */
     public function get(string $view): ?string
     {
-        $this->setDefaultPaths();
-
-        // Add a file extension the view
         $file = $this->sanitizeFileExtension($view . '.php');
 
         return $this->getViewPath($file);
     }
 
     /**
-     * Render a view file.
+     * Render a view.
      * @param string $filename The view file to render from the `views` directory.
      * @param array $viewData
      */
@@ -63,10 +70,24 @@ final class View
         $this->load([$filename, $viewData]);
 
         /*
-         * Clear view data, so we can use the same object
-         * times the view data will persist and perhaps cause problems.
+         * Clear view data, so we can use the same object multiple times,
+         * otherwise the view data will persist and may cause problems.
          */
         $this->viewData = [];
+    }
+
+    /**
+     * Return a view.
+     * @param string $filename The view file to render from the `views` directory.
+     * @param array $viewData
+     * @return string
+     */
+    public function retrieve(string $filename, array $viewData = []): string
+    {
+        ob_start();
+        $this->render($filename, $viewData);
+
+        return ob_get_clean();
     }
 
     /**
@@ -92,7 +113,6 @@ final class View
      */
     public function addPath(string $path): void
     {
-        $this->setDefaultPaths();
         array_unshift($this->viewPaths, trailingslashit(realpath($path)));
     }
 
@@ -131,7 +151,7 @@ final class View
         }
 
         extract($this->viewData);
-        include($viewPath);
+        include $viewPath;
     }
 
     /**
