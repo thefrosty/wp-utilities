@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
@@ -16,7 +17,7 @@ $div_close = '</ul></div>';
 echo $div_open;
 switch ($this->getWidget()->getType()) {
     case Widget::TYPE_RSS:
-        $template = __DIR__ . '/dashboard-widget/rss.php';
+        $template = View::get('dashboard-widget/rss.php');
         break;
     case Widget::TYPE_REST:
     default:

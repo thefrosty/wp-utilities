@@ -5,6 +5,7 @@ namespace TheFrosty\WpUtilities\WpAdmin;
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
+use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use function apply_filters;
 use function sanitize_key;
@@ -69,7 +70,7 @@ class DashboardWidget implements WpHooksInterface
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
             function (): void {
-                include __DIR__ . '/../../views/dashboard-widget.php';
+                View::render('dashboard-widget.php');
             }
         );
     }
