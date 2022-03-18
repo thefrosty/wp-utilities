@@ -6,9 +6,11 @@ use RuntimeException;
 use function array_merge;
 use function array_unshift;
 use function count;
+use function current_filter;
 use function dirname;
 use function extract;
 use function file_exists;
+use function function_exists;
 use function get_object_vars;
 use function is_array;
 use function is_object;
@@ -67,13 +69,12 @@ final class View
      */
     public function render(string $filename, array $viewData = []): void
     {
-        $this->load([$filename, $viewData]);
-
         /*
          * Clear view data, so we can use the same object multiple times,
          * otherwise the view data will persist and may cause problems.
          */
         $this->viewData = [];
+        $this->load([$filename, $viewData]);
     }
 
     /**
