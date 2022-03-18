@@ -3,7 +3,10 @@
 namespace TheFrosty\WpUtilities\Utils;
 
 use Psr\Container\ContainerInterface;
+use RuntimeException;
+use TheFrosty\WpUtilities\Plugin\ContainerAwareTrait;
 use Throwable;
+use function get_class;
 use function method_exists;
 
 /**
@@ -22,15 +25,17 @@ trait Viewable
     /**
      * Get an instance of View.
      * @param string $id Identifier of the entry to look for.
-     * @return View|null
+     * @return View|null View object, null if
      */
     public function getView(string $id): ?View
     {
-        if (
-            !$this->view instanceof View &&
-            method_exists($this, 'getContainer') &&
-            $this->getContainer() instanceof ContainerInterface
-        ) {
+        if (!method_exists($this, 'getContainer') || $this->getContainer() instanceof ContainerInterface) {
+            throw new RuntimeException(
+                sprintf('%s must use %s', get_class($this), ContainerAwareTrait::class)
+            );
+        }
+
+        if (!$this->view instanceof View) {
             try {
                 $this->view = $this->getContainer()->get($id);
             } catch (Throwable $e) {
