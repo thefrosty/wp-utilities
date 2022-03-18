@@ -29,7 +29,7 @@ trait Viewable
      */
     public function getView(string $id): ?View
     {
-        if (!method_exists($this, 'getContainer') || $this->getContainer() instanceof ContainerInterface) {
+        if (!method_exists($this, 'getContainer') || !$this->getContainer() instanceof ContainerInterface) {
             throw new RuntimeException(
                 sprintf('%s must use %s', get_class($this), ContainerAwareTrait::class)
             );
