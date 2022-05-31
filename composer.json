@@ -36,7 +36,7 @@
     "phpmd/phpmd": "^2.6",
     "phpunit/phpunit": "^9",
     "pimple/pimple": "^3.5",
-    "roots/wordpress": "^5.9.1",
+    "roots/wordpress": "^6.0.0",
     "squizlabs/php_codesniffer": "^3.2",
     "szepeviktor/phpstan-wordpress": "^1.0",
     "wp-phpunit/wp-phpunit": "^6.0.0",
