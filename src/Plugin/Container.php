@@ -6,6 +6,7 @@ use Pimple\Container as Pimple;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReturnTypeWillChange;
 
 /**
  * Container class.
@@ -25,6 +26,7 @@ class Container extends Pimple implements ContainerInterface
      * @throws ContainerExceptionInterface Error while retrieving the entry.
      * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
+    #[ReturnTypeWillChange]
     public function get(string $id)
     {
         return $this->offsetGet($id);
@@ -40,6 +42,7 @@ class Container extends Pimple implements ContainerInterface
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */
+    #[ReturnTypeWillChange]
     public function has(string $id): bool
     {
         return $this->offsetExists($id);
