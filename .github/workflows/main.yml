@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -34,14 +34,15 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Export bing path ENV
-      - run: export DEV_BIN_PATH=bin
-      - run: source $DEV_BIN_PATH/create-all-branches.sh
+        run: |
+          export DEV_BIN_PATH=bin
+          source $DEV_BIN_PATH/create-all-branches.sh
 
       - name: Install dependencies
-      - run: composer update --prefer-dist --no-interaction
+        run: composer update --prefer-dist --no-interaction
 
       - name: Run composer tests
-      - run: composer tests
+        run: composer tests
 
       - name: Code coverage
-      - uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v3
