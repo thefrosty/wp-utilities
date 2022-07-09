@@ -1,0 +1,47 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ 7.4, 8.0, 8.1 ]
+
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: php-${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Export bing path ENV
+      - run: export DEV_BIN_PATH=bin
+      - run: source $DEV_BIN_PATH/create-all-branches.sh
+
+      - name: Install dependencies
+      - run: composer update --prefer-dist --no-interaction
+
+      - name: Run composer tests
+      - run: composer tests
+
+      - name: Code coverage
+      - uses: codecov/codecov-action@v3
