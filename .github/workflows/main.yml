@@ -34,7 +34,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           coverage: xdebug
-          tools: composer, phpunit
+          tools: composer, cs2pr, phpunit
 
       - name: Get composer cache directory
         id: composercache
@@ -50,8 +50,14 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction
 
+      - name: Create all branches
+        run: source ./bin/create-all-branches.sh
+
       - name: Run composer tests
         run: composer tests
+
+      - name: Show PHPCS results in PR
+        run: cs2pr ./phpcs-report.xml
 
       - name: Code coverage
         uses: codecov/codecov-action@v3
