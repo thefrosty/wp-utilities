@@ -7,6 +7,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![License](https://img.shields.io/packagist/l/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![Build Status](https://travis-ci.com/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.com/github/thefrosty/wp-utilities)
+![Build Status](https://github.com/thefrosty/wp-utilities/actions/workflows/main.yml/badge.svg)
 [![Donate with $DOGE](https://img.shields.io/static/v1?style=&logo=dogecoin&label=Donation&message=DFMbUjdxuQNJnbA622e7TNSJ3yxAdAWZEW&color=ba9f33)](#)  
 
 A library containing my standard development resources to build high quality WordPress plugins.

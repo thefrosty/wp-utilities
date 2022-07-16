@@ -1,0 +1,60 @@
+name: Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: [ 7.4, 8.0, 8.1 ]
+        coverage: [ true ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # No shallow clone, we need all history!
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+          tools: composer, cs2pr, phpunit
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: php-${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction
+
+      - name: Create all branches
+        run: source ./bin/create-all-branches.sh
+
+      - name: Run composer tests
+        run: composer tests
+
+      - name: Show PHPCS results in PR
+        run: cs2pr ./phpcs-report.xml
+
+      - name: Code coverage
+        uses: codecov/codecov-action@v3
