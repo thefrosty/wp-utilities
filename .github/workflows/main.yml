@@ -26,9 +26,6 @@ jobs:
         with:
           fetch-depth: 0 # No shallow clone, we need all history!
 
-      - name: Get git diff
-        run: echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}..${{ github.event.after }})" >> $GITHUB_ENV
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
