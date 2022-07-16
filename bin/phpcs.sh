@@ -19,7 +19,7 @@ fi
 
 commitFiles=$(git diff --name-only "$(git merge-base develop ${against})")
 
-args="-s --colors --extensions=php --tab-width=4 --standard=phpcs-ruleset.xml --runtime-set testVersion 7.4-"
+args="-s --colors --extensions=php --tab-width=4 --standard=phpcs-ruleset.xml checkstyle=./phpcs-report.xml --runtime-set testVersion 7.4-"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
