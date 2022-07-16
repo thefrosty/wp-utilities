@@ -1,8 +1,10 @@
 .idea/
 .DS_Store
-.phpunit.result.cache
 coverage/
+tests/results/
+tests/clover.xml
 vendor/
 wordpress/
+.phpunit.result.cache
 composer.lock
 *.bak

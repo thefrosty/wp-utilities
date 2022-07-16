@@ -6,7 +6,6 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![Total Downloads](https://img.shields.io/packagist/dt/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
 [![License](https://img.shields.io/packagist/l/thefrosty/wp-utilities.svg)](https://packagist.org/packages/thefrosty/wp-utilities)
-[![Build Status](https://travis-ci.com/thefrosty/wp-utilities.svg?branch=master)](https://travis-ci.com/github/thefrosty/wp-utilities)
 ![Build Status](https://github.com/thefrosty/wp-utilities/actions/workflows/main.yml/badge.svg)
 [![Donate with $DOGE](https://img.shields.io/static/v1?style=&logo=dogecoin&label=Donation&message=DFMbUjdxuQNJnbA622e7TNSJ3yxAdAWZEW&color=ba9f33)](#)  
 
@@ -38,7 +37,7 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:^2.4
+composer require thefrosty/wp-utilities:^2.7
 ```
 
 Then follow examples in the [Plugin README](./src/Plugin/README.md)

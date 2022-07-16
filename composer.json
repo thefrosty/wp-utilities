@@ -31,9 +31,11 @@
     "psr/container": "^2.0.2"
   },
   "require-dev": {
+    "ext-simplexml": "*",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpmd/phpmd": "^2.6",
+    "phpunit/php-code-coverage": "^9.2",
     "phpunit/phpunit": "^9",
     "pimple/pimple": "^3.5",
     "roots/wordpress": "^6.0.0",
@@ -67,7 +69,7 @@
       "bash ./bin/phpmd.sh"
     ],
     "phpunit": [
-      "./vendor/bin/phpunit --colors"
+      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
     ],
     "phpstan": [
       "./vendor/bin/phpstan analyze"
