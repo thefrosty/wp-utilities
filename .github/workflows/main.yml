@@ -56,5 +56,7 @@ jobs:
       - name: Show PHPCS results in PR
         run: cs2pr ./phpcs-report.xml
 
-      - name: Code coverage
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
