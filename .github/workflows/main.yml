@@ -51,7 +51,7 @@ jobs:
         run: source ./bin/create-all-branches.sh
 
       - name: Run composer tests
-        continue-on-error: true
+        continue-on-error: false
         run: composer tests
 
       - name: Show PHPCS results in PR
@@ -60,4 +60,4 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          fail_ci_if_error: true
+          fail_ci_if_error: false
