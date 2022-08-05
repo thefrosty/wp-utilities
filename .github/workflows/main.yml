@@ -51,7 +51,7 @@ jobs:
         run: source ./bin/create-all-branches.sh
 
       - name: Run composer tests
-        continue-on-error: true
+        continue-on-error: false
         run: composer tests
 
       - name: Show PHPCS results in PR
