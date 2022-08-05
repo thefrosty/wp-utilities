@@ -15,8 +15,6 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 class PluginTest extends TestCase
 {
 
-    private Plugin $plugin;
-
     /**
      * Set up.
      */
@@ -53,7 +51,7 @@ class PluginTest extends TestCase
         $this->assertIsArray($traits);
         $this->assertCount(1, $traits);
         $this->assertArrayHasKey(ContainerAwareTrait::class, $traits);
-        $constants = $this->getClassConstants();
+        $constants = $this->getClassConstants($this->reflection);
         $this->assertCount(1, $constants);
         $this->assertArrayHasKey($this->plugin::TAG, $constants);
     }
