@@ -2,6 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Class PluginFactory
  * @package TheFrosty\WpUtilities\Plugin
@@ -32,9 +34,10 @@ class PluginFactory
      * @param string $slug Plugin slug.
      * @param string|null $filename Optional. Absolute path to the main plugin file.
      *                         This should be passed if the calling file is not the main plugin file.
+     * @param ContainerInterface|null $container
      * @return Plugin A Plugin object instance.
      */
-    public static function create(string $slug, ?string $filename = ''): Plugin
+    public static function create(string $slug, ?string $filename = '', ?ContainerInterface $container = null): Plugin
     {
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
@@ -55,7 +58,7 @@ class PluginFactory
             ->setSlug($slug)
             ->setUrl(\plugin_dir_url($filename));
 
-        $plugin = self::setContainer($plugin);
+        $plugin = self::setContainer($plugin, $container);
         $plugin->setTemplateLoader(new TemplateLoader($plugin));
         self::$instances[$slug] = $plugin;
 
@@ -66,12 +69,13 @@ class PluginFactory
      * Set the Pimple\Container if it's available.
      *
      * @param Plugin $plugin
+     * @param ContainerInterface|null $container
      * @return Plugin
      */
-    private static function setContainer(Plugin $plugin): Plugin
+    private static function setContainer(Plugin $plugin, ?ContainerInterface $container = null): Plugin
     {
         if (\class_exists('\Pimple\Container') && \interface_exists('\Psr\Container\ContainerInterface')) {
-            $plugin->setContainer(new Container());
+            $plugin->setContainer($container ?? new Container());
         }
 
         return $plugin;
