@@ -76,7 +76,6 @@
     ],
     "tests": [
       "@phpcs",
-      "@phpmd",
       "@phpunit"
     ]
   }
