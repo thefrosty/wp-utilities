@@ -5,19 +5,7 @@ set -e
 # Based off: https://gist.github.com/oroce/11282380
 # Go to root of the repository
 echo 'Checking ESLint'
-
-if [[ $(git rev-parse --verify HEAD) ]]; then
-	against='HEAD'
-elif [[ $(git rev-parse --verify develop) ]]; then
-	against='develop'
-elif [[ $(git rev-parse --verify master) ]]; then
-	against='master'
-else
-	echo "git can't verify HEAD, develop or master."
-	exit 1
-fi
-
-commitFiles=$(git diff --name-only "$(git merge-base develop ${against})")
+source functions.sh
 
 jsFiles=""
 jsFilesCount=0
