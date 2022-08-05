@@ -53,6 +53,6 @@ class PluginTest extends TestCase
         $this->assertArrayHasKey(ContainerAwareTrait::class, $traits);
         $constants = $this->getClassConstants($this->reflection);
         $this->assertCount(1, $constants);
-        $this->assertArrayHasKey($this->plugin::TAG, $constants);
+        $this->assertArrayHasKey('TAG', $constants);
     }
 }

@@ -4,7 +4,7 @@ set -e
 
 # Default values of arguments
 # https://stackoverflow.com/a/44750379/558561 -- get the default git branch name
-DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+DEFAULT_BRANCH=$(git remote show $(git remote) | sed -n '/HEAD branch/s/.*: //p')
 TEST_VERSION="7.4"
 OTHER_ARGUMENTS=()
 
@@ -12,13 +12,13 @@ OTHER_ARGUMENTS=()
 # @ref https://pretzelhands.com/posts/command-line-flags/
 for arg in "$@"; do
   case $arg in
-  --default-branch)
-    DEFAULT_BRANCH="$2"
-    shift 2 # Remove name and value
+  --default-branch=*)
+    DEFAULT_BRANCH="${arg#*=}"
+    shift # Remove --default-branch= from processing
     ;;
-  --test-version)
-    TEST_VERSION="$2"
-    shift 2 # Remove name and value
+  --test-version=*)
+    TEST_VERSION="${arg#*=}"
+    shift # Remove --test-version= from processing
     ;;
   *)
     OTHER_ARGUMENTS+=("$1")
