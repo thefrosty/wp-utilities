@@ -2,10 +2,8 @@
 
 set -e
 
-# Based off: https://gist.github.com/oroce/11282380
-# Go to root of the repository
 echo 'Checking ESLint'
-source functions.sh
+source "$(dirname "$0")/functions.sh"
 
 jsFiles=""
 jsFilesCount=0

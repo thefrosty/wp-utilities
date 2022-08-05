@@ -2,9 +2,8 @@
 
 set -e
 
-# Go to root of the repository
 echo 'Checking PHPMD'
-source functions.sh
+source "$(dirname "$0")/functions.sh"
 
 args="text phpmd-ruleset.xml --exclude tests,vendor --suffixes php"
 phpFiles=""

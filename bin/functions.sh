@@ -28,6 +28,7 @@ do
     esac
 done
 
+# Based off: https://gist.github.com/Hounddog/3891872
 if [[ $(git rev-parse --verify HEAD) ]]; then
   against='HEAD'
 elif [[ $(git rev-parse --verify develop) ]]; then

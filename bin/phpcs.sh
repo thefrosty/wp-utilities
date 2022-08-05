@@ -2,10 +2,8 @@
 
 set -e
 
-# Based off: https://gist.github.com/Hounddog/3891872
-# Go to root of the repository
 echo 'Checking PHPCS'
-source functions.sh
+source "$(dirname "$0")/functions.sh"
 
 args="-s --colors --extensions=php --tab-width=4 --standard=phpcs-ruleset.xml --report=xml --runtime-set testVersion ${TEST_VERSION}-"
 phpFiles=""
