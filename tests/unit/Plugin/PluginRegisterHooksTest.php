@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use ReflectionClass;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
@@ -17,12 +18,12 @@ class PluginRegisterHooksTest extends TestCase
     /**
      * Test AbstractHookProvider
      */
-    public function test_register_hooks(): void
+    public function testRegisterHooks(): void
     {
         $provider = $this->getMockProviderForAbstractClass(AbstractHookProvider::class);
 
         try {
-            $class = new \ReflectionClass($provider);
+            $class = new ReflectionClass($provider);
             $property = $class->getProperty('plugin');
             $property->setAccessible(true);
         } catch (\ReflectionException $exception) {

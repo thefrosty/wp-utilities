@@ -2,6 +2,8 @@
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Class AbstractContainerProvider
  * @package TheFrosty\WpUtilities\Plugin
@@ -12,13 +14,11 @@ abstract class AbstractContainerProvider implements WpHooksInterface, PluginAwar
 
     /**
      * AbstractContainerProvider constructor.
-     * @param Container|null $container Set the container, or use `$this->setContainer($container)`.
+     * @param Container|ContainerInterface|null $container Set the container, or use `$this->setContainer($container)`.
      */
-    public function __construct(?Container $container = null)
+    public function __construct(?ContainerInterface $container = null)
     {
-        if ($container) {
-            $this->setContainer($container);
-        }
+        $this->setContainer($container);
     }
 
     /**
