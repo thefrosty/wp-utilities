@@ -16,11 +16,14 @@ class PluginAwareTraitTest extends TestCase
 {
 
     /**
-     * Test set_plugin()
+     * Test setPlugin()
      */
     public function testSetPlugin(): void
     {
-        $provider = $this->getMockForTrait(PluginAwareTrait::class);
+        $provider = new class {
+
+            use PluginAwareTrait;
+        };
 
         $class = new ReflectionClass($provider);
         $property = $class->getProperty('plugin');
@@ -31,5 +34,6 @@ class PluginAwareTraitTest extends TestCase
         $provider->setPlugin($plugin);
 
         $this->assertSame($plugin, $property->getValue($provider));
+        $this->assertSame($plugin, $provider->getPlugin());
     }
 }
