@@ -19,7 +19,7 @@ class HooksTraitTest extends TestCase
     {
         $provider = $this->getMockProvider(HookProvider::class);
         $provider->expects($this->exactly(1))
-                 ->method('addFilter')
+                 ->method(self::METHOD_ADD_FILTER)
                  ->will($this->returnCallback(function ($hook, $method, $priority, $arg_count) {
                      TestCase::assertSame('theTitle', $hook);
                      TestCase::assertSame(10, $priority);
@@ -38,7 +38,7 @@ class HooksTraitTest extends TestCase
     {
         $provider = $this->getMockProvider(HookProvider::class);
         $provider->expects($this->exactly(1))
-                 ->method('addFilter')
+                 ->method(self::METHOD_ADD_FILTER)
                  ->will($this->returnCallback(function ($hook, $method, $priority, $arg_count) {
                      TestCase::assertSame('template_redirect', $hook);
                      TestCase::assertSame(10, $priority);
