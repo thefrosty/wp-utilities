@@ -6,15 +6,14 @@ use Pimple\Container as Pimple;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReturnTypeWillChange;
 
 /**
- * Container class.
- * Extends Pimple to satisfy the ContainerInterface >= v2.0.0.
- * @ref https://github.com/php-fig/container/blob/2.0.0/src/ContainerInterface.php
+ * Container110 class.
+ * Extends Pimple to satisfy the ContainerInterface v1.1.0
+ * @ref https://github.com/php-fig/container/blob/1.1.0/src/ContainerInterface.php.
  * @package TheFrosty\WpUtilities\Plugin
  */
-class Container extends Pimple implements ContainerInterface
+class Container110 extends Pimple implements ContainerInterface
 {
 
     /**
@@ -26,7 +25,6 @@ class Container extends Pimple implements ContainerInterface
      * @throws ContainerExceptionInterface Error while retrieving the entry.
      * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
-    #[ReturnTypeWillChange]
     public function get(string $id)
     {
         return $this->offsetGet($id);
@@ -42,8 +40,7 @@ class Container extends Pimple implements ContainerInterface
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */
-    #[ReturnTypeWillChange]
-    public function has(string $id): bool
+    public function has(string $id)
     {
         return $this->offsetExists($id);
     }

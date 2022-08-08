@@ -16,10 +16,10 @@ trait ContainerAwareTrait
 {
 
     /**
-     * Container.
-     * @var ContainerInterface
+     * Container instance.
+     * @var ContainerInterface|null
      */
-    private ContainerInterface $container;
+    private ?ContainerInterface $container;
 
     /**
      * Proxy access to container services.
@@ -29,7 +29,7 @@ trait ContainerAwareTrait
      */
     public function __get(string $name)
     {
-        return $this->container->get($name);
+        return $this->container && $this->container->get($name);
     }
 
     /**
@@ -40,7 +40,7 @@ trait ContainerAwareTrait
      */
     public function __isset(string $name): bool
     {
-        return $this->container->has($name);
+        return $this->container && $this->container->has($name);
     }
 
     /**
@@ -53,7 +53,7 @@ trait ContainerAwareTrait
      */
     public function __call(string $method, array $args)
     {
-        if ($this->container->has($method)) {
+        if ($this->container && $this->container->has($method)) {
             $object = $this->container->get($method);
             if (\is_callable($object)) {
                 return \call_user_func_array($object, $args);
@@ -66,9 +66,9 @@ trait ContainerAwareTrait
     /**
      * Enable access to the DI container by plugin consumers.
      *
-     * @return ContainerInterface
+     * @return ContainerInterface|null
      */
-    public function getContainer(): ContainerInterface
+    public function getContainer(): ?ContainerInterface
     {
         return $this->container;
     }
@@ -76,10 +76,10 @@ trait ContainerAwareTrait
     /**
      * Set the container.
      *
-     * @param ContainerInterface $container Dependency injection container.
+     * @param ContainerInterface|null $container Dependency injection container.
      * @return $this
      */
-    public function setContainer(ContainerInterface $container): self
+    public function setContainer(?ContainerInterface $container = null): self
     {
         $this->container = $container;
 
