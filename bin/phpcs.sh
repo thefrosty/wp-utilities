@@ -22,8 +22,6 @@ if [[ ${phpFilesCount} == 0 ]]; then
   exit 0
 fi
 
-echo "Checking files: $phpFiles"
-
 if [[ ${phpFilesCount} -gt 2 ]] && { [[ ${GITHUB_ACTIONS+x} ]] || [[ ${CIRCLECI+x} ]]; }; then
   args="$args --report=summary"
 fi
