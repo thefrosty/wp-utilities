@@ -32,7 +32,7 @@ jobs:
         id: ci-setup
         uses: ./.github/actions/ci-setup
         with:
-          extensions: ''
+          extensions: 'curl'
           extensions-cache-key: run-phpcs
           php-version: ${{ matrix.php-versions }}
           token: ${{ secrets.GITHUB_TOKEN }}
