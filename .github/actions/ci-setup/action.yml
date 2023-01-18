@@ -13,6 +13,9 @@ inputs:
   php-version:
     description: 'The PHP version to be setup'
     required: true
+  token:
+    description: 'A GitHub PAT'
+    required: true
   tools:
     default: 'composer'
     description: 'shivammathur/setup-php tools'
@@ -53,7 +56,9 @@ runs:
 
     - name: Composer config
       run: |
-        composer config github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
+        composer config github-oauth.github.com "${{ env.GITHUB_TOKEN }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
       shell: bash
 
     - name: Composer update

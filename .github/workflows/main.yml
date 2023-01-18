@@ -35,6 +35,7 @@ jobs:
           extensions: ''
           extensions-cache-key: run-phpcs
           php-version: ${{ matrix.php-version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           tools: 'composer, cs2pr, phpcs'
 
       - name: Run PHPCS
@@ -67,6 +68,7 @@ jobs:
           extensions: 'curl, mysql, mysqli, tar, zip'
           extensions-cache-key: run-phpunit
           php-version: ${{ env.PHP_VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           tools: 'composer, phpunit'
 
       - name: Run PHPUnit
