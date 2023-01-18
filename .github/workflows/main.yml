@@ -74,7 +74,7 @@ jobs:
       - name: Run PHPUnit
         continue-on-error: false
         id: phpunit
-        run:  composer phpunit
+        run: composer phpunit
         env:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
 
