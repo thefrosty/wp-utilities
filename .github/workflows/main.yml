@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  PHP_VERSIONS: [ 7.4, 8.0, 8.1, 8.2 ]
+  PHP_VERSIONS: ( 7.4, 8.0, 8.1, 8.2 )
   WP_VERSION: 6.1.1
 
 # Cancels all previous workflow runs for the same branch that have not yet completed.
