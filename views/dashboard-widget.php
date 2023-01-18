@@ -14,15 +14,10 @@ if (!($this instanceof DashboardWidget)) {
 $div_open = '<div class="rss-widget"><ul>';
 $div_close = '</ul></div>';
 echo $div_open;
-switch ($this->getWidget()->getType()) {
-    case Widget::TYPE_RSS:
-        $template = __DIR__ . 'dashboard-widget/rss.php';
-        break;
-    case Widget::TYPE_REST:
-    default:
-        $template = __DIR__ . '/dashboard-widget/rest.php';
-        break;
-}
+$template = match ($this->getWidget()->getType()) {
+    Widget::TYPE_RSS => __DIR__ . 'dashboard-widget/rss.php',
+    default => __DIR__ . '/dashboard-widget/rest.php',
+};
 include $template;
 echo $div_close;
 
