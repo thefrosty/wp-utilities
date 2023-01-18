@@ -62,7 +62,7 @@
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
     "phpcs": [
-      "bash ./bin/phpcs.sh --report-full --report-checkstyle=./phpcs-report.xml"
+      "bash ./bin/phpcs.sh"
     ],
     "phpmd": [
       "bash ./bin/phpmd.sh"

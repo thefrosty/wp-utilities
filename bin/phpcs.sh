@@ -23,7 +23,7 @@ if [[ ${phpFilesCount} == 0 ]]; then
 fi
 
 if [[ ${phpFilesCount} -gt 2 ]] && { [[ ${GITHUB_ACTIONS+x} ]] || [[ ${CIRCLECI+x} ]]; }; then
-  args="$args --report=summary"
+  args="$args --report-full --report-checkstyle=./phpcs-report.xml"
 fi
 
 phpFiles=$(echo "${phpFiles}" | xargs)
