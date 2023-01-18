@@ -5,7 +5,7 @@ set -e
 source "$(dirname "$0")/functions.sh"
 echo 'Checking PHPCS'
 
-args="--runtime-set testVersion ${PHP_VERSION}-"
+args="${1} --runtime-set testVersion ${PHP_VERSION}-"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
@@ -23,7 +23,7 @@ if [[ ${phpFilesCount} == 0 ]]; then
 fi
 
 if [[ ${phpFilesCount} -gt 2 ]] && { [[ ${GITHUB_ACTIONS+x} ]] || [[ ${CIRCLECI+x} ]]; }; then
-  args="$args --report-full --report-checkstyle=./phpcs-report.xml"
+  args="$args --report=summery"
 fi
 
 phpFiles=$(echo "${phpFiles}" | xargs)
