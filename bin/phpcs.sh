@@ -5,8 +5,8 @@ set -e
 source "$(dirname "$0")/functions.sh"
 echo 'Checking PHPCS'
 
-echo "$(dirname $PWD)"
-args="--standard=./$(dirname $PWD)/phpcs-ruleset.xml --runtime-set testVersion ${PHP_VERSION}-"
+ls "$(dirname $PWD)"
+args="--standard=$(dirname $PWD)/phpcs-ruleset.xml --runtime-set testVersion ${PHP_VERSION}-"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
