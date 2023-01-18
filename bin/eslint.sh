@@ -2,8 +2,8 @@
 
 set -e
 
-echo 'Checking ESLint'
 source "$(dirname "$0")/functions.sh"
+echo 'Checking ESLint'
 
 jsFiles=""
 jsFilesCount=0
@@ -21,6 +21,8 @@ if [[ ${jsFilesCount} == 0 ]]; then
 	exit 0
 fi
 
+jsFiles=$(echo "${jsFiles}" | xargs)
 echo "Checking files: $jsFiles"
 
-npx standard "${jsFiles}"
+# shellcheck disable=SC2086
+npx standard ${jsFiles}
