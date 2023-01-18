@@ -2,8 +2,8 @@
 
 set -e
 
-echo 'Checking PHPMD'
 source "$(dirname "$0")/functions.sh"
+echo 'Checking PHPMD'
 
 args="text phpmd-ruleset.xml --exclude tests,vendor --suffixes php"
 phpFiles=""
@@ -22,8 +22,10 @@ if [[ ${phpFilesCount} == 0 ]]; then
   exit 0
 fi
 
+phpFiles=$(echo "${phpFiles:1}" | xargs)
 echo "Checking files: $phpFiles"
 
+# shellcheck disable=SC2086
 for file in ${phpFiles}; do
-  ./vendor/bin/phpmd ${file} ${args}
+  source_bin_file phpmd ${file} "${args}"
 done
