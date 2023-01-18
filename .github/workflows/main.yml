@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # No shallow clone, we need all history!
 
@@ -34,21 +34,25 @@ jobs:
           tools: composer, cs2pr, phpunit
 
       - name: Get composer cache directory
-        id: composercache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: php-${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
+      - name: Composer update
         run: composer update --prefer-dist --no-interaction
 
-      - name: Create all branches
-        run: source ./bin/create-all-branches.sh
+      - name: Get Changed Files
+        id: files
+        uses: masesgroup/retrieve-changed-files@v2
+
+#      - name: Create all branches
+#        run: source ./bin/create-all-branches.sh
 
       - name: Run composer tests
         continue-on-error: false
