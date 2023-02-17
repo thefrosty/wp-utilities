@@ -18,12 +18,11 @@ concurrency:
 jobs:
   run-phpcs:
     name: Run PHPCS
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     strategy:
       matrix:
         php-version: [ "8.0", "8.1", "8.2" ]
-        coverage: [ true ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -50,9 +49,42 @@ jobs:
         if: ${{ always() && steps.phpcs.outcome == 'failure' }}
         run: cs2pr ./phpcs-report.xml
 
+  run-phpmd:
+    name: Run PHPMD
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    strategy:
+      matrix:
+        php-version: [ "8.0", "8.1", "8.2" ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup
+        id: ci-setup
+        uses: ./.github/actions/ci-setup
+        with:
+          extensions: 'curl'
+          extensions-cache-key: run-phpunit-${{ matrix.php-version }}
+          php-version: ${{ matrix.php-version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tools: 'composer, phpmd'
+
+      - name: Run PHPMD
+        continue-on-error: true
+        id: phpmd
+        run: composer phpmd
+        env:
+          CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: false
+
   run-phpunit:
     name: Run PHPUnit
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     strategy:
       matrix:
