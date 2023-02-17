@@ -230,7 +230,6 @@ class Updater implements WpHooksInterface
         if (!\is_object($args)) {
             return $result;
         }
-        
         // Check if this call API is for the right plugin
         if (empty($args->slug) || $args->slug !== $this->config['slug']) {
             return $result;
