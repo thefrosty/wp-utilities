@@ -3,10 +3,15 @@
 namespace TheFrosty\WpUtilities\Models;
 
 use Exception;
+use function date_create;
+use function in_array;
+use function is_array;
+use function is_null;
+use function is_object;
+use function method_exists;
 
 /**
  * Class BaseModel
- *
  * @package TheFrosty\WpUtilities\Models
  */
 abstract class BaseModel
@@ -14,11 +19,13 @@ abstract class BaseModel
 
     /**
      * BaseModel constructor.
-     *
-     * @param array $fields
+     * @param array|null $fields
      */
-    public function __construct(array $fields)
+    public function __construct(?array $fields = null)
     {
+        if (!is_array($fields)) {
+            return;
+        }
         $this->populate($fields);
     }
 
@@ -33,12 +40,10 @@ abstract class BaseModel
     }
 
     /**
-     * Optional method to get a model as an array
-     * Default implementation is to engage fields listed in getSerializableFields()
-     *
-     * You should implement customized toArray() if you are using
-     * logic different from described in getSerializableFields() in child classes
-     *
+     * Optional method to get a model as an array.
+     * Default implementation is to engage fields listed in getSerializableFields().
+     * You should implement customized toArray() if you are using logic different from described in
+     * getSerializableFields() in child classes.
      * @return array
      * @throws Exception
      */
@@ -47,14 +52,21 @@ abstract class BaseModel
         if (!empty($this->getSerializableFields())) {
             $result = [];
 
-            foreach ($this->getSerializableFields() as $index => $field_name) {
+            foreach ($this->getSerializableFields() as $field_name) {
                 $method = $this->getGetMethod($field_name);
-                if (!\method_exists($this, $method)) {
+                if (!method_exists($this, $method)) {
                     continue;
                 }
                 $value = $this->$method();
-                if (\is_object($value) && \method_exists($value, 'toArray')) {
+                if (is_object($value) && method_exists($value, 'toArray')) {
                     $result[$field_name] = $value->toArray();
+                    continue;
+                }
+                if (
+                    (is_array($value) && !empty($value[0])) &&
+                    (is_object($value[0]) && method_exists($value[0], 'toArray'))
+                ) {
+                    $result[$field_name] = $this->toArrayDeep($value);
                     continue;
                 }
                 $result[$field_name] = $value;
@@ -62,8 +74,10 @@ abstract class BaseModel
 
             return $result;
         }
-        throw new Exception('If you are going to use toArray() in your model you have
-            to implement custom logic or return a list of fields in getSerializableFields().');
+        throw new Exception(
+            'If you are going to use toArray() in your model you have
+           to implement custom logic or return a list of fields in getSerializableFields().'
+        );
     }
 
     /**
@@ -75,7 +89,6 @@ abstract class BaseModel
      * script functionality.
      *
      * @param BaseModel[] $models
-     *
      * @return array
      * @throws Exception
      */
@@ -90,8 +103,7 @@ abstract class BaseModel
     }
 
     /**
-     * Get datetime fields
-     *
+     * Get datetime fields.
      * @return array
      */
     protected function getDateTimeFields(): array
@@ -101,9 +113,7 @@ abstract class BaseModel
 
     /**
      * Get the fields to be used in toArray()
-     * Field names should be in camelCase (ex. propertyName)
-     * so that getPropertyName could easily be called
-     *
+     * Field names should be in camelCase (ex. propertyName) so that getPropertyName could easily be called
      * @return array
      */
     protected function getSerializableFields(): array
@@ -112,16 +122,14 @@ abstract class BaseModel
     }
 
     /**
-     * Populate model
-     *
+     * Populate model.
      * @param array $fields
-     * @return void
      */
     protected function populate(array $fields): void
     {
         foreach ($fields as $field => $value) {
             // If field value is null we just leave it blank
-            if (\is_null($value)) {
+            if (is_null($value)) {
                 continue;
             }
 
@@ -129,13 +137,13 @@ abstract class BaseModel
             $populate_method = $this->getPopulateMethod($field);
 
             // First try to proceed with custom population logic
-            if (\method_exists($this, $populate_method)) {
+            if (method_exists($this, $populate_method)) {
                 $this->$populate_method($value);
                 // If no custom logic found proceed with regular setters
-            } elseif (\method_exists($this, $setter_method)) {
+            } elseif (method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
-                if (\in_array($field, $this->getDateTimeFields(), true)) {
-                    $value = \date_create($value);
+                if (in_array($field, $this->getDateTimeFields(), true)) {
+                    $value = date_create($value);
                 }
                 $this->$setter_method($value);
             }
@@ -143,21 +151,11 @@ abstract class BaseModel
     }
 
     /**
-     * Gets the 'set' method.
-     * @param string $field
-     * @return string
-     */
-    private function getSetterMethod(string $field): string
-    {
-        return $this->getMethod('set', $field);
-    }
-
-    /**
      * Gets the 'get' method.
      * @param string $field
      * @return string
      */
-    private function getGetMethod(string $field): string
+    protected function getGetMethod(string $field): string
     {
         return $this->getMethod('get', $field);
     }
@@ -173,6 +171,16 @@ abstract class BaseModel
     }
 
     /**
+     * Gets the 'set' method.
+     * @param string $field
+     * @return string
+     */
+    private function getSetterMethod(string $field): string
+    {
+        return $this->getMethod('set', $field);
+    }
+
+    /**
      * Helper to get the method with prefix.
      * @param string $prefix
      * @param string $field
@@ -183,6 +191,7 @@ abstract class BaseModel
         $search = \array_merge(['_', '-'], $this->getCustomDelimiters());
         $delimiters = '_-';
         $delimiters .= !empty($this->getCustomDelimiters()) ? \implode('', $this->getCustomDelimiters()) : '';
+
         return $prefix . \str_replace($search, '', \ucwords($field, $delimiters));
     }
 }
