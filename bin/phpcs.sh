@@ -5,7 +5,7 @@ set -e
 source "$(dirname "$0")/functions.sh"
 echo 'Checking PHPCS'
 
-args="--standard=phpcs-ruleset.xml --runtime-set testVersion ${TEST_VERSION}-"
+args="--runtime-set testVersion ${PHP_VERSION}-"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
@@ -22,14 +22,9 @@ if [[ ${phpFilesCount} == 0 ]]; then
   exit 0
 fi
 
-echo "Checking files: $phpFiles"
-
-if [[ ${phpFilesCount} -gt 2 ]] && { [[ ${GITHUB_ACTIONS+x} ]] || [[ ${CIRCLECI+x} ]]; }; then
-  args="$args --report=summary"
-fi
-
 phpFiles=$(echo "${phpFiles}" | xargs)
 echo "Checking files: $phpFiles"
+echo "Args: $args"
 
 # shellcheck disable=SC2086
-source_bin_file phpcs "${args}" ${phpFiles}
+source_bin_file phpcs ${args} ${phpFiles} --report-full --report-checkstyle=./phpcs-report.xml

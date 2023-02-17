@@ -47,7 +47,7 @@ class Updater implements WpHooksInterface
     private array $missing_config;
 
     /**
-     * GitHub response data.
+     * GitHub's response data.
      * @var array $github_data Temp data fetched from GitHub,
      * allows us to only load the data once per class instance
      */
@@ -227,6 +227,9 @@ class Updater implements WpHooksInterface
      */
     protected function getPluginInfo($result, string $action, $args)
     {
+        if (!\is_object($args)) {
+            return $result;
+        }
         // Check if this call API is for the right plugin
         if (empty($args->slug) || $args->slug !== $this->config['slug']) {
             return $result;
