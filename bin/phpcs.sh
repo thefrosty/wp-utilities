@@ -31,4 +31,4 @@ echo "Checking files: $phpFiles"
 echo "Args: $args"
 
 # shellcheck disable=SC2086
-source_bin_file phpcs "${args}" ${phpFiles}
+source_bin_file phpcs "${args}" ${phpFiles} --report-full --report-checkstyle=./phpcs-report.xml
