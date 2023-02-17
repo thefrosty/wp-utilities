@@ -34,7 +34,7 @@
     "ext-simplexml": "*",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
     "phpcompatibility/php-compatibility": "^9.3",
-    "phpmd/phpmd": "^2.6",
+    "phpmd/phpmd": "^2.13",
     "phpunit/php-code-coverage": "^9.2",
     "phpunit/phpunit": "^9",
     "pimple/pimple": "^3.5",
