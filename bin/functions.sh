@@ -80,7 +80,7 @@ function source_bin_file() {
   fi
 }
 
-against=$(get_commit_against)
+against=$(get_commit_against "$@")
 commit=$(get_branch)
 echo "git merge-base commit: ${commit} against: ${against}"
 if [[ -z ${CHANGED_FILES+x} ]]; then
@@ -89,3 +89,5 @@ if [[ -z ${CHANGED_FILES+x} ]]; then
   else
     commitFiles="${CHANGED_FILES}"
 fi
+
+export commitFiles
