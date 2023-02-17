@@ -22,10 +22,6 @@ if [[ ${phpFilesCount} == 0 ]]; then
   exit 0
 fi
 
-if [[ ${phpFilesCount} -gt 2 ]] && { [[ ${GITHUB_ACTIONS+x} ]] || [[ ${CIRCLECI+x} ]]; }; then
-  args="$args --report=summery"
-fi
-
 phpFiles=$(echo "${phpFiles}" | xargs)
 echo "Checking files: $phpFiles"
 echo "Args: $args"
