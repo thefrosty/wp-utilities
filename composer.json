@@ -71,7 +71,7 @@
       "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyze"
+      "./vendor/bin/phpstan analyze src"
     ],
     "tests": [
       "@phpcs",

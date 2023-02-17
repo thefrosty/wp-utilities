@@ -77,11 +77,6 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          fail_ci_if_error: false
-
   run-phpunit:
     name: Run PHPUnit
     runs-on: ubuntu-latest
@@ -115,3 +110,31 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: false
+
+  run-phpstan:
+    name: Run PHPStan
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    strategy:
+      matrix:
+        php-version: [ "8.0", "8.1", "8.2" ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup
+        id: ci-setup
+        uses: ./.github/actions/ci-setup
+        with:
+          extensions: 'curl'
+          extensions-cache-key: run-phpunit-${{ matrix.php-version }}
+          php-version: ${{ matrix.php-version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tools: 'composer, phpstan'
+
+      - name: Run PHPStan
+        continue-on-error: true
+        id: phpstan
+        run: composer phpstan
+        env:
+          CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
