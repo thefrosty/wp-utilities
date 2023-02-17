@@ -5,7 +5,7 @@ set -e
 source "$(dirname "$0")/functions.sh"
 echo 'Checking PHPCS'
 
-args="${1} --runtime-set testVersion ${PHP_VERSION}-"
+args="--standard=phpcs.ruleset.xml --runtime-set testVersion ${PHP_VERSION}-"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
@@ -27,4 +27,4 @@ echo "Checking files: $phpFiles"
 echo "Args: $args"
 
 # shellcheck disable=SC2086
-source_bin_file phpcs "${phpFiles}" "${args} --report-full --report-checkstyle=./phpcs-report.xml"
+source_bin_file phpcs "${args}" ${phpFiles} --report-full --report-checkstyle=./phpcs-report.xml
