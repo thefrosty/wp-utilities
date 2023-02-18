@@ -47,6 +47,7 @@
     "yoast/phpunit-polyfills": "^1.0.2"
   },
   "suggest": {
+    "jjgrainger/posttypes": "Simple WordPress custom post types.",
     "symfony/http-foundation": ""
   },
   "autoload": {
