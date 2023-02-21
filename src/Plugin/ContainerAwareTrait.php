@@ -75,9 +75,8 @@ trait ContainerAwareTrait
 
     /**
      * Set the container.
-     *
      * @param ContainerInterface|null $container Dependency injection container.
-     * @return $this
+     * @return ContainerAwareTrait|AbstractContainerProvider|Plugin
      */
     public function setContainer(?ContainerInterface $container = null): self
     {

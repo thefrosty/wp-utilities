@@ -7,4 +7,5 @@ vendor/
 wordpress/
 .phpunit.result.cache
 composer.lock
+phpcs-report.xml
 *.bak

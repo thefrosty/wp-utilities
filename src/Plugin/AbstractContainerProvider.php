@@ -14,7 +14,7 @@ abstract class AbstractContainerProvider implements WpHooksInterface, PluginAwar
 
     /**
      * AbstractContainerProvider constructor.
-     * @param Container|ContainerInterface|null $container Set the container, or use `$this->setContainer($container)`.
+     * @param ContainerInterface|null $container Set the container, or use `$this->setContainer($container)`.
      */
     public function __construct(?ContainerInterface $container = null)
     {

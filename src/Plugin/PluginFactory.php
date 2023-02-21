@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
@@ -31,7 +33,6 @@ class PluginFactory
 
     /**
      * Create a plugin instance.
-     *
      * @param string $slug Plugin slug.
      * @param string|null $filename Optional. Absolute path to the main plugin file.
      *                         This should be passed if the calling file is not the main plugin file.
@@ -67,7 +68,6 @@ class PluginFactory
 
     /**
      * Set the Pimple\Container if it's available.
-     *
      * @param Plugin $plugin
      * @return Plugin
      */
@@ -77,7 +77,9 @@ class PluginFactory
             \class_exists('\Pimple\Container') &&
             \interface_exists('\Psr\Container\ContainerInterface')
         ) {
-            $plugin->setContainer(self::getContainer());
+            $container = self::getContainer();
+            $plugin->setContainer($container);
+            $container[$plugin->getSlug()] = $plugin;
         }
 
         return $plugin;
