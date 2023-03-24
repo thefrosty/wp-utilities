@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [3.1.1] - 2023-03-24
+
+- Resolve Uncaught Error: Call to protected method
+
 ## [3.1.0] - 2023-02-18
 
-- 
+- Add Object Registrar Manager API by @thefrosty in #111
 
 ## [3.0.0] - 2023-02-17
 
