@@ -32,7 +32,7 @@ trait WpCacheTrait
      * With this value you should be able to delete the cache for a specific query (if needed).
      * @return string|null
      */
-    protected function getQueryCacheKey(): ?string
+    public function getQueryCacheKey(): ?string
     {
         return $this->queryCacheKey;
     }
@@ -42,7 +42,7 @@ trait WpCacheTrait
      * @param string $queryCacheKey
      * @return string
      */
-    protected function setQueryCacheKey(string $queryCacheKey): string
+    public function setQueryCacheKey(string $queryCacheKey): string
     {
         $this->queryCacheKey = $queryCacheKey;
 
@@ -52,7 +52,7 @@ trait WpCacheTrait
     /**
      * Get the cache group the current query.
      */
-    protected function getCacheGroup(): string
+    public function getCacheGroup(): string
     {
         return $this->queryCacheGroup ?? static::class;
     }
@@ -62,7 +62,7 @@ trait WpCacheTrait
      *
      * @param string $group
      */
-    protected function setCacheGroup(string $group): void
+    public function setCacheGroup(string $group): void
     {
         $this->queryCacheGroup = $group;
     }
@@ -80,7 +80,7 @@ trait WpCacheTrait
      * @return mixed Cached object value.
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    protected function getCache(string $key, ?string $group = null, bool $force = false, ?bool &$found = null)
+    public function getCache(string $key, ?string $group = null, bool $force = false, ?bool &$found = null)
     {
         return wp_cache_get($key, $group ?? $this->getCacheGroup(), $force, $found);
     }
@@ -95,7 +95,7 @@ trait WpCacheTrait
      *
      * @return bool Returns TRUE on success or FALSE on failure.
      */
-    protected function setCache(string $key, $value, ?string $group = null, int $expiration = 0): bool
+    public function setCache(string $key, $value, ?string $group = null, int $expiration = 0): bool
     {
         return wp_cache_set($key, $value, $group ?? $this->getCacheGroup(), $expiration);
     }
@@ -108,7 +108,7 @@ trait WpCacheTrait
      *
      * @return bool Returns TRUE on success or FALSE on failure.
      */
-    protected function deleteCache(string $key, ?string $group = null): bool
+    public function deleteCache(string $key, ?string $group = null): bool
     {
         return wp_cache_delete($key, $group ?? $this->getCacheGroup());
     }
