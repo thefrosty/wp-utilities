@@ -19,13 +19,13 @@ trait WpCacheTrait
      * Cache key value.
      * @var string|null $queryCacheKey
      */
-    private ?string $queryCacheKey;
+    private ?string $queryCacheKey = null;
 
     /**
      * Cache group value.
      * @var string|null $queryCacheGroup
      */
-    private ?string $queryCacheGroup;
+    private ?string $queryCacheGroup = null;
 
     /**
      * Get the cache key for the current query.
