@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
@@ -33,7 +35,7 @@ trait WpRemote
      * @param string $method The method type (supports GET & POST only).
      * @return mixed
      */
-    public function retrieveBody(string $url, array $args = [], string $method = 'GET')
+    public function retrieveBody(string $url, array $args = [], string $method = 'GET'): mixed
     {
         if (!in_array($method, ['GET', 'POST'], true)) {
             return false;
@@ -63,18 +65,20 @@ trait WpRemote
         ?int $expiration = 0,
         ?string $user_agent = null,
         ?string $version = null
-    ) {
+    ): mixed {
         $key = $this->getHashedKey($url);
         $body = $this->getCache($key);
         if (empty($body)) {
             if ($user_agent !== null) {
                 $args = [
-                    'user-agent' => esc_attr(sprintf(
-                        '%s/%s; %s',
-                        $user_agent,
-                        $version ?? $GLOBALS['wp_version'],
-                        get_bloginfo('url')
-                    )),
+                    'user-agent' => esc_attr(
+                        sprintf(
+                            '%s/%s; %s',
+                            $user_agent,
+                            $version ?? $GLOBALS['wp_version'],
+                            get_bloginfo('url')
+                        )
+                    ),
                 ];
             }
             $body = $this->retrieveBody($url, $args ?? []);
@@ -94,7 +98,7 @@ trait WpRemote
      * @param array $args
      * @return array|\WP_Error
      */
-    public function wpRemoteGet(string $url, array $args = [])
+    public function wpRemoteGet(string $url, array $args = []): \WP_Error|array
     {
         return wp_remote_get(esc_url($url), $this->buildRequestArgs($args));
     }
@@ -105,7 +109,7 @@ trait WpRemote
      * @param array $args
      * @return array|\WP_Error
      */
-    public function wpRemotePost(string $url, array $args = [])
+    public function wpRemotePost(string $url, array $args = []): \WP_Error|array
     {
         return wp_remote_post(esc_url($url), $this->buildRequestArgs($args));
     }
