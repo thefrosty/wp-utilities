@@ -32,16 +32,19 @@ trait FormElementsTrait
     protected function inputHtml(string $name, ?string $placeholder = null): void
     {
         printf(
-            '<span style="margin-right:6px"><input list="%1$s-list" type="text" id="%1$s" name="%1$s" value="%2$s" placeholder="%3$s" title="%4$s">
-<datalist id="%1$s-list"><option value="%5$s"><option value="NULL"><option value="EMPTY"></datalist></span>',
+            '<span style="margin-right:6px"><input list="%1$s-list" type="text" id="%1$s" name="%1$s" value="%2$s" 
+placeholder="%3$s" title="%4$s"><datalist id="%1$s-list"><option value="%5$s">
+<option value="NULL"><option value="EMPTY"></datalist></span>',
             esc_attr(sanitize_key($name)),
             esc_attr(wp_unslash($this->getRequest()->query->get($name))),
             esc_html($placeholder ?? __('Search the value by Meta Key', 'wp-utilities')),
             esc_html(
                 __(
-                    'Meta Value; search the value by Meta Key. Use "NULL" or "EMPTY" to to search for empty (missing) value by key. 
+                    'Meta Value; search the value by Meta Key. Use "NULL" or "EMPTY" to to search for empty (missing) 
+                    value by key. 
 ---
-For advanced search: use `meta_key:"$meta_key" post_title:"$post_title" post_type:"$post_type" to search by the post title value (ID).',
+For advanced search: use `meta_key:"$meta_key" post_title:"$post_title" post_type:"$post_type" to search by the 
+post title value (ID).',
                     'wp-utilities'
                 )
             ),
@@ -66,14 +69,14 @@ For advanced search: use `meta_key:"$meta_key" post_title:"$post_title" post_typ
         foreach ($options as $optgroup => $option) {
             if (
                 !is_array($option) ||
-                count(array_filter($option, static fn ($entry): bool => !$entry instanceof OptionValueLabel)) > 0
+                count(array_filter($option, static fn($entry): bool => !$entry instanceof OptionValueLabel)) > 0
             ) {
                 throw new \InvalidArgumentException(
                     sprintf('An array of %s values is expected.', OptionValueLabel::class)
                 );
             }
             printf('<optgroup label="%s">', esc_attr($optgroup));
-            array_walk($option, static function(OptionValueLabel $model) use ($current, $optgroup):  void {
+            array_walk($option, static function (OptionValueLabel $model) use ($current, $optgroup): void {
                 printf(
                     '<option value="%1$s" label="%2$s" data-query="%4$s"%3$s>%2$s</option>',
                     esc_attr($model->getValue()),
