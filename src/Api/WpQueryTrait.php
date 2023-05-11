@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
@@ -7,6 +9,7 @@ use WP_Query;
 use function _deprecated_argument;
 use function apply_filters;
 use function array_filter;
+use function call_user_func;
 use function esc_html__;
 use function is_int;
 use function json_encode;
@@ -18,7 +21,6 @@ use const MINUTE_IN_SECONDS;
 
 /**
  * Trait WpQueryTrait.
- *
  * @package TheFrosty\WpUtilities\Api
  */
 trait WpQueryTrait
@@ -28,10 +30,8 @@ trait WpQueryTrait
 
     /**
      * Return a new WP_Query object.
-     *
      * @param string $post_type The post type to query.
      * @param array $args Additional WP_Query parameters
-     *
      * @return WP_Query
      */
     protected function wpQuery(string $post_type, array $args = []): WP_Query
@@ -43,11 +43,9 @@ trait WpQueryTrait
 
     /**
      * Return a cached WP_Query object.
-     *
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
      * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
-     *
      * @return WP_Query
      */
     protected function wpQueryCached(string $post_type, array $args = [], ?int $expiration = null): WP_Query
@@ -72,7 +70,6 @@ trait WpQueryTrait
 
     /**
      * Return an array of WP_Query post ID's.
-     *
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
      * @param int|null $expiration Deprecated, use `$this->wpQueryGetAllIdsCached()` instead.
@@ -96,7 +93,6 @@ trait WpQueryTrait
 
     /**
      * Return an array of cached WP_Query post ID's.
-     *
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
      * @param int|null $expiration The expiration time, defaults to `MINUTE_IN_SECONDS`.
@@ -110,7 +106,6 @@ trait WpQueryTrait
     /**
      * Return an array of cached WP_Query post ID's. This will do a large loop to get *all* posts within
      * the `$post_type`. So when you are aware of thousands of posts, and might need them all use this method.
-     *
      * @param callable $callback
      * @param string $post_type
      * @param array $args Additional WP_Query parameters.
@@ -124,7 +119,6 @@ trait WpQueryTrait
         array $args = [],
         ?int $expiration = null
     ): array {
-
         $paged = 0;
         $post_ids = [];
         do {
@@ -136,7 +130,7 @@ trait WpQueryTrait
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ];
-            $query = \call_user_func($callback, $post_type, wp_parse_args($args, $defaults), $expiration);
+            $query = call_user_func($callback, $post_type, wp_parse_args($args, $defaults), $expiration);
             if ($query instanceof WP_Query && $query->have_posts()) {
                 foreach ($query->posts as $id) {
                     $post_ids[] = $id;
