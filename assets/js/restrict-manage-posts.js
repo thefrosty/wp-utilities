@@ -1,5 +1,3 @@
-jQuery.getScript('./utilities/functions.js')
-
 /** global jQuery */
 ;(function ($) {
   'use strict'
