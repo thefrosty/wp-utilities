@@ -10,6 +10,9 @@ use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use WP_Query;
 use function apply_filters;
 use function array_shift;
+use function defined;
+use function esc_attr;
+use function esc_url;
 use function is_admin;
 use function is_array;
 use function is_numeric;
@@ -21,6 +24,7 @@ use function wp_enqueue_script;
 use function wp_enqueue_style;
 use function wp_register_script;
 use function wp_register_style;
+use const SCRIPT_DEBUG;
 
 /**
  * Class RestrictManagePosts
@@ -37,6 +41,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
     public function addHooks(): void
     {
         $this->addAction('admin_enqueue_scripts', [$this, 'enqueueScripts'], 19);
+        $this->addFilter('script_loader_tag', [$this, 'modifyScriptType'], 10, 3);
         $this->addAction('restrict_manage_posts', [$this, 'addManagePostsHtml']);
         $this->addAction('pre_get_posts', [$this, 'preGetPostsFilterMetaQuery']);
     }
@@ -75,30 +80,56 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             return;
         }
 
+        $min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
         if (!wp_style_is('select2', 'registered')) {
             wp_register_style(
                 'select2',
-                'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css',
+                sprintf('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2%s.css', $min),
                 ver: '4.0.13'
             );
         }
         if (!wp_script_is('select2', 'registered')) {
             wp_register_script(
                 'select2',
-                'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js',
+                sprintf('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2%s.js', $min),
                 ['jquery'],
                 '4.0.13',
                 true
             );
         }
         wp_register_script(
+            self::HANDLE_UTILITY_FUNCTIONS,
+            sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/utilities/functions%s.js', $min),
+            in_footer: true
+        );
+        wp_register_script(
             self::HANDLE,
-            sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s.min.js', self::HANDLE),
-            ['select2'],
+            sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s%s.js', self::HANDLE, $min),
+            ['select2', self::HANDLE_UTILITY_FUNCTIONS],
             in_footer: true
         );
         wp_enqueue_style('select2');
         wp_enqueue_script(self::HANDLE);
+    }
+
+    /**
+     * Change the script `$tag` and use "module" for the type.
+     * @param string $tag The `<script>` tag for the enqueued script.
+     * @param string $handle The script's registered handle.
+     * @param string $src The script's source URL.
+     * @return string
+     */
+    protected function modifyScriptType(string $tag, string $handle, string $src): string
+    {
+        if ($handle !== self::HANDLE_UTILITY_FUNCTIONS) {
+            return $tag;
+        }
+
+        return sprintf(
+            "<script type='module' src='%s' id='%s-js'></script>\n",
+            esc_url($src),
+            esc_attr($handle)
+        );
     }
 
     /**
