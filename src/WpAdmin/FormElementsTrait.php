@@ -10,6 +10,7 @@ use function __;
 use function array_walk;
 use function esc_attr;
 use function esc_html;
+use function html_entity_decode;
 use function is_array;
 use function printf;
 use function sanitize_key;
@@ -77,12 +78,15 @@ post title value (ID).',
             }
             printf('<optgroup label="%s">', esc_attr($optgroup));
             array_walk($option, static function (OptionValueLabel $model) use ($current, $optgroup): void {
+                [$label, $extra] = array_pad(explode('|', $model->getLabel()), 2, null);
+                [$value] = explode('|', $model->getValue());
                 printf(
-                    '<option value="%1$s" label="%2$s" data-query="%4$s"%3$s>%2$s</option>',
-                    esc_attr($model->getValue()),
-                    esc_html($model->getLabel()),
-                    selected($current, $model->getValue(), false),
-                    esc_attr($optgroup)
+                    '<option value="%1$s" label="%2$s" data-query="%4$s"%3$s%5$s>%2$s</option>',
+                    esc_attr($value),
+                    esc_html($label),
+                    selected($current, $value, false),
+                    esc_attr($optgroup),
+                    html_entity_decode($extra ?? '')
                 );
             });
             echo '</optgroup>';
