@@ -3,13 +3,15 @@
   'use strict'
 
   const restrictManagePosts = {
-    selectMetaKey: $('select[name="_filter_meta_key"]'),
-    selectMetaValue: $('select[name="_filter_meta_value"]')
+    selectMetaKey: {},
+    selectMetaValue: {}
   }
   /**
    * Initiate.
    */
   restrictManagePosts.init = function () {
+    restrictManagePosts.selectMetaKey = $('select[name="_filter_meta_key"]')
+    restrictManagePosts.selectMetaValue = $('select[name="_filter_meta_value"]')
     restrictManagePosts.filterClickListener()
     restrictManagePosts.filterChangeListener()
     if (typeof $.fn.select2 !== 'undefined') {
@@ -41,7 +43,8 @@
    */
   restrictManagePosts.filterChangeListener = function () {
     restrictManagePosts.selectMetaValue.on(
-      'change select2:select', function () {
+      'change select2:select',
+      function () {
         const $this = $(this.options[this.selectedIndex])
         const optgroup = $this.closest('optgroup')
 
@@ -51,8 +54,9 @@
           restrictManagePosts.selectMetaKey.val(optgroup.prop('label'))
           restrictManagePosts.selectMetaKey.trigger('change.select2')
         }
-      })
+      }
+    )
   }
 
-  $(document).ready(() => restrictManagePosts.init)
+  $(document).ready(() => restrictManagePosts.init())
 }(jQuery))
