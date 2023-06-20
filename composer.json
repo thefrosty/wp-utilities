@@ -39,13 +39,13 @@
     "phpunit/php-code-coverage": "^9.2",
     "phpunit/phpunit": "^9",
     "pimple/pimple": "^3.5",
-    "roots/wordpress": "^6.0",
+    "roots/wordpress": "^6.2",
     "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.7",
     "szepeviktor/phpstan-wordpress": "^1.0",
-    "wp-phpunit/wp-phpunit": "^6.0",
+    "wp-phpunit/wp-phpunit": "^6.2",
     "wp-coding-standards/wpcs": "dev-develop",
-    "yoast/phpunit-polyfills": "^1.0.2"
+    "yoast/phpunit-polyfills": "^1.0.5 || ^2.0"
   },
   "suggest": {
     "jjgrainger/posttypes": "Simple WordPress custom post types."
