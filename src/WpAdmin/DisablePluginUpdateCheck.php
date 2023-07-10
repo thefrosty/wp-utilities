@@ -36,14 +36,17 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      */
     protected function httpRequestRemovePluginBasename(array $args, string $url): array
     {
-        if (\strpos($url, self::WP_ORG_UPDATE_CHECK) === 0) {
+        if (\str_starts_with($url, self::WP_ORG_UPDATE_CHECK)) {
             if (!empty($args['body']['plugins'])) {
                 $plugins = \json_decode($args['body']['plugins'], true);
                 unset($plugins['plugins'][$this->getPlugin()->getBasename()]);
                 $args['body']['plugins'] = \wp_json_encode($plugins);
             }
         }
-        if (\strpos($url, self::WP_ORG_PLUGINS_INFO) === 0) {
+        if (
+            \str_starts_with($url, self::WP_ORG_PLUGINS_INFO) &&
+            \is_string(\parse_url($url, \PHP_URL_QUERY))
+        ) {
             \parse_str(\parse_url($url, \PHP_URL_QUERY), $result);
             if (
                 !empty($result['request']) &&
@@ -68,10 +71,10 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      * @param string $url The request URL.
      * @return mixed
      */
-    protected function bypassHttpRequest($preempt, array $parsed_args, string $url)
+    protected function bypassHttpRequest($preempt, array $parsed_args, string $url): mixed
     {
         if (
-            \strpos($url, self::WP_ORG_PLUGINS_INFO) === 0 &&
+            str_starts_with($url, self::WP_ORG_PLUGINS_INFO) &&
             !empty($parsed_args[self::BYPASS_KEY]) &&
             $parsed_args[self::BYPASS_KEY] === $this->getPlugin()->getSlug()
         ) {
@@ -98,7 +101,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      * @param mixed $value
      * @return mixed
      */
-    protected function transientRemovePluginBasename($value)
+    protected function transientRemovePluginBasename(mixed $value): mixed
     {
         if (isset($value) && \is_object($value) && (!empty($value->response) && \is_array($value->response))) {
             if (!$this->hasGitHubUpdater()) {
