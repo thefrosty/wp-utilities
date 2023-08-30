@@ -20,9 +20,9 @@ use function preg_match;
 use function sanitize_text_field;
 use function sprintf;
 use function strcasecmp;
+use function TheFrosty\WpUtilities\wp_register_script;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
-use function wp_register_script;
 use function wp_register_style;
 use const SCRIPT_DEBUG;
 
@@ -100,13 +100,13 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         wp_register_script(
             self::HANDLE_UTILITY_FUNCTIONS,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/utilities/functions%s.js', $min),
-            in_footer: true
+            args: ['in_footer' => true]
         );
         wp_register_script(
             self::HANDLE,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s%s.js', self::HANDLE, $min),
             ['select2', self::HANDLE_UTILITY_FUNCTIONS],
-            in_footer: true
+            args: ['in_footer' => true]
         );
         wp_enqueue_style('select2');
         wp_enqueue_script(self::HANDLE);
