@@ -51,6 +51,9 @@
     "jjgrainger/posttypes": "Simple WordPress custom post types."
   },
   "autoload": {
+    "files": [
+      "src/functions.php"
+    ],
     "psr-4": {
       "TheFrosty\\WpUtilities\\": "src/"
     }
