@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
@@ -19,6 +21,10 @@ final class Init implements \IteratorAggregate
      */
     private const PROPERTY = 'initiated';
 
+    /**
+     * A container for objects that have been initiated.
+     * @var array $initiated
+     */
     protected array $initiated = [];
 
     /**
@@ -35,9 +41,8 @@ final class Init implements \IteratorAggregate
      */
     public function register(
         WpHooksInterface $wp_hooks,
-        PluginInterface  $plugin
-    ): PluginInterface
-    {
+        PluginInterface $plugin
+    ): PluginInterface {
         $this->wp_hooks[] = $wp_hooks;
 
         if ($wp_hooks instanceof PluginAwareInterface) {
