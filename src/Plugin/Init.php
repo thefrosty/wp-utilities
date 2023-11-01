@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
 use ArrayIterator;
+use function get_class;
 
 /**
  * Class Init
@@ -14,8 +17,15 @@ final class Init implements \IteratorAggregate
     /**
      * Helper property to check whether the object has been initiated
      * or loaded. So this class can call `initialize()` method more than once.
+     * @deprecated
      */
     private const PROPERTY = 'initiated';
+
+    /**
+     * A container for objects that have been initiated.
+     * @var array $initiated
+     */
+    protected array $initiated = [];
 
     /**
      * A container for objects that implement WpHooksInterface.
@@ -53,8 +63,8 @@ final class Init implements \IteratorAggregate
     public function initialize(): void
     {
         foreach ($this as $wp_hook) {
-            if ($wp_hook instanceof WpHooksInterface && !\property_exists($wp_hook, self::PROPERTY)) {
-                $wp_hook->{self::PROPERTY} = true;
+            if ($wp_hook instanceof WpHooksInterface && !\array_key_exists(get_class($wp_hook), $this->initiated)) {
+                $this->initiated[get_class($wp_hook)] = true;
                 $wp_hook->addHooks();
             }
         }
@@ -85,17 +95,13 @@ final class Init implements \IteratorAggregate
      */
     public function getWpHookObject(string $class_name): ?WpHooksInterface
     {
-        $instance = null;
         $wp_hooks = $this->getWpHooks();
-        \array_walk(
-            $wp_hooks,
-            static function (WpHooksInterface $object, int $key) use ($class_name, &$instance, &$wp_hooks): void {
-                if (\get_class($object) === $class_name) {
-                    $instance = $wp_hooks[$key];
-                }
+        foreach ($wp_hooks as $key => $object) {
+            if (get_class($object) === $class_name) {
+                return $object[$key];
             }
-        );
+        }
 
-        return $instance;
+        return null;
     }
 }
