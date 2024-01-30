@@ -29,7 +29,7 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup cache extensions
       id: extcache
@@ -40,7 +40,7 @@ runs:
         key: ${{ inputs.extensions-cache-key }}
 
     - name: Cache extensions
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.extcache.outputs.dir }}
         key: ${{ steps.extcache.outputs.key }}
@@ -67,4 +67,4 @@ runs:
 
     - name: Get Changed Files
       id: files
-      uses: masesgroup/retrieve-changed-files@v2
+      uses: masesgroup/retrieve-changed-files@v3
