@@ -6,7 +6,7 @@ set -e
 # https://stackoverflow.com/a/44750379/558561 -- get the default git branch name
 DEFAULT_BRANCH=$(git remote show $(git remote) | sed -n '/HEAD branch/s/.*: //p')
 OTHER_ARGUMENTS=()
-PHP_VERSION=${PHP_VERSION:-"8.0"}
+PHP_VERSION=${PHP_VERSION:-"8.1"}
 
 # Loop through arguments and process them
 # @ref https://pretzelhands.com/posts/command-line-flags/
