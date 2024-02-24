@@ -77,7 +77,7 @@
       "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyze src"
+      "./vendor/bin/phpstan analyze src --memory-limit 1G"
     ],
     "tests": [
       "@phpcs",
