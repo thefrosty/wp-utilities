@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Api\GitHub;
 
+use AllowDynamicProperties;
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 
@@ -25,8 +26,8 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * @package TheFrosty\WpUtilities\Api\GitHub
- * @SuppressWarnings(PHPMD)
  */
+#[AllowDynamicProperties]
 class Updater implements WpHooksInterface
 {
     use HooksTrait;
