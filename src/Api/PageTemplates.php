@@ -26,6 +26,8 @@ class PageTemplates extends AbstractHookProvider
      */
     private ?array $wpTemplates = null;
 
+    private const PREFIX = 'PageTemplates/';
+
     /**
      * PageTemplates constructor.
      * @param PageTemplate[]|null $templates
@@ -41,7 +43,7 @@ class PageTemplates extends AbstractHookProvider
                 continue;
             }
             $this->pageTemplates[$template->getFile()] = $template->getPath();
-            $this->wpTemplates[$template->getFile()] = $template->getDescription();
+            $this->wpTemplates[$this->getPrefix($template->getFile())] = $template->getDescription();
         }
     }
 
@@ -93,6 +95,7 @@ class PageTemplates extends AbstractHookProvider
             return $template;
         }
 
+        $page_template = \str_replace(self::PREFIX, '', $page_template);
         $filepath = \str_replace($page_template, '', $this->pageTemplates[$page_template]);
 
         $file = \sprintf('%s/%s', \untrailingslashit($filepath), $page_template);
@@ -104,5 +107,15 @@ class PageTemplates extends AbstractHookProvider
 
         // Return template
         return $template;
+    }
+
+    /**
+     * Return a prefixed file.
+     * @param string $file
+     * @return string
+     */
+    private function getPrefix(string $file): string
+    {
+        return \sprintf('%s%s', self::PREFIX, $file);
     }
 }
