@@ -30,7 +30,7 @@ class PageTemplates extends AbstractHookProvider
      * PageTemplates constructor.
      * @param PageTemplate[]|null $templates
      */
-    private function __construct(?array $templates = null)
+    public function __construct(?array $templates = null)
     {
         if (\is_null($templates)) {
             return;
