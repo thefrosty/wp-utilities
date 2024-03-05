@@ -44,6 +44,17 @@ trait TransientsTrait
     }
 
     /**
+     * Get the transient value.
+     * @param string $transient Transient name.
+     * @return mixed
+     */
+    public function getTransient(string $transient): mixed
+    {
+        return get_transient($transient);
+    }
+
+    /**
+     * Set the transient value.
      * @param string $transient Transient name. Expected to not be SQL-escaped. Must be 172 characters or fewer.
      * @param mixed $value Transient value. Must be serializable if non-scalar. Expected to not be SQL-escaped.
      * @param int $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
