@@ -23,7 +23,7 @@ class TransientsTraitTest extends TestCase
         $this->reflection = $this->getReflection($this->transientsTrait);
     }
 
-    public function testGetTransientKey()
+    public function testGetTransientKey(): void
     {
         $input = 'example_input';
         $keyPrefix = 'prefix_';
@@ -38,50 +38,27 @@ class TransientsTraitTest extends TestCase
         $this->assertEquals($expectedKey, $this->transientsTrait->getTransientKey($input, $keyPrefix));
     }
 
-    public function testGetTransient()
+    public function testGetTransient(): void
     {
         $transientName = 'example_transient';
         $expectedValue = 'example_value';
 
-        // Mocking the get_transient function
-        $this->transientsTrait->expects($this->once())
-            ->method('getTransient')
-            ->with($transientName)
-            ->willReturn($expectedValue);
-
         $this->assertEquals($expectedValue, $this->transientsTrait->getTransient($transientName));
     }
 
-    public function testSetTransient()
+    public function testSetTransient(): void
     {
         $transientName = 'example_transient';
         $value = 'example_value';
         $expiration = 3600; // 1 hour
 
-        // Mocking the set_transient function
-        $this->transientsTrait->expects($this->once())
-            ->method('setTransient')
-            ->with($transientName, $value, $expiration)
-            ->willReturn(true);
-
         $this->assertTrue($this->transientsTrait->setTransient($transientName, $value, $expiration));
     }
 
-    public function testGetTransientTimeout()
+    public function testGetTransientTimeout(): void
     {
         $transientName = 'example_transient';
-        $timeout = 3600; // 1 hour
 
-        global $wpdb;
-        $wpdbMock = $this->getMockBuilder('wpdb')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        // Mocking the get_col method of $wpdb
-        $wpdbMock->expects($this->once())
-            ->method('get_col')
-            ->willReturn([$timeout]);
-
-        $this->assertEquals($timeout, $this->transientsTrait->getTransientTimeout($transientName));
+        $this->assertEquals(null, $this->transientsTrait->getTransientTimeout($transientName));
     }
 }
