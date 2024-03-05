@@ -70,7 +70,7 @@ trait TransientsTrait
     /**
      * Get the transient timeout value.
      * @param string $transient
-     * @return array|null
+     * @return int|null
      */
     public function getTransientTimeout(string $transient): ?int
     {
