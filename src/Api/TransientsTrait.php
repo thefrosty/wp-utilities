@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
+use function get_transient;
+use function is_numeric;
 use function md5;
 use function set_transient;
 use function strlen;
@@ -63,5 +65,23 @@ trait TransientsTrait
     public function setTransient(string $transient, mixed $value, int $expiration = 0): bool
     {
         return set_transient($transient, $value, $expiration);
+    }
+
+    /**
+     * Get the transient timeout value.
+     * @param string $transient
+     * @return array|null
+     */
+    public function getTransientTimeout(string $transient): ?int
+    {
+        global $wpdb;
+        $timeout = $wpdb->get_col(
+            "
+SELECT option_value
+FROM $wpdb->options
+WHERE option_name
+LIKE '%_transient_timeout_$transient%'"
+        );
+        return !isset($timeout[0]) || !is_numeric($timeout[0]) ? null : (int)$timeout[0];
     }
 }
