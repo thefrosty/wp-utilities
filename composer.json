@@ -74,11 +74,14 @@
     "phpmd": [
       "bash ./bin/phpmd.sh"
     ],
+    "phpstan": [
+      ".bash ./bin/phpstan.sh"
+    ],
     "phpunit": [
       "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
     ],
-    "phpstan": [
-      "./vendor/bin/phpstan analyze src --memory-limit 1G"
+    "psalm": [
+      ".bash ./bin/psalm.sh"
     ],
     "tests": [
       "@phpcs",
