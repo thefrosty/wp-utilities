@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
@@ -17,9 +19,10 @@ abstract class AbstractSingleton implements SingletonInterface
     private static array $instances = [];
 
     /**
-     * @return SingletonInterface
+     * Get the instance of the class.
+     * @return static
      */
-    public static function getInstance(): SingletonInterface
+    public static function getInstance(): static
     {
         self::$instances[static::class] = self::$instances[static::class] ?? new static();
 

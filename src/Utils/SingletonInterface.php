@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
@@ -9,7 +11,8 @@ namespace TheFrosty\WpUtilities\Utils;
 interface SingletonInterface
 {
     /**
-     * @return SingletonInterface
+     * Get the instance of the class.
+     * @return static
      */
-    public static function getInstance(): SingletonInterface;
+    public static function getInstance(): static;
 }
