@@ -28,19 +28,19 @@ abstract class AbstractPostType extends AbstractHookProvider
     private array $names = [];
 
     /**
-     * PostType args array.
+     * Post Type args array.
      * @var string[] $args
      */
     private array $args = [];
 
     /**
-     * PostType labels array.
+     * Post Type labels array.
      * @var string[] $labels
      */
     private array $labels = [];
 
     /**
-     * AbstractTaxonomy constructor.
+     * AbstractPostType constructor.
      * @throws Exception When the constants aren't overridden in their parent classes.
      */
     public function __construct()
@@ -68,7 +68,7 @@ abstract class AbstractPostType extends AbstractHookProvider
     }
 
     /**
-     * Get's the Post Type name(s).
+     * Gets the Post Type name(s).
      * @return array
      */
     protected function getNames(): array
