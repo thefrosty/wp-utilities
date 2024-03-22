@@ -1,10 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Taxonomies;
 
 use TheFrosty\WpUtilities\Exceptions\Exception;
 use PostTypes\Taxonomy;
 use ReflectionClass;
+use function array_filter;
+use function str_contains;
+use const ARRAY_FILTER_USE_KEY;
 
 /**
  * Class AbstractTaxonomy.
@@ -60,9 +65,9 @@ abstract class AbstractTaxonomy
      */
     public static function getTerms(object $argument): array
     {
-        return \array_filter((new ReflectionClass($argument))->getConstants(), static function (string $key): bool {
-            return \strpos($key, 'TERM_') !== false;
-        }, \ARRAY_FILTER_USE_KEY);
+        return array_filter((new ReflectionClass($argument))->getConstants(), static function (string $key): bool {
+            return str_contains($key, 'TERM_');
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     /**
