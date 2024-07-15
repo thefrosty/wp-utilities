@@ -28,7 +28,7 @@
     "ext-json": "*",
     "ext-openssl": "*",
     "jjgrainger/posttypes": "^2.2",
-    "johnbillion/args": "^1.9",
+    "johnbillion/args": "^2.0",
     "psr/container": "^2.0",
     "symfony/http-foundation": "^6.0 || ^7.0"
   },
