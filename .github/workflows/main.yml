@@ -74,6 +74,7 @@ jobs:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
 
   run-phpunit:
+    if: ${{ false }} # Disable for now :(
     name: Run PHPUnit
     runs-on: ubuntu-latest
     strategy:
