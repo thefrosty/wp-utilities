@@ -79,12 +79,29 @@ jobs:
     strategy:
       matrix:
         php-version: [ "8.1", "8.2", "8.3", "8.4" ]
+        wp-versions: [ '6.6', 'latest' ]
         coverage: [ true ]
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress_test
+          MYSQL_PASSWORD: password
+          MYSQL_USER: wp
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+    env:
+      WORDPRESS_DB_NAME: wordpress_test
+      WORDPRESS_DB_PASS: password
+      WORDPRESS_DB_USER: wp
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup
+      - name: Setup PHP ${{ matrix.php-versions }}
         id: ci-setup
         uses: ./.github/actions/ci-setup
         with:
