@@ -111,6 +111,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tools: 'composer, phpunit'
 
+      - name: Setup WordPress ${{ matrix.wp-versions }}
+        run: bash bin/install-wp-tests.sh wordpress_test wp password localhost ${{ matrix.wp-versions }} true
+
       - name: Run PHPUnit
         continue-on-error: false
         id: phpunit
