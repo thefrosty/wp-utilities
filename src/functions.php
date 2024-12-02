@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities;
 
-use function boolval;
+use function get_bloginfo;
 use function is_array;
+use function version_compare;
 
 /**
  * 6.3.0 Stub fpr PHP 8.0+.
@@ -45,7 +46,7 @@ function wp_register_script(
         ];
     }
 
-    if (\version_compare(\get_bloginfo('version'), '6.3') >= 0) {
+    if (version_compare(get_bloginfo('version'), '6.3') >= 0) {
         return \wp_register_script($handle, $src, $deps, $ver, $args);
     }
 
@@ -86,7 +87,7 @@ function wp_enqueue_script(
         ];
     }
 
-    if (\version_compare(\get_bloginfo('version'), '6.3') >= 0) {
+    if (version_compare(get_bloginfo('version'), '6.3') >= 0) {
         \wp_enqueue_script($handle, $src, $deps, $ver, $args);
 
         return;
