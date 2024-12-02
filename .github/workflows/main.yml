@@ -78,8 +78,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.1", "8.2", "8.3", "8.4" ]
-        wp-versions: [ '6.6', 'latest' ]
+        php-version: [ "8.1", "8.2", "8.3" ]
+        wp-version: [ '6.6', 'latest' ]
         coverage: [ true ]
     services:
       mysql:
@@ -101,12 +101,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP ${{ matrix.php-versions }}
+      - name: Setup PHP ${{ matrix.php-version }}
         id: ci-setup
         uses: ./.github/actions/ci-setup
         with:
           extensions: 'curl, mysql, mysqli, tar, zip'
-          extensions-cache-key: run-phpunit-${{ matrix.php-version }}
+          extensions-cache-key: run-phpunit-${{ matrix.wp-version }}-${{ matrix.php-version }}
           php-version: ${{ matrix.php-version }}
           token: ${{ secrets.GITHUB_TOKEN }}
           tools: 'composer, phpunit'
@@ -119,8 +119,8 @@ jobs:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
 
-      - name: Setup WordPress ${{ matrix.wp-versions }}
-        run: bash bin/install-wp-tests.sh wordpress_test wp password localhost ${{ matrix.wp-versions }} true
+      - name: Setup WordPress ${{ matrix.wp-version }}
+        run: bash bin/install-wp-tests.sh wordpress_test wp password localhost ${{ matrix.wp-version }} true
 
       - name: Upload coverage to Codecov
         if: ${{ github.event_name == 'pull_request' }}
