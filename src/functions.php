@@ -41,7 +41,7 @@ function wp_register_script(
 ): bool {
     if (!is_array($args)) {
         $args = [
-            'in_footer' => boolval($args),
+            'in_footer' => $args,
         ];
     }
 
@@ -82,7 +82,7 @@ function wp_enqueue_script(
 ): void {
     if (!is_array($args)) {
         $args = [
-            'in_footer' => boolval($args),
+            'in_footer' => $args,
         ];
     }
 
