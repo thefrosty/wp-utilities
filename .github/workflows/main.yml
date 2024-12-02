@@ -111,15 +111,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tools: 'composer, phpunit'
 
-      - name: Setup WordPress ${{ matrix.wp-versions }}
-        run: bash bin/install-wp-tests.sh wordpress_test wp password localhost ${{ matrix.wp-versions }} true
-
       - name: Run PHPUnit
         continue-on-error: false
         id: phpunit
         run: composer phpunit
         env:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Setup WordPress ${{ matrix.wp-versions }}
+        run: bash bin/install-wp-tests.sh wordpress_test wp password localhost ${{ matrix.wp-versions }} true
 
       - name: Upload coverage to Codecov
         if: ${{ github.event_name == 'pull_request' }}
