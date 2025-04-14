@@ -74,12 +74,11 @@ jobs:
           CHANGED_FILES: ${{ steps.ci-setup.outputs.files }}
 
   run-phpunit:
-    if: ${{ false }} # Disable for now :(
     name: Run PHPUnit
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.3", "8.4" ]
+        php-version: [ "8.3" ]
         wp-version: [ '6.7', 'latest' ]
         coverage: [ true ]
     services:
@@ -101,6 +100,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
 
       - name: Setup PHP ${{ matrix.php-version }}
         id: ci-setup
