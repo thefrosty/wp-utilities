@@ -177,7 +177,7 @@ abstract class AbstractPlugin implements PluginInterface
     {
         $file_time = \filemtime($this->getPath($path));
 
-        return $file_time ? \strval($file_time) : null;
+        return $file_time ? (string)$file_time : null;
     }
 
     /**
