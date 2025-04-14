@@ -304,7 +304,7 @@ abstract class AbstractPlugin implements PluginInterface
         ?bool $admin_only = null,
         array $args = []
     ): self {
-        $condition = empty($func_args) ? \call_user_func($function) : \call_user_func_array($function, $func_args);
+        $condition = empty($func_args) ? $function() : $function(...$func_args);
         if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
         }
