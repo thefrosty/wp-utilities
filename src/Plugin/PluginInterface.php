@@ -9,8 +9,8 @@ namespace TheFrosty\WpUtilities\Plugin;
  */
 interface PluginInterface
 {
-    public const DEFAULT_PRIORITY = 10;
-    public const DEFAULT_TAG = 'init';
+    public const int DEFAULT_PRIORITY = 10;
+    public const string DEFAULT_TAG = 'init';
 
     /**
      * Retrieve the relative path to the main plugin file from the main plugin
@@ -253,6 +253,31 @@ interface PluginInterface
      */
     public function addOnHook(
         string $wp_hook,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
+        array $args = []
+    ): self;
+
+
+    /**
+     * Register hooks for the plugin on a specific action tag.
+     *
+     * @link https://codex.wordpress.org/Plugin_API/Action_Reference
+     * @param string $wp_hook String value of the WpHooksInterface hook provider.
+     * @param string $deferred_tag The name of the action to deffer the $function is hooked. Default 'init'.
+     * @param string|null $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
+     * @param int|null $priority Optional. Used to specify the order in which the functions
+     *                                  associated with a particular action are executed. Default 10.
+     * @param bool|null $admin_only Optional. Whether to only initiate the object when `is_admin()` is true. Defaults to
+     *     null.
+     * @param array $args Argument unpacking via ... passed to the `$wp_hook` constructor.
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addOnHookDeferred(
+        string $wp_hook,
+        string $deferred_tag = 'init',
         ?string $tag = null,
         ?int $priority = null,
         ?bool $admin_only = null,
