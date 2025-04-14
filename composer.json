@@ -30,24 +30,24 @@
     "jjgrainger/posttypes": "^2.2",
     "johnbillion/args": "^2.1",
     "psr/container": "^2.0",
-    "symfony/http-foundation": "^6.4.14 || ^7.1.7"
+    "symfony/http-foundation": "^7.2.1"
   },
   "require-dev": {
     "ext-simplexml": "*",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
-    "php-stubs/wordpress-stubs": "^6.4",
+    "php-stubs/wordpress-stubs": "^6.7",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpmd/phpmd": "^2.13",
     "phpunit/php-code-coverage": "^10",
-    "phpunit/phpunit": "^10",
+    "phpunit/phpunit": "^11",
     "pimple/pimple": "^3.5",
     "roave/security-advisories": "dev-latest",
-    "roots/wordpress": "^6.4",
+    "roots/wordpress": "^6.7",
     "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.9",
     "szepeviktor/phpstan-wordpress": "^2.0",
     "wp-coding-standards/wpcs": "dev-develop",
-    "wp-phpunit/wp-phpunit": "^6.4",
+    "wp-phpunit/wp-phpunit": "^6.7",
     "yoast/phpunit-polyfills": "^2.0"
   },
   "suggest": {
