@@ -147,6 +147,13 @@ install_db() {
 	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
 }
 
+# Check if SVN is installed
+if ! command -v svn &> /dev/null
+then
+    echo "Subversion (svn) is not installed. Installing..."
+    sudo apt-get update && sudo apt-get install -y subversion
+fi
+
 install_wp
 install_test_suite
 install_db
