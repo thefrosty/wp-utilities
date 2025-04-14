@@ -299,9 +299,9 @@ abstract class AbstractPlugin implements PluginInterface
         string $wp_hook,
         callable $function,
         ?array $func_args = null,
-        string $tag = null,
-        int $priority = null,
-        bool $admin_only = null,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
         array $args = []
     ): self {
         $condition = empty($func_args) ? \call_user_func($function) : \call_user_func_array($function, $func_args);
@@ -325,9 +325,9 @@ abstract class AbstractPlugin implements PluginInterface
         callable $function,
         ?array $func_args = null,
         string $deferred_tag = 'plugins_loaded',
-        string $tag = null,
-        int $priority = null,
-        bool $admin_only = null,
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
         array $args = []
     ): self {
         \add_action(
