@@ -39,7 +39,7 @@
     "phpcompatibility/php-compatibility": "^9.3",
     "phpmd/phpmd": "^2.13",
     "phpunit/php-code-coverage": "^10",
-    "phpunit/phpunit": "^11",
+    "phpunit/phpunit": "^10",
     "pimple/pimple": "^3.5",
     "roave/security-advisories": "dev-latest",
     "roots/wordpress": "^6.7",
