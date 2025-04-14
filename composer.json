@@ -38,8 +38,8 @@
     "php-stubs/wordpress-stubs": "^6.7",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpmd/phpmd": "^2.13",
-    "phpunit/php-code-coverage": "^10",
-    "phpunit/phpunit": "^10",
+    "phpunit/php-code-coverage": "^11",
+    "phpunit/phpunit": "^11",
     "pimple/pimple": "^3.5",
     "roave/security-advisories": "dev-latest",
     "roots/wordpress": "^6.7",
@@ -48,7 +48,7 @@
     "szepeviktor/phpstan-wordpress": "^2.0",
     "wp-coding-standards/wpcs": "dev-develop",
     "wp-phpunit/wp-phpunit": "^6.7",
-    "yoast/phpunit-polyfills": "^2.0"
+    "yoast/phpunit-polyfills": "^3.0"
   },
   "suggest": {
     "jjgrainger/posttypes": "Simple WordPress custom post types."
