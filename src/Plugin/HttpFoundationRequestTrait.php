@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
@@ -14,9 +16,9 @@ trait HttpFoundationRequestTrait
 {
     /**
      * Symfony HttpFoundation Request object.
-     * @var Request $request
+     * @var Request|null $request
      */
-    private static $request;
+    private static ?Request $request = null;
 
     /**
      * Get the Request instance.
@@ -28,7 +30,7 @@ trait HttpFoundationRequestTrait
     }
 
     /**
-     * Set the Reqeest.
+     * Set the Request.
      * @param Request|null $request
      */
     public function setRequest(?Request $request = null): void

@@ -38,7 +38,7 @@ trait Viewable
         if (!$this->view instanceof View) {
             try {
                 $this->view = $this->getContainer()->get($id);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 return null;
             }
         }

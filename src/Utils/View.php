@@ -6,11 +6,9 @@ use RuntimeException;
 use function array_merge;
 use function array_unshift;
 use function count;
-use function current_filter;
 use function dirname;
 use function extract;
 use function file_exists;
-use function function_exists;
 use function get_object_vars;
 use function is_array;
 use function is_object;
@@ -93,15 +91,15 @@ final class View
 
     /**
      * Set variables to be available in any view
-     * @param array|object $vars
+     * @param object|array $vars
      */
-    public function setVars($vars = []): void
+    public function setVars(object|array $vars = []): void
     {
         if (is_object($vars)) {
             $vars = get_object_vars($vars);
         }
 
-        if (is_array($vars) and count($vars) > 0) {
+        if (is_array($vars) && count($vars) > 0) {
             foreach ($vars as $key => $val) {
                 $this->viewData[$key] = $val;
             }
@@ -196,7 +194,6 @@ final class View
     /**
      * Display error when no view found.
      * @param string $file
-     * @return mixed
      * @throws RuntimeException
      */
     private function viewNotFoundError(string $file): void
