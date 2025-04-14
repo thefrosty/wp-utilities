@@ -6,7 +6,6 @@ namespace TheFrosty\WpUtilities\Plugin;
  * Base plugin class.
  *
  * @package TheFrosty\WpUtilities\Plugin
- * @link https://github.com/johnpbloch/wordpress-dev
  */
 abstract class AbstractPlugin implements PluginInterface
 {
@@ -177,7 +176,7 @@ abstract class AbstractPlugin implements PluginInterface
     {
         $file_time = \filemtime($this->getPath($path));
 
-        return $file_time ? \strval($file_time) : null;
+        return $file_time ? (string)$file_time : null;
     }
 
     /**
@@ -304,7 +303,7 @@ abstract class AbstractPlugin implements PluginInterface
         ?bool $admin_only = null,
         array $args = []
     ): self {
-        $condition = empty($func_args) ? \call_user_func($function) : \call_user_func_array($function, $func_args);
+        $condition = empty($func_args) ? $function() : $function(...$func_args);
         if ($condition && $this->classImplementsWpHooks($wp_hook)) {
             return $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
         }
@@ -354,7 +353,7 @@ abstract class AbstractPlugin implements PluginInterface
         ?bool $admin_only = null,
         array $args = []
     ): self {
-        $tag = $tag ?? PluginInterface::DEFAULT_TAG;
+        $tag ??= PluginInterface::DEFAULT_TAG;
         \add_action($tag, function () use ($wp_hook, $admin_only, $priority, $args, $tag): void {
             $priority = ($priority ?? PluginInterface::DEFAULT_PRIORITY) + 2;
             if ($admin_only === true && \is_admin()) {
@@ -369,6 +368,28 @@ abstract class AbstractPlugin implements PluginInterface
         return $this;
     }
 
+    /**
+     * Register a hook provider after a deferred action is met on a custom hook.
+     * Useful when a function might not be loaded until after `init`.
+     *
+     * {@inheritdoc}
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
+    public function addOnHookDeferred(
+        string $wp_hook,
+        string $deferred_tag = 'init',
+        ?string $tag = null,
+        ?int $priority = null,
+        ?bool $admin_only = null,
+        array $args = []
+    ): self {
+        \add_action($deferred_tag, function () use ($wp_hook, $tag, $admin_only, $priority, $args): void {
+            $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
+        });
+
+        return $this;
+    }
     /**
      * Initialize the Init `WpHooksInterface` objects.
      */
