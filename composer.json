@@ -17,14 +17,14 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "8.1"
+      "php": "8.3"
     },
     "sort-packages": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.3",
     "ext-json": "*",
     "ext-openssl": "*",
     "jjgrainger/posttypes": "^2.2",
@@ -41,6 +41,7 @@
     "phpunit/php-code-coverage": "^10",
     "phpunit/phpunit": "^10",
     "pimple/pimple": "^3.5",
+    "roave/security-advisories": "dev-latest",
     "roots/wordpress": "^6.4",
     "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.9",
