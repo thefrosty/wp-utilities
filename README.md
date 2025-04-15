@@ -19,16 +19,6 @@ PHP >= 8.3
 WordPress >= 6.7
 ```
 
-| PHP version      | WP Utilities |
-|------------------|--------------|
-| < 7.1            | 1.3.x        |
-| \>= 7.1 && < 7.3 | 1.9.x        |
-| 7.3              | 2.0.0        |
-| \>= 7.4          | 2.1.0        |
-| \>= 8.0          | 3.0          |
-| \>= 8.1          | 3.3          |
-| \>= 8.3          | 3.5          |
-
 The required WordPress version will always be the most recent point release of
 the previous major release branch.
 
