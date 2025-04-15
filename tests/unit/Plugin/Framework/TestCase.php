@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin\Framework;
 
@@ -8,6 +10,7 @@ use ReflectionObject;
 use TheFrosty\WpUtilities\Plugin\Container;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_REST_Server;
+
 use function array_diff;
 use function array_merge;
 use function did_action;
@@ -22,8 +25,8 @@ use function rest_get_server;
 class TestCase extends PhpUnitTestCase
 {
 
-    public const METHOD_ADD_ACTION = 'addAction';
-    public const METHOD_ADD_FILTER = 'addFilter';
+    public const string METHOD_ADD_ACTION = 'addAction';
+    public const string METHOD_ADD_FILTER = 'addFilter';
 
     protected Container $container;
     protected Plugin $plugin;
@@ -70,7 +73,7 @@ class TestCase extends PhpUnitTestCase
      */
     protected function getMockProviderForAbstractClass(string $className): MockObject
     {
-        return $this->getMockBuilder($className)->getMockForAbstractClass();
+        return $this->getMockBuilder($className)->getMock();
     }
 
     /**
