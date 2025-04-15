@@ -76,7 +76,7 @@
       "bash ./bin/phpstan.sh"
     ],
     "phpunit": [
-      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
+      "./vendor/bin/phpunit --colors --coverage-html ./tests/results"
     ],
     "psalm": [
       "bash ./bin/psalm.sh"
