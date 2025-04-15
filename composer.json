@@ -37,7 +37,6 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
     "php-stubs/wordpress-stubs": "^6.7",
     "phpcompatibility/php-compatibility": "^9.3",
-    "phpmd/phpmd": "^2.13",
     "phpunit/php-code-coverage": "^11",
     "phpunit/phpunit": "^11",
     "pimple/pimple": "^3.5",
@@ -73,14 +72,11 @@
     "phpcs": [
       "bash ./bin/phpcs.sh"
     ],
-    "phpmd": [
-      "bash ./bin/phpmd.sh"
-    ],
     "phpstan": [
       "bash ./bin/phpstan.sh"
     ],
     "phpunit": [
-      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
+      "./vendor/bin/phpunit --colors --coverage-html ./tests/results"
     ],
     "psalm": [
       "bash ./bin/psalm.sh"
