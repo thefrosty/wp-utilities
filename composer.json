@@ -47,7 +47,7 @@
     "szepeviktor/phpstan-wordpress": "^2.0",
     "wp-coding-standards/wpcs": "dev-develop",
     "wp-phpunit/wp-phpunit": "^6.7",
-    "yoast/phpunit-polyfills": "^3.0"
+    "yoast/phpunit-polyfills": "^4.0"
   },
   "suggest": {
     "jjgrainger/posttypes": "Simple WordPress custom post types."
