@@ -59,7 +59,7 @@ jobs:
         env:
           MYSQL_DATABASE: wordpress_test
           MYSQL_PASSWORD: root
-          MYSQL_USER: root
+          MYSQL_USER: wp
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
@@ -67,7 +67,7 @@ jobs:
     env:
       WORDPRESS_DB_NAME: wordpress_test
       WORDPRESS_DB_PASS: root
-      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_USER: wp
 
     steps:
       - name: Checkout
@@ -87,10 +87,10 @@ jobs:
           tools: 'composer, phpunit'
 
       - name: Setup WordPress ${{ matrix.wp-version }}
-        run: bash bin/install-wp-tests.sh wordpress_test root root localhost ${{ matrix.wp-version }} true
+        run: bash bin/install-wp-tests.sh wordpress_test wp root localhost ${{ matrix.wp-version }} true
 
       - name: run MySQL command
-        run: mysql --user="root" --password="root" --execute="ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+        run: mysql --user="wp" --password="root" --execute="ALTER USER 'wp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'wp';"
 
       - name: Run PHPUnit
         continue-on-error: false
