@@ -62,7 +62,7 @@ jobs:
           MYSQL_USER: wp
           MYSQL_ROOT_PASSWORD: root
         ports:
-          - 3306:3306
+          - "3306:3306"
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     env:
       WORDPRESS_DB_NAME: wordpress_test
@@ -87,10 +87,12 @@ jobs:
           tools: 'composer, phpunit'
 
       - name: Setup WordPress ${{ matrix.wp-version }}
-        run: bash bin/install-wp-tests.sh wordpress_test wp root localhost ${{ matrix.wp-version }} true
+        run: bash bin/install-wp-tests.sh ${{ env.WORDPRESS_DB_NAME }} ${{ env.WORDPRESS_DB_USER }} ${{ env.WORDPRESS_DB_PASS }} localhost ${{ matrix.wp-version }} true
 
       - name: run MySQL command
-        run: mysql --user="wp" --password="root" --execute="ALTER USER 'wp'@'localhost' IDENTIFIED WITH mysql_native_password BY 'wp';"
+        run: |
+          sudo systemctl start mysql
+          mysql --user="${{ env.WORDPRESS_DB_USER }}" --password="${{ env.WORDPRESS_DB_PASS }}" --execute="ALTER USER '${{ env.WORDPRESS_DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.WORDPRESS_DB_USER }}';"
 
       - name: Run PHPUnit
         continue-on-error: false
