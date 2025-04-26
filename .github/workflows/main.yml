@@ -91,7 +91,6 @@ jobs:
 
       - name: run MySQL command
         run: |
-          sudo systemctl start mysql
           mysql --user="${{ env.WORDPRESS_DB_USER }}" --password="${{ env.WORDPRESS_DB_PASS }}" --execute="ALTER USER '${{ env.WORDPRESS_DB_USER }}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${{ env.WORDPRESS_DB_USER }}';"
 
       - name: Run PHPUnit
