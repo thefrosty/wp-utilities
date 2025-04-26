@@ -51,18 +51,16 @@ jobs:
     strategy:
       matrix:
         php-version: [ "8.3" ]
-        wp-version: [ '6.7', 'latest' ]
+        wp-version: [ 'latest' ]
         coverage: [ true ]
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: wordpress_test
-          MYSQL_PASSWORD: root
-          MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: root
         ports:
-          - 3306:3306
+          - "3306:3306"
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     env:
       WORDPRESS_DB_NAME: wordpress_test
@@ -80,17 +78,15 @@ jobs:
         id: ci-setup
         uses: ./.github/actions/ci-setup
         with:
-          extensions: 'curl, mysql, mysqli, tar, zip'
+          extensions: 'curl, mysql, mysqli, zip'
           extensions-cache-key: run-phpunit-${{ matrix.wp-version }}-${{ matrix.php-version }}
           php-version: ${{ matrix.php-version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          tools: 'composer, phpunit'
+          tools: 'composer, phpunit:11'
 
       - name: Setup WordPress ${{ matrix.wp-version }}
-        run: bash bin/install-wp-tests.sh wordpress_test root root localhost ${{ matrix.wp-version }} true
-
-      - name: run MySQL command
-        run: mysql --user="root" --password="root" --execute="ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+        run: |
+          bash bin/install-wp-tests.sh ${{ env.WORDPRESS_DB_NAME }} ${{ env.WORDPRESS_DB_USER }} ${{ env.WORDPRESS_DB_PASS }} 127.0.0.1:${{ job.services.mysql.ports['3306'] }} ${{ matrix.wp-version }} true
 
       - name: Run PHPUnit
         continue-on-error: false
