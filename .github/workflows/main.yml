@@ -79,12 +79,12 @@ jobs:
         run: |
           sudo systemctl start mysql.service
           sudo mysql --version
+          mysql -u"${{ env.WORDPRESS_DB_USER }}" -p"${{ env.WORDPRESS_DB_PASS }}" --execute="ALTER USER '${{ env.WORDPRESS_DB_USER }}'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY '${{ env.WORDPRESS_DB_USER }}';"
           bash bin/install-wp-tests.sh ${{ env.WORDPRESS_DB_NAME }} ${{ env.WORDPRESS_DB_USER }} ${{ env.WORDPRESS_DB_PASS }} 127.0.0.1 ${{ matrix.wp-version }} true
 
 #      - name: run MySQL command
 #        run: |
 #          sudo /etc/init.d/mysql start
-#          mysql -u"${{ env.WORDPRESS_DB_USER }}" -p"${{ env.WORDPRESS_DB_PASS }}" --execute="ALTER USER '${{ env.WORDPRESS_DB_USER }}'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY '${{ env.WORDPRESS_DB_USER }}';"
 
       - name: Run PHPUnit
         continue-on-error: false
