@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin;
 
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
+use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use function apply_filters;
 use function sanitize_key;
@@ -20,9 +23,9 @@ class DashboardWidget implements WpHooksInterface
 
     use HooksTrait;
 
-    public const OBJECT_NAME = 'DashboardWidget';
-    public const HOOK_NAME_ALLOWED_S = Plugin::TAG . '/%s/dashboard_allowed';
-    public const HOOK_NAME_RENDER = Plugin::TAG . '/render/dashboard_widget';
+    public const string OBJECT_NAME = 'DashboardWidget';
+    public const string HOOK_NAME_ALLOWED_S = Plugin::TAG . '/%s/dashboard_allowed';
+    public const string HOOK_NAME_RENDER = Plugin::TAG . '/render/dashboard_widget';
 
     /** @var array $args */
     private array $args;
@@ -68,8 +71,8 @@ class DashboardWidget implements WpHooksInterface
         wp_add_dashboard_widget(
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
-            function (): void {
-                include __DIR__ . '/../../views/dashboard-widget.php';
+            static function (): void {
+                (new View())->render('dashboard-widget.php');
             }
         );
     }
@@ -98,10 +101,13 @@ class DashboardWidget implements WpHooksInterface
      */
     private function isDashboardAllowed(): bool
     {
-        $allowed = apply_filters(sprintf(
-            self::HOOK_NAME_ALLOWED_S,
-            sanitize_key($this->getWidget()->getWidgetId())
-        ), true);
+        $allowed = apply_filters(
+            sprintf(
+                self::HOOK_NAME_ALLOWED_S,
+                sanitize_key($this->getWidget()->getWidgetId())
+            ),
+            true
+        );
 
         return $allowed === true;
     }
