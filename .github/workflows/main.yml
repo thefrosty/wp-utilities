@@ -78,11 +78,11 @@ jobs:
         id: ci-setup
         uses: ./.github/actions/ci-setup
         with:
-          extensions: 'curl, mysql, mysqli, tar, zip'
+          extensions: 'curl, mysql, mysqli, zip'
           extensions-cache-key: run-phpunit-${{ matrix.wp-version }}-${{ matrix.php-version }}
           php-version: ${{ matrix.php-version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          tools: 'composer, phpunit'
+          tools: 'composer, phpunit:11'
 
       - name: Setup WordPress ${{ matrix.wp-version }}
         run: |
