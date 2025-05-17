@@ -5,7 +5,7 @@ set -e
 source "$(dirname "$0")/functions.sh"
 echo 'Checking PHPCS'
 
-args="--runtime-set testVersion ${PHP_VERSION}-"
+args="${ARGS:=--runtime-set testVersion ${PHP_VERSION}- $*}"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do

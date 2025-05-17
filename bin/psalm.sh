@@ -14,7 +14,7 @@ else
   commitFiles="${CHANGED_FILES}"
 fi
 
-args="${ARGS:=--config=psalm.xml --show-info=true}"
+args="${ARGS:=--config=psalm.xml --show-info=true $*}"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do

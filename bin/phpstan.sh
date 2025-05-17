@@ -14,7 +14,7 @@ else
   commitFiles="${CHANGED_FILES}"
 fi
 
-args="${ARGS:=analyze --memory-limit 1G}"
+args="${ARGS:=analyze --memory-limit 1G $*}"
 phpFiles=""
 phpFilesCount=0
 for f in ${commitFiles}; do
