@@ -1,0 +1,15 @@
+[files]
+extend-exclude = [
+    ".git/",
+]
+ignore-hidden = false
+
+[default]
+extend-ignore-re = [
+    "'NONCE_KEY', '.*'",
+]
+
+[default.extend-identifiers]
+# Typos
+"Github" = "GitHub"
+"Wordpress" = "WordPress"
