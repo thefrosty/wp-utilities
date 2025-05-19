@@ -169,7 +169,7 @@ interface PluginInterface
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
      * @param bool $condition The condition that needs to be met before adding the new hook provider.
-     * @param string $deferred_tag The name of the action to deffer the $function is hooked. Default 'plugins_loaded'.
+     * @param string $deferred_tag The name of the action to defer the $function is hooked. Default 'plugins_loaded'.
      * @return $this
      * @throws \InvalidArgumentException
      */
@@ -216,7 +216,7 @@ interface PluginInterface
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
      * @param callable $function The condition that needs to be met before adding the new hook provider.
      * @param array|null $func_args The parameters to be passed to the function, as an indexed array.
-     * @param string $deferred_tag The name of the action to deffer the $function is hooked. Default 'plugins_loaded'.
+     * @param string $deferred_tag The name of the action to defer the $function is hooked. Default 'plugins_loaded'.
      * @param string|null $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
      * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
@@ -265,7 +265,7 @@ interface PluginInterface
      *
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
-     * @param string $deferred_tag The name of the action to deffer the $function is hooked. Default 'init'.
+     * @param string $deferred_tag The name of the action to defer the $function is hooked. Default 'init'.
      * @param string|null $tag Optional. The name of the action to which the $function_to_add is hooked. Default 'init'.
      * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.

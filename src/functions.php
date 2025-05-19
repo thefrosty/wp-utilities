@@ -9,7 +9,7 @@ use function is_array;
 use function version_compare;
 
 /**
- * 6.3.0 Stub fpr PHP 8.0+.
+ * 6.3.0 Stub for PHP 8.0+.
  * Registers a new script.
  * Registers a script to be enqueued later using the wp_enqueue_script() function.
  * @param string $handle Name of the script. Should be unique.
@@ -54,7 +54,7 @@ function wp_register_script(
 }
 
 /**
- * 6.3.0 Stub fpr PHP 8.0+.
+ * 6.3.0 Stub for PHP 8.0+.
  * Enqueues a script.
  * Registers the script if $src provided (does NOT overwrite), and enqueues it.
  * @param string $handle Name of the script. Should be unique.
