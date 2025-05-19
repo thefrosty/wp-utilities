@@ -17,11 +17,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get Changed Files
-        id: files
-        uses: masesgroup/retrieve-changed-files@v3
-
       - name: Run typos
         uses: crate-ci/typos@v1.32.0
-        with:
-          files: ${{ steps.files.outputs.files }}
