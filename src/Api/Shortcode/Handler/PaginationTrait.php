@@ -8,8 +8,7 @@ use WP_Query;
 use function get_pagenum_link;
 use function get_query_var;
 use function max;
-use function ob_end_clean;
-use function ob_get_contents;
+use function ob_get_clean;
 use function ob_start;
 use function paginate_links;
 use function str_replace;
@@ -34,7 +33,7 @@ trait PaginationTrait
          * http://codex.wordpress.org/Function_Reference/paginate_links
          */
         $paginate_links = paginate_links([
-            'base' => str_replace((string) PHP_INT_MAX, '%#%', get_pagenum_link(PHP_INT_MAX)),
+            'base' => str_replace((string)PHP_INT_MAX, '%#%', get_pagenum_link(PHP_INT_MAX)),
             'current' => max(1, get_query_var('paged')),
             'total' => $wp_query->max_num_pages,
             'mid_size' => 5,
@@ -45,9 +44,6 @@ trait PaginationTrait
 
         ob_start();
         include 'templates/pagination.php';
-        $html = ob_get_contents();
-        ob_end_clean();
-
-        return $html;
+        return ob_get_clean();
     }
 }

@@ -30,5 +30,5 @@ interface HandlerInterface
      * @param string $tag the shortcode tag, useful for shared callback functions
      * @return string
      */
-    public function handler(array | string $atts, ?string $content, string $tag): string;
+    public function handler(array|string $atts, ?string $content, string $tag): string;
 }
