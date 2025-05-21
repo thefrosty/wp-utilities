@@ -71,7 +71,7 @@
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
     "phpcs": [
-      "bash ./bin/phpcs.sh"
+      "bash ./bin/phpcs.sh --standard=phpcs-ruleset.xml"
     ],
     "phpstan": [
       "bash ./bin/phpstan.sh"
