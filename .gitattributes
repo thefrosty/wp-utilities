@@ -4,7 +4,7 @@
 /tests export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
+.typos.toml export-ignore
 phpcs-ruleset.xml export-ignore
-phpmd-ruleset.xml export-ignore
 phpstan.neon.dist export-ignore
 phpunit.xml export-ignore
