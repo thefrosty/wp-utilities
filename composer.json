@@ -50,7 +50,8 @@
     "yoast/phpunit-polyfills": "^4.0"
   },
   "suggest": {
-    "jjgrainger/posttypes": "Simple WordPress custom post types."
+    "jjgrainger/posttypes": "Simple WordPress custom post types.",
+    "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
   },
   "autoload": {
     "files": [
