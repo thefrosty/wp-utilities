@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api\Shortcode\Handler;
 
 use Exception;
+use function add_action;
 use function function_exists;
 use function shortcode_ui_register_for_shortcode;
 
@@ -39,9 +40,9 @@ trait ShortcodeUiTrait
     }
 
     /**
-     * Helper to register the Shortcode UI for shortcode callback using Shotcode UI.
-     * This method will have a fatal error unless Shortcake plugin is active. The
-     * Dependencies class can be used to check for whether shortcake plugin is active.
+     * Helper to register the Shortcode UI for shortcode callback using Shortcode UI.
+     * This method will have a fatal error unless the Shortcake plugin is active. The dependencies' class
+     * can be used to check for whether shortcake plugin is active.
      *
      * @param string $shortcode_slug
      * @param array $shortcode_ui_args
