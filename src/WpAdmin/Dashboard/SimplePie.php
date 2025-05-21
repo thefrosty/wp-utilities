@@ -6,8 +6,10 @@ namespace TheFrosty\WpUtilities\WpAdmin\Dashboard;
 
 use TheFrosty\WpUtilities\Api\Hash;
 use function delete_transient;
+use function fetch_feed;
 use function function_exists;
 use function is_array;
+use function is_wp_error;
 
 /**
  * Trait SimplePie
@@ -22,7 +24,7 @@ trait SimplePie
      * Fetch RSS items from the feed.
      * @param int $max Number of items to fetch.
      * @param string $url The feed to fetch.
-     * @return array|\SimplePie_Item[] Empty array on failure, Array of \SimplePie_Item'a on success.
+     * @return array|\SimplePie\Item[] Empty array on failure, Array of \SimplePie\Item's on success.
      */
     public function getFeedItems(int $max, string $url): array
     {
@@ -32,12 +34,12 @@ trait SimplePie
 
         /**
          * @param string $url
-         * @return array|\SimplePie
+         * @return array|\SimplePie\SimplePie
          */
-        $get_pie = function (string $url) {
-            $pie = \fetch_feed($url);
+        $get_pie = static function (string $url) {
+            $pie = fetch_feed($url);
             // Bail if feed doesn't work
-            if (!($pie instanceof \SimplePie) || \is_wp_error($pie)) {
+            if (!($pie instanceof \SimplePie\SimplePie) || is_wp_error($pie)) {
                 return [];
             }
 
@@ -46,16 +48,16 @@ trait SimplePie
 
         $pie = $get_pie($url);
         // Bail if feed doesn't work
-        if (!($pie instanceof \SimplePie)) {
+        if (!($pie instanceof \SimplePie\SimplePie)) {
             return [];
         }
 
         /**
-         * @param array|\SimplePie $pie
+         * @param array|\SimplePie\SimplePie $pie
          * @return array|null $get_items
          */
         $get_items = static function ($pie) use ($max) {
-            return ($pie instanceof \SimplePie) ? $pie->get_items(0, $pie->get_item_quantity($max)) : [];
+            return ($pie instanceof \SimplePie\SimplePie) ? $pie->get_items(0, $pie->get_item_quantity($max)) : [];
         };
 
         $pie_items = $get_items($pie);
