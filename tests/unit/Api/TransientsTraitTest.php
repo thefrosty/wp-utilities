@@ -28,9 +28,9 @@ class TransientsTraitTest extends TestCase
         $input = 'example_input';
         $keyPrefix = 'prefix_';
         $wp_max_transient_chars = $this->reflection->getProperty('wp_max_transient_chars');
-        $wp_max_transient_chars->setAccessible(true);
+        $getHashedKey = $this->reflection->getMethod('getHashedKey');
         $expectedKey = 'prefix_' . substr(
-                md5($input),
+                $getHashedKey->invoke($this->transientsTrait, $input),
                 0,
                 $wp_max_transient_chars->getValue($this->transientsTrait) - strlen($keyPrefix)
             );
