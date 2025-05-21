@@ -13,7 +13,6 @@ use function call_user_func;
 use function esc_html__;
 use function is_int;
 use function json_encode;
-use function md5;
 use function sprintf;
 use function wp_parse_args;
 use function wp_reset_postdata;
@@ -26,7 +25,7 @@ use const MINUTE_IN_SECONDS;
 trait WpQueryTrait
 {
 
-    use WpCacheTrait;
+    use Hash, WpCacheTrait;
 
     /**
      * Return a new WP_Query object.
@@ -50,10 +49,10 @@ trait WpQueryTrait
      */
     protected function wpQueryCached(string $post_type, array $args = [], ?int $expiration = null): WP_Query
     {
-        $defaults = $this->getDefaults($post_type);
+        $args = wp_parse_args($args, $this->getDefaults($post_type));
         $cache_key = $this->setQueryCacheKey(
             $this->getHashedKey(
-                sprintf('%s/query_%s', Plugin::TAG, md5(json_encode(wp_parse_args($args, $defaults))))
+                sprintf('%s/query_%s', Plugin::TAG, $this->getHashedKey(json_encode($args)))
             )
         );
         $query = $this->getCache($cache_key);

@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Dashboard;
 
+use TheFrosty\WpUtilities\Api\Hash;
 use function delete_transient;
 use function function_exists;
 use function is_array;
-use function md5;
 
 /**
  * Trait SimplePie
@@ -13,6 +15,8 @@ use function md5;
  */
 trait SimplePie
 {
+
+    use Hash;
 
     /**
      * Fetch RSS items from the feed.
@@ -57,9 +61,9 @@ trait SimplePie
         $pie_items = $get_items($pie);
         // If the feed was erroneous
         if (!$pie_items) {
-            $md5 = md5($url);
-            delete_transient('feed_' . $md5);
-            delete_transient('feed_mod_' . $md5);
+            $key = $this->getHashedKey($url);
+            delete_transient('feed_' . $key);
+            delete_transient('feed_mod_' . $key);
             $pie = $get_pie($url);
             $pie_items = $get_items($pie);
         }
