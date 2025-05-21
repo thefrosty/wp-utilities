@@ -6,6 +6,10 @@ namespace TheFrosty\WpUtilities\Api\Shortcode;
 
 use TheFrosty\WpUtilities\Api\Shortcode\Handler\HandlerInterface;
 
+/**
+ * AbstractShortcode class
+ * @package TheFrosty\WpUtilities\Api\Shortcode
+ */
 abstract class AbstractShortcode implements ShortcodeInterface
 {
 

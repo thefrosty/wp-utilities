@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api\Shortcode\Handler;
 
+use Exception;
 use function function_exists;
 use function shortcode_ui_register_for_shortcode;
 
@@ -27,12 +28,12 @@ trait ShortcodeUiTrait
     /**
      * Register shortcode ui method `registerShortcodeUI()` on the
      * custom 'register_shortcode_ui' action hook.
-     * @throws \Exception
+     * @throws Exception
      */
     protected function addActionRegisterShortcodeUi(): void
     {
         if (!function_exists('shortcode_ui_register_for_shortcode')) {
-            throw new \Exception('Shortcake plugin needs to be activated to use ' . __METHOD__);
+            throw new Exception('Shortcake plugin needs to be activated to use ' . __METHOD__);
         }
         add_action('register_shortcode_ui', [$this, 'registerShortcodeUI']);
     }

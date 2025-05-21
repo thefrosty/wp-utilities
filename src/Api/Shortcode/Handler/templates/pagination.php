@@ -30,5 +30,5 @@ $paginate_links = str_replace(
 );
 $paginate_links = preg_replace('/\s*page-numbers/', '', $paginate_links);
 
-// Display the pagination if more than one page is found
+// Display the pagination if more than one page is found.
 echo '<div class="pagination-centered">' . $paginate_links . '</div>';
