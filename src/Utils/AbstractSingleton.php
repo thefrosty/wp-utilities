@@ -24,7 +24,7 @@ abstract class AbstractSingleton implements SingletonInterface
      */
     public static function getInstance(): static
     {
-        self::$instances[static::class] = self::$instances[static::class] ?? new static();
+        self::$instances[static::class] ??= new static();
 
         return self::$instances[static::class];
     }
@@ -33,7 +33,7 @@ abstract class AbstractSingleton implements SingletonInterface
      * Nobody should unserialize this instance.
      * @throws RuntimeException
      */
-    public function __wakeup()
+    public function __wakeup(): void
     {
         throw new RuntimeException(sprintf('Cannot unserialize %s', static::class));
     }
@@ -41,7 +41,7 @@ abstract class AbstractSingleton implements SingletonInterface
     /**
      * AbstractSingleton constructor.
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 
