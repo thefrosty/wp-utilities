@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use TheFrosty\WpUtilities\Utils\AbstractSingleton;
+
 /**
- * Class AbstractHookProvider
+ * Class AbstractSingletonProvider
  * @package TheFrosty\WpUtilities\Plugin
  */
-abstract class AbstractHookProvider implements WpHooksInterface, PluginAwareInterface
+abstract class AbstractSingletonProvider extends AbstractSingleton implements WpHooksInterface, PluginAwareInterface
 {
     use HooksTrait, PluginAwareTrait;
 

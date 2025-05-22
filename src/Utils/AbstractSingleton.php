@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
-use Exception;
+use RuntimeException;
 
 /**
  * Class AbstractSingleton
@@ -14,7 +14,7 @@ abstract class AbstractSingleton implements SingletonInterface
 {
     /**
      * Array of `SingletonInterface` objects.
-     * @var SingletonInterface[] $instances
+     * @var static[] $instances
      */
     private static array $instances = [];
 
@@ -24,24 +24,24 @@ abstract class AbstractSingleton implements SingletonInterface
      */
     public static function getInstance(): static
     {
-        self::$instances[static::class] = self::$instances[static::class] ?? new static();
+        self::$instances[static::class] ??= new static();
 
         return self::$instances[static::class];
     }
 
     /**
      * Nobody should unserialize this instance.
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function __wakeup()
+    public function __wakeup(): void
     {
-        throw new Exception(sprintf('Cannot unserialize %s', static::class));
+        throw new RuntimeException(sprintf('Cannot unserialize %s', static::class));
     }
 
     /**
      * AbstractSingleton constructor.
      */
-    protected function __construct()
+    final protected function __construct()
     {
     }
 
