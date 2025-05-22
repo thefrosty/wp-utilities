@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
 /**
  * Base plugin class.
- *
  * @package TheFrosty\WpUtilities\Plugin
  */
 abstract class AbstractPlugin implements PluginInterface
@@ -12,7 +13,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Plugin basename.
-     *
      * Ex: plugin-name/plugin-name.php
      * @var string|null $basename
      */
@@ -56,7 +56,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the absolute path for the main plugin file.
-     *
      * {@inheritdoc}
      */
     public function getBasename(): string
@@ -66,7 +65,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the plugin basename.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -79,7 +77,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the plugin directory.
-     *
      * {@inheritdoc}
      */
     public function getDirectory(): string
@@ -89,7 +86,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the plugin's directory.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -102,7 +98,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the path to a file in the plugin.
-     *
      * {@inheritdoc}
      * @return string
      */
@@ -113,7 +108,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the TemplateLoaderInterface object.
-     *
      * {@inheritdoc}
      * @return TemplateLoaderInterface
      */
@@ -124,7 +118,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the TemplateLoaderInterface object.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -137,7 +130,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Return the Init object.
-     *
      * {@inheritdoc}
      */
     public function getInit(): Init
@@ -168,7 +160,6 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Returns the time the file was last modified, or FALSE on failure.
      * The time is returned as a Unix timestamp, which is suitable for the date() function.
-     *
      * @param string $path Optional. Path relative to the plugin root.
      * @return string|null
      */
@@ -181,7 +172,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the path to the main plugin file.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -194,7 +184,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the plugin identifier.
-     *
      * {@inheritdoc}
      */
     public function getSlug(): string
@@ -204,7 +193,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the plugin identifier.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -217,7 +205,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Retrieve the URL for a file in the plugin.
-     *
      * {@inheritdoc}
      */
     public function getUrl(string $path = ''): string
@@ -227,7 +214,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Set the URL for plugin directory root.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -240,7 +226,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Register a hook provider.
-     *
      * {@inheritdoc}
      * @return $this
      */
@@ -253,7 +238,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Register a hook provider when a specific condition is met.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -270,7 +254,6 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Register a hook provider when a specific condition is met after a deferred action is met on a custom hook.
      * Useful when a function might not be loaded until after `plugins_loaded` or `init`.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -289,7 +272,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Register a hook provider when a specific condition is met on a custom hook.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -314,7 +296,6 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Register a hook provider when a specific condition after a deferred action is met on a custom hook.
      * Useful when a function might not be loaded until after `plugins_loaded` or `init`.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -341,7 +322,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Register a hook provider on a specific action.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -371,7 +351,6 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Register a hook provider after a deferred action is met on a custom hook.
      * Useful when a function might not be loaded until after `init`.
-     *
      * {@inheritdoc}
      * @return $this
      * @throws \InvalidArgumentException
@@ -390,6 +369,7 @@ abstract class AbstractPlugin implements PluginInterface
 
         return $this;
     }
+
     /**
      * Initialize the Init `WpHooksInterface` objects.
      */
@@ -400,13 +380,11 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Initialize the late hook provider when it's been registered on an action hook.
-     *
      * @param string $wp_hook String value of the WpHooksInterface hook provider.
      * @param int|null $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
      * @param array $args Argument unpacking via `...`.
      * @param string|null $tag The name of the action passed in from `addOnHook()`.
-     * @SuppressWarnings(PHPMD.MissingImport)
      */
     private function initiateWpHooks(
         string $wp_hook,
@@ -427,7 +405,6 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * Iterate over all registered tag's and re-initialize the WpHooksInterface objects to
      * initiate their hooks on the appropriate registered action (tag).
-     *
      * @param string $tag The name of the action to which the $function_to_add is hooked.
      * @param int $priority Optional. Used to specify the order in which the functions
      *                                  associated with a particular action are executed. Default 10.
@@ -443,7 +420,6 @@ abstract class AbstractPlugin implements PluginInterface
 
     /**
      * Does the class implement the required `WpHooksInterface` class interface?
-     *
      * @param string $wp_hook
      * @return bool
      */
