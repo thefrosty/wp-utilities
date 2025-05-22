@@ -14,9 +14,11 @@ use function in_array;
 use function is_admin;
 use function ltrim;
 use function rtrim;
+use function sprintf;
 
 /**
  * Base plugin class.
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
  * @package TheFrosty\WpUtilities\Plugin
  */
 abstract class AbstractPlugin implements PluginInterface
@@ -418,7 +420,7 @@ abstract class AbstractPlugin implements PluginInterface
     {
         if (!$this->classImplementsWpHooks($wp_hook)) {
             throw new InvalidArgumentException(
-                \sprintf('Expected a %s interface, but got %s', WpHooksInterface::class, $wp_hook)
+                sprintf('Expected a %s interface, but got %s', WpHooksInterface::class, $wp_hook)
             );
         }
 
