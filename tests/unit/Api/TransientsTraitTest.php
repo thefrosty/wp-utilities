@@ -43,7 +43,8 @@ class TransientsTraitTest extends TestCase
         $transientName = 'example_transient';
         $expectedValue = 'example_value';
 
-        $this->assertEquals($expectedValue, $this->transientsTrait->getTransient($transientName));
+        $this->assertFalse($this->transientsTrait->getTransient($transientName));
+        $this->assertNotEquals($expectedValue, $this->transientsTrait->getTransient($transientName));
     }
 
     public function testSetTransient(): void
@@ -59,6 +60,7 @@ class TransientsTraitTest extends TestCase
     {
         $transientName = 'example_transient';
 
-        $this->assertEquals(null, $this->transientsTrait->getTransientTimeout($transientName));
+        $this->assertIsInt($this->transientsTrait->getTransientTimeout($transientName));
+        $this->assertEquals(null, $this->transientsTrait->getTransientTimeout('some_random_transient_name'));
     }
 }
