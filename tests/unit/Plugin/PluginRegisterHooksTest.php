@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
@@ -12,6 +15,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  * Class PluginRegisterHooksTest
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(AbstractHookProvider::class)]
 class PluginRegisterHooksTest extends TestCase
 {
 
@@ -25,7 +29,6 @@ class PluginRegisterHooksTest extends TestCase
         try {
             $class = new ReflectionClass($provider);
             $property = $class->getProperty('plugin');
-            $property->setAccessible(true);
         } catch (\ReflectionException $exception) {
             $this->assertInstanceOf(\ReflectionException::class, $exception);
 

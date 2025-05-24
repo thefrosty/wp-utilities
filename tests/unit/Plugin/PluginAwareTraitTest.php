@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionClass;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginAwareTrait;
@@ -9,9 +12,9 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class PluginAwareTraitTest
- *
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(PluginAwareTrait::class)]
 class PluginAwareTraitTest extends TestCase
 {
 
@@ -21,13 +24,11 @@ class PluginAwareTraitTest extends TestCase
     public function testSetPlugin(): void
     {
         $provider = new class {
-
             use PluginAwareTrait;
         };
 
         $class = new ReflectionClass($provider);
         $property = $class->getProperty('plugin');
-        $property->setAccessible(true);
 
         $plugin = new Plugin();
         /** PluginAwareTrait @var PluginAwareTrait $provider */

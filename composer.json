@@ -38,7 +38,7 @@
     "php-stubs/wordpress-stubs": "^6.8",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpunit/php-code-coverage": "^11",
-    "phpunit/phpunit": "^11",
+    "phpunit/phpunit": "^11.1",
     "pimple/pimple": "^3.5",
     "roave/security-advisories": "dev-latest",
     "roots/wordpress": "^6.8",
@@ -77,7 +77,7 @@
       "bash ./bin/phpstan.sh"
     ],
     "phpunit": [
-      "./vendor/bin/phpunit --colors --coverage-html ./tests/results"
+      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
     ],
     "psalm": [
       "bash ./bin/psalm.sh"

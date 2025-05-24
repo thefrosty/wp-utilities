@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Api;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
+use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Api\TransientsTrait;
+use TheFrosty\WpUtilities\Api\WpCacheTrait;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
+use function delete_transient;
 
 /**
  * Trait TransientsTraitTest
  * @package TheFrosty\WpUtilities\Tests\Api
  */
+#[CoversClass(TransientsTrait::class)]
+#[UsesClass(Hash::class)]
+#[UsesClass(WpCacheTrait::class)]
 class TransientsTraitTest extends TestCase
 {
     private $transientsTrait;
@@ -43,7 +51,8 @@ class TransientsTraitTest extends TestCase
         $transientName = 'example_transient';
         $expectedValue = 'example_value';
 
-        $this->assertEquals($expectedValue, $this->transientsTrait->getTransient($transientName));
+        $this->assertFalse($this->transientsTrait->getTransient($transientName));
+        $this->assertNotEquals($expectedValue, $this->transientsTrait->getTransient($transientName));
     }
 
     public function testSetTransient(): void
@@ -53,12 +62,16 @@ class TransientsTraitTest extends TestCase
         $expiration = 3600; // 1 hour
 
         $this->assertTrue($this->transientsTrait->setTransient($transientName, $value, $expiration));
+        delete_transient($transientName);
     }
 
     public function testGetTransientTimeout(): void
     {
         $transientName = 'example_transient';
 
+        $this->transientsTrait->setTransient($transientName, 'something', 3600);
+        $this->assertIsInt($this->transientsTrait->getTransientTimeout($transientName));
+        delete_transient($transientName);
         $this->assertEquals(null, $this->transientsTrait->getTransientTimeout($transientName));
     }
 }
