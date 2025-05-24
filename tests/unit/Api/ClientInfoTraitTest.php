@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Api;
 
+use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Api\ClientInfoTrait;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
@@ -23,8 +24,16 @@ class ClientInfoTraitTest extends TestCase
         $this->reflection = $this->getReflection($this->clientInfoTrait);
     }
 
-    public function testGetIpAddress(): void
+    public function testGetIpAddressSame(): void
     {
-        $this->assertNull($this->clientInfoTrait->getIpAddress());
+        $this->assertSame('127.0.0.1', $this->clientInfoTrait->getIpAddress());
+    }
+
+    public function testGetIpAddressNull(): void
+    {
+        $request = Request::createFromGlobals();
+        $request->server->set('HTTP_CLIENT_IP', '1999.0991.200.89');
+        $request->server->set('REMOTE_ADDR', '1999.0991.200.89');
+        $this->assertNull($this->clientInfoTrait->getIpAddress($request));
     }
 }
