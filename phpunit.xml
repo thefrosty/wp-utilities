@@ -21,7 +21,8 @@
     </coverage>
 
     <php>
-        <env name="WP_PHPUNIT__TESTS_CONFIG" value="tests/wp-tests-config.php" />
+        <env name="WP_PHPUNIT__TESTS_CONFIG" value="tests/wp-tests-config.php"/>
+        <env name="WP_TESTS_PHPUNIT_POLYFILLS_PATH" value="vendor/yoast/phpunit-polyfills"/>
     </php>
 
     <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
