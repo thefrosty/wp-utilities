@@ -1,7 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionObject;
 use TheFrosty\WpUtilities\Plugin\ContainerAwareTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
@@ -9,9 +13,9 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
  * Class PluginTest
- *
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(Plugin::class)]
 class PluginTest extends TestCase
 {
 
@@ -22,7 +26,7 @@ class PluginTest extends TestCase
     {
         parent::setUp();
         $this->plugin = new Plugin();
-        $this->reflection = new \ReflectionObject($this->plugin);
+        $this->reflection = new ReflectionObject($this->plugin);
     }
 
     /**

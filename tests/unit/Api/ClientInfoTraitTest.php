@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Api;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Api\ClientInfoTrait;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
@@ -12,6 +13,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  * Trait ClientInfoTraitTest
  * @package TheFrosty\WpUtilities\Tests\Api
  */
+#[CoversClass(ClientInfoTrait::class)]
 class ClientInfoTraitTest extends TestCase
 {
     private $clientInfoTrait;

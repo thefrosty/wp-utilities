@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\Mock\HookProvider;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
@@ -9,6 +10,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  * Class HooksTraitTest
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(HookProvider::class)]
 class HooksTraitTest extends TestCase
 {
 

@@ -2,6 +2,7 @@
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use TheFrosty\WpUtilities\Plugin\AbstractContainerProvider;
 use TheFrosty\WpUtilities\Plugin\PluginAwareInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
@@ -11,6 +12,7 @@ use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
  * Class AbstractContainerProviderTest
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(AbstractContainerProvider::class)]
 class AbstractContainerProviderTest extends TestCase
 {
 

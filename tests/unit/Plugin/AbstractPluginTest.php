@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionObject;
 use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
 use TheFrosty\WpUtilities\Plugin\Plugin;
@@ -13,6 +14,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  * Class AbstractPluginTest
  * @package TheFrosty\WpUtilities\Test\Plugin
  */
+#[CoversClass(AbstractPlugin::class)]
 class AbstractPluginTest extends TestCase
 {
 
