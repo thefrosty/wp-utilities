@@ -6,6 +6,7 @@ namespace TheFrosty\WpUtilities\Tests\Api;
 
 use TheFrosty\WpUtilities\Api\TransientsTrait;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
+use function delete_transient;
 
 /**
  * Trait TransientsTraitTest
@@ -54,13 +55,16 @@ class TransientsTraitTest extends TestCase
         $expiration = 3600; // 1 hour
 
         $this->assertTrue($this->transientsTrait->setTransient($transientName, $value, $expiration));
+        delete_transient($transientName);
     }
 
     public function testGetTransientTimeout(): void
     {
         $transientName = 'example_transient';
 
+        $this->transientsTrait->setTransient($transientName, 'something', 3600);
         $this->assertIsInt($this->transientsTrait->getTransientTimeout($transientName));
-        $this->assertEquals(null, $this->transientsTrait->getTransientTimeout('some_random_transient_name'));
+        delete_transient($transientName);
+        $this->assertEquals(null, $this->transientsTrait->getTransientTimeout($transientName));
     }
 }
