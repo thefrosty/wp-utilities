@@ -12,10 +12,10 @@ use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
 
 /**
- * Class ClientInfo
+ * Class ClientInfoTrait
  * @package TheFrosty\WpUtilities\Api
  */
-class ClientInfo
+trait ClientInfoTrait
 {
 
     /**
