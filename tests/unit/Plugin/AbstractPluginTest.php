@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use ReflectionObject;
 use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
+use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
@@ -12,6 +15,13 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  */
 class AbstractPluginTest extends TestCase
 {
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->plugin = new Plugin();
+        $this->reflection = new ReflectionObject($this->plugin);
+    }
 
     /**
      * Test AbstractPlugin.
@@ -28,8 +38,7 @@ class AbstractPluginTest extends TestCase
     public function testGetBasename(): void
     {
         $basename = 'plugin/plugin.php';
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setBasename($basename);
         $this->assertInstanceOf(\get_class($plugin), $plugin);
         $this->assertSame($basename, $plugin->getBasename());
@@ -40,8 +49,7 @@ class AbstractPluginTest extends TestCase
      */
     public function testGetDirectory(): void
     {
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setDirectory('/wp-content/plugins');
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame('/wp-content/plugins/', $plugin->getDirectory());
@@ -57,8 +65,7 @@ class AbstractPluginTest extends TestCase
     public function testGetFile(): void
     {
         $file = '/wp-content/plugins/plugin/plugin.php';
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setFile($file);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($file, $plugin->getFile());
@@ -69,8 +76,7 @@ class AbstractPluginTest extends TestCase
      */
     public function testGetPath(): void
     {
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setDirectory('/wp-content/plugins');
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame('/wp-content/plugins/name', $plugin->getPath('name'));
@@ -83,8 +89,7 @@ class AbstractPluginTest extends TestCase
     public function testGetSlug(): void
     {
         $slug = 'crate';
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setSlug($slug);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($slug, $plugin->getSlug());
@@ -96,8 +101,7 @@ class AbstractPluginTest extends TestCase
     public function testGetUrl(): void
     {
         $url = 'https://example.com/wp-content/plugins/plugin';
-        /** AbstractPlugin @var AbstractPlugin $plugin */
-        $plugin = $this->getMockProviderForAbstractClass(AbstractPlugin::class);
+        $plugin = $this->plugin;
         $plugin->setUrl($url);
         $this->assertInstanceOf(get_class($plugin), $plugin);
         $this->assertSame($url . '/', $plugin->getUrl());
