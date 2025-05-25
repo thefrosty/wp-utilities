@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Plugin;
 
 use InvalidArgumentException;
-use TheFrosty\WpUtilities\Utils\SingletonInterface;
 use function add_action;
 use function call_user_func;
 use function class_implements;
@@ -422,11 +421,6 @@ abstract class AbstractPlugin implements PluginInterface
             throw new InvalidArgumentException(
                 sprintf('Expected a %s interface, but got %s', WpHooksInterface::class, $wp_hook)
             );
-        }
-
-        if (in_array(SingletonInterface::class, class_implements($wp_hook), true)) {
-            /** @var SingletonInterface $wp_hook */
-            return $wp_hook::getInstance();
         }
 
         return empty($args) ? new $wp_hook() : new $wp_hook(...$args);
