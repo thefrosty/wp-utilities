@@ -7,7 +7,6 @@ namespace TheFrosty\WpUtilities\Plugin;
 use ArrayIterator;
 use IteratorAggregate;
 use function array_key_exists;
-use function get_class;
 
 /**
  * Class Init
@@ -57,8 +56,8 @@ final class Init implements IteratorAggregate
     public function initialize(): void
     {
         foreach ($this as $wp_hook) {
-            if ($wp_hook instanceof WpHooksInterface && !array_key_exists(get_class($wp_hook), $this->initiated)) {
-                $this->initiated[get_class($wp_hook)] = true;
+            if ($wp_hook instanceof WpHooksInterface && !array_key_exists($wp_hook::class, $this->initiated)) {
+                $this->initiated[$wp_hook::class] = true;
                 $wp_hook->addHooks();
             }
         }
@@ -91,7 +90,7 @@ final class Init implements IteratorAggregate
     {
         $wp_hooks = $this->getWpHooks();
         foreach ($wp_hooks as $key => $object) {
-            if (get_class($object) === $class_name) {
+            if ($object::class === $class_name) {
                 return $object[$key];
             }
         }
