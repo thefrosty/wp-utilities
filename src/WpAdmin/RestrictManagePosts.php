@@ -12,6 +12,7 @@ use function apply_filters;
 use function array_shift;
 use function defined;
 use function esc_attr;
+use function esc_html__;
 use function esc_url;
 use function is_admin;
 use function is_array;
@@ -20,7 +21,7 @@ use function preg_match;
 use function sanitize_text_field;
 use function sprintf;
 use function strcasecmp;
-use function TheFrosty\WpUtilities\wp_register_script;
+use function TheFrosty\WpUtilities\wpRegisterScript;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
 use function wp_register_style;
@@ -89,7 +90,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             );
         }
         if (!wp_script_is('select2', 'registered')) {
-            wp_register_script(
+            wpRegisterScript(
                 'select2',
                 sprintf('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2%s.js', $min),
                 ['jquery'],
@@ -97,12 +98,12 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
                 true
             );
         }
-        wp_register_script(
+        wpRegisterScript(
             self::HANDLE_UTILITY_FUNCTIONS,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/utilities/functions%s.js', $min),
             args: ['in_footer' => true]
         );
-        wp_register_script(
+        wpRegisterScript(
             self::HANDLE,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s%s.js', self::HANDLE, $min),
             ['select2', self::HANDLE_UTILITY_FUNCTIONS],
@@ -145,13 +146,13 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         $meta_keys = self::getFilteredMetaKeys($post_type);
         $this->selectHtml(
             self::ADMIN_FILTER_FIELD_NAME,
-            \esc_html__('Meta Key', 'wp-utilities'),
+            esc_html__('Meta Key', 'wp-utilities'),
             $meta_keys
         );
         $meta_values = self::getFilteredMetaValues($post_type);
         $this->selectHtml(
             self::ADMIN_FILTER_FIELD_VALUE,
-            \esc_html__('Meta Value', 'wp-utilities'),
+            esc_html__('Meta Value', 'wp-utilities'),
             $meta_values
         );
         if (!empty($meta_keys) && !empty($meta_values)) {
