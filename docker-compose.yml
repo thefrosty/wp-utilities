@@ -1,28 +1,5 @@
 services:
 
-  wordpress:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - mysql
-    ports:
-      - "8880:80"
-      - "4443:443"
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: mysql:3306
-      WORDPRESS_DB_NAME: wordpress_test
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: root
-      WORDPRESS_CONFIG_EXTRA: |
-        define('WP_MEMORY_LIMIT', '512M');
-    volumes:
-      - "./vendor:/var/www/html/vendor:ro"
-    extra_hosts:
-      - "wp.test:192.168.1.88"
-      - "www.wp.test:192.168.1.88"
-
   mysql:
     image: mysql:8.4
     command: --mysql-native-password=ON
