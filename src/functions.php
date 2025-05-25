@@ -4,9 +4,54 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities;
 
+use Symfony\Component\HttpFoundation\Request;
+use function filter_var;
 use function get_bloginfo;
 use function is_array;
+use function sanitize_text_field;
 use function version_compare;
+use function wp_enqueue_script;
+use function wp_register_script;
+use const FILTER_FLAG_IPV4;
+use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_IP;
+
+/**
+ * Get the clients IP.
+ * @ref https://dev.to/rogeriotaques/an-easy-way-to-get-the-real-client-ip-in-php-4pii
+ * @param Request|null $request
+ * @return string|null
+ */
+function getIpAddress(?Request $request = null): ?string
+{
+    $request ??= Request::createFromGlobals();
+
+    $ip = $request->server->get(
+        'HTTP_CLIENT_IP',
+        $request->server->get(
+            'HTTP_CF_CONNECTING_IP',
+            $request->server->get(
+                'HTTP_X_FORWARDED',
+                $request->server->get(
+                    'HTTP_X_FORWARDED_FOR',
+                    $request->server->get(
+                        'HTTP_FORWARDED',
+                        $request->server->get(
+                            'HTTP_FORWARDED_FOR',
+                            $request->server->get('REMOTE_ADDR')
+                        )
+                    )
+                )
+            )
+        )
+    );
+
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+        return null;
+    }
+
+    return sanitize_text_field($ip);
+}
 
 /**
  * 6.3.0 Stub for PHP 8.0+.
@@ -33,7 +78,7 @@ use function version_compare;
  * @since 4.3.0 A return value was added.
  * @since 6.3.0 The $in_footer parameter of type boolean was overloaded to be an $args parameter of type array.
  */
-function wp_register_script(
+function wpRegisterScript(
     string $handle,
     string|false $src,
     array $deps = [],
@@ -47,10 +92,10 @@ function wp_register_script(
     }
 
     if (version_compare(get_bloginfo('version'), '6.3') >= 0) {
-        return \wp_register_script($handle, $src, $deps, $ver, $args);
+        return wp_register_script($handle, $src, $deps, $ver, $args);
     }
 
-    return \wp_register_script($handle, $src, $deps, $ver, $args['in_footer']);
+    return wp_register_script($handle, $src, $deps, $ver, $args['in_footer']);
 }
 
 /**
@@ -74,7 +119,7 @@ function wp_register_script(
  * @since 2.1.0
  * @since 6.3.0 The $in_footer parameter of type boolean was overloaded to be an $args parameter of type array.
  */
-function wp_enqueue_script(
+function wpEnqueueScript(
     string $handle,
     string|false $src = '',
     array $deps = [],
@@ -88,10 +133,10 @@ function wp_enqueue_script(
     }
 
     if (version_compare(get_bloginfo('version'), '6.3') >= 0) {
-        \wp_enqueue_script($handle, $src, $deps, $ver, $args);
+        wp_enqueue_script($handle, $src, $deps, $ver, $args);
 
         return;
     }
 
-    \wp_enqueue_script($handle, $src, $deps, $ver, $args['in_footer']);
+    wp_enqueue_script($handle, $src, $deps, $ver, $args['in_footer']);
 }
