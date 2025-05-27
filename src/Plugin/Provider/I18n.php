@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin\Provider;
 
@@ -6,6 +8,9 @@ use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\PluginAwareInterface;
 use TheFrosty\WpUtilities\Plugin\PluginAwareTrait;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
+use function did_action;
+use function dirname;
+use function load_plugin_textdomain;
 
 /**
  * Internationalization class.
@@ -17,17 +22,16 @@ class I18n implements PluginAwareInterface, WpHooksInterface
 
     /**
      * Register hooks.
-     *
-     * Loads the text domain during the `plugins_loaded` action.
+     * Loads the text domain during the `init` action.
      */
     public function addHooks(): void
     {
-        if (\did_action('plugins_loaded')) {
+        if (did_action('init')) {
             $this->loadTextDomain();
 
             return;
         }
-        $this->addAction('plugins_loaded', [$this, 'loadTextDomain']);
+        $this->addAction('init', [$this, 'loadTextDomain']);
     }
 
     /**
@@ -35,10 +39,10 @@ class I18n implements PluginAwareInterface, WpHooksInterface
      */
     protected function loadTextDomain(): void
     {
-        \load_plugin_textdomain(
+        load_plugin_textdomain(
             $this->getPlugin()->getSlug(),
             false,
-            \dirname($this->getPlugin()->getBasename()) . '/languages'
+            dirname($this->getPlugin()->getBasename()) . '/languages'
         );
     }
 }
