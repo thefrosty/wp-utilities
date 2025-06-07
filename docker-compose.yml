@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:8.4
     command: --mysql-native-password=ON
-    restart: always
+    restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
