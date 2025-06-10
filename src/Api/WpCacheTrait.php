@@ -30,7 +30,7 @@ trait WpCacheTrait
 
     /**
      * Get the cache key for the current query.
-     * With this value you should be able to delete the cache for a specific query (if needed).
+     * With this value, you should be able to delete the cache for a specific query (if needed).
      * @return string|null
      */
     public function getQueryCacheKey(): ?string
@@ -68,7 +68,7 @@ trait WpCacheTrait
     }
 
     /**
-     * Retrieve object from cache.
+     * Retrieve an object from cache.
      * @param string $key The key under which to store the value.
      * @param string|null $group The group value appended to the $key.
      * @param bool $force Optional. Whether to force an update of the local cache from the persistent cache. Default

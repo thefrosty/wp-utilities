@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api;
 
 use TheFrosty\WpUtilities\Plugin\Plugin;
+use WP_Error;
 use function apply_filters;
 use function array_filter;
 use function array_merge;
@@ -26,7 +27,7 @@ use const DAY_IN_SECONDS;
 trait WpRemote
 {
 
-    use WpCacheTrait;
+    use TransientsTrait;
 
     /**
      * Get the remote GET request body.
@@ -66,8 +67,8 @@ trait WpRemote
         ?string $user_agent = null,
         ?string $version = null
     ): mixed {
-        $key = $this->getHashedKey($url);
-        $body = $this->getCache($key);
+        $transient = $this->getTransientKey($url);
+        $body = $this->getTransient($transient);
         if (empty($body)) {
             if ($user_agent !== null) {
                 $args = [
@@ -75,7 +76,7 @@ trait WpRemote
                         sprintf(
                             '%s/%s; %s',
                             $user_agent,
-                            $version ?? $GLOBALS['wp_version'],
+                            $version ?? $GLOBALS['wp_version'], // phpcs:ignore
                             get_bloginfo('url')
                         )
                     ),
@@ -83,7 +84,7 @@ trait WpRemote
             }
             $body = $this->retrieveBody($url, $args ?? []);
             if (!empty($body)) {
-                $this->setCache($key, $body, null, $expiration ?? DAY_IN_SECONDS);
+                $this->setTransient($transient, $body, $expiration ?? DAY_IN_SECONDS);
             }
 
             return $body;
@@ -96,9 +97,9 @@ trait WpRemote
      * Return a remote GET request.
      * @param string $url
      * @param array $args
-     * @return array|\WP_Error
+     * @return array|WP_Error
      */
-    public function wpRemoteGet(string $url, array $args = []): \WP_Error|array
+    public function wpRemoteGet(string $url, array $args = []): WP_Error|array
     {
         return wp_remote_get(esc_url($url), $this->buildRequestArgs($args));
     }
@@ -107,9 +108,9 @@ trait WpRemote
      * Return a remote POST request.
      * @param string $url
      * @param array $args
-     * @return array|\WP_Error
+     * @return array|WP_Error
      */
-    public function wpRemotePost(string $url, array $args = []): \WP_Error|array
+    public function wpRemotePost(string $url, array $args = []): WP_Error|array
     {
         return wp_remote_post(esc_url($url), $this->buildRequestArgs($args));
     }
@@ -122,7 +123,7 @@ trait WpRemote
     private function buildRequestArgs(array $args): array
     {
         $defaults = [
-            'timeout' => apply_filters(Plugin::TAG . 'wp_remote_timeout', 15),
+            'timeout' => apply_filters(Plugin::TAG . 'wp_remote_timeout', 2),
         ];
 
         return array_filter(array_merge($defaults, $args));
