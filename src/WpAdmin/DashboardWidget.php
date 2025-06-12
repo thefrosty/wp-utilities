@@ -26,8 +26,6 @@ class DashboardWidget implements WpHooksInterface
     public const string HOOK_NAME_ALLOWED_S = Plugin::TAG . '/%s/dashboard_allowed';
     public const string HOOK_NAME_RENDER = Plugin::TAG . '/render/dashboard_widget';
 
-    /** @var array $args */
-    private array $args;
 
     /** @var Widget $widget */
     private Widget $widget;
@@ -38,7 +36,7 @@ class DashboardWidget implements WpHooksInterface
      */
     public function __construct(array $args)
     {
-        $this->args = $args;
+        $this->setWidget($args);
     }
 
     /**
@@ -54,7 +52,6 @@ class DashboardWidget implements WpHooksInterface
      */
     protected function loadIndexPhp(): void
     {
-        $this->setWidget($this->args);
         $this->addAction('wp_dashboard_setup', [$this, 'addDashboardWidget']);
     }
 
