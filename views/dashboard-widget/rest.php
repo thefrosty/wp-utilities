@@ -5,16 +5,16 @@ declare(strict_types=1);
 use TheFrosty\WpUtilities\Api\WpRemote;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
-if (isset($instance) && $instance instanceof DashboardWidget) {
-    // Pass the widget ID to the template (outside `DashboardWidget`).
-    $widgetId = $instance->getWidget()->getWidgetId();
+if (!isset($instance) || !$instance instanceof DashboardWidget) {
+    throw new InvalidArgumentException(sprintf('The instance must be an instance of %s', DashboardWidget::class));
 }
 
-$widgetId ??= hash('sha256', static::class);
+// Pass the widget ID to the template (outside `DashboardWidget`).
+$widgetId = $instance->getWidget()->getWidgetId();
 $wpRemote = new class {
     use WpRemote;
 };
-$posts ??= $wpRemote->retrieveBodyCached($widgetId, DAY_IN_SECONDS);
+$posts ??= $wpRemote->retrieveBodyCached($instance->getWidget()->getFeedUrl(), WEEK_IN_SECONDS);
 $renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
 static $count;
 
