@@ -8,9 +8,9 @@ $wpRemote = new class {
     use WpRemote;
 };
 /** @var $instance TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
-$posts ??= $wpRemote->retrieveBodyCached($instance->getWidget()->getFeedUrl(), DAY_IN_SECONDS);
-$renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
 $widgetId ??= $instance->getWidget()->getWidgetId(); // Pass the widget ID to the template (outside `DashboardWidget`).
+$posts ??= $wpRemote->retrieveBodyCached($widgetId, DAY_IN_SECONDS);
+$renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
 static $count;
 
 $content = '';
