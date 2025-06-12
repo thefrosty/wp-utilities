@@ -6,7 +6,9 @@ use TheFrosty\WpUtilities\Api\WpRemote;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
 if (!isset($instance) || !$instance instanceof DashboardWidget) {
-    throw new InvalidArgumentException(sprintf('The instance must be an instance of %s', DashboardWidget::class));
+    throw new InvalidArgumentException(
+        sprintf('Missing variable `$instance`, must be an instance of %s', DashboardWidget::class)
+    );
 }
 
 // Pass the widget ID to the template (outside `DashboardWidget`).
