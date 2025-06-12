@@ -3,12 +3,17 @@
 declare(strict_types=1);
 
 use TheFrosty\WpUtilities\Api\WpRemote;
+use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
+if (isset($instance) && $instance instanceof DashboardWidget) {
+    // Pass the widget ID to the template (outside `DashboardWidget`).
+    $widgetId = $instance->getWidget()->getWidgetId();
+}
+
+$widgetId ??= hash('sha256', static::class);
 $wpRemote = new class {
     use WpRemote;
 };
-/** @var $instance TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
-$widgetId ??= $instance->getWidget()->getWidgetId(); // Pass the widget ID to the template (outside `DashboardWidget`).
 $posts ??= $wpRemote->retrieveBodyCached($widgetId, DAY_IN_SECONDS);
 $renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
 static $count;
