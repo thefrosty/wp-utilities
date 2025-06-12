@@ -1,28 +1,37 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+use TheFrosty\WpUtilities\Api\WpRemote;
+use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
+
+if (!isset($instance) || !$instance instanceof DashboardWidget) {
+    throw new InvalidArgumentException(
+        sprintf('Missing variable `$instance`, must be an instance of %s', DashboardWidget::class)
+    );
+}
+
+// Pass the widget ID to the template (outside `DashboardWidget`).
+$widgetId = $instance->getWidget()->getWidgetId();
 $wpRemote = new class {
-
-    use TheFrosty\WpUtilities\Api\WpRemote;
+    use WpRemote;
 };
-/** @var $this TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
-$posts ??= $wpRemote->retrieveBodyCached($this->getWidget()->getFeedUrl(), DAY_IN_SECONDS);
+$posts ??= $wpRemote->retrieveBodyCached($instance->getWidget()->getFeedUrl(), WEEK_IN_SECONDS);
 $renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
-$widgetId ??= $this->getWidget()->getWidgetId(); // Pass the widget ID to the template (outside `DashboardWidget`).
 static $count;
 
 $content = '';
 if (empty($posts)) {
-    $wpRemote->deleteCache($wpRemote->getQueryCacheKey() ?? '');
-    $content .= '<li>' . __('Error fetching feed') . '</li>';
+    $content .= '<li>' . __('Error fetching feed') . '</li>'; // phpcs:ignore
 } else {
     foreach ($posts as $item) {
         $count++;
         $content .= '<li>';
         $content .= '<a class="rsswidget" href="' . esc_url(add_query_arg([
-                'utm_medium' => 'wpadmin_dashboard',
-                'utm_term' => 'newsitem',
-                'utm_campaign' => $widgetId,
-            ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
+            'utm_medium' => 'wpadmin_dashboard',
+            'utm_term' => 'newsitem',
+            'utm_campaign' => $widgetId,
+        ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
 
         if ($count === 1 && $renderContent) {
             $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
