@@ -1,19 +1,22 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+use TheFrosty\WpUtilities\Api\WpRemote;
+
+$instance ??= null;
 $wpRemote = new class {
-
-    use TheFrosty\WpUtilities\Api\WpRemote;
+    use WpRemote;
 };
-/** @var $this TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
-$posts ??= $wpRemote->retrieveBodyCached($this->getWidget()->getFeedUrl(), DAY_IN_SECONDS);
+/** @var $instance TheFrosty\WpUtilities\WpAdmin\DashboardWidget */
+$posts ??= $wpRemote->retrieveBodyCached($instance->getWidget()->getFeedUrl(), DAY_IN_SECONDS);
 $renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
-$widgetId ??= $this->getWidget()->getWidgetId(); // Pass the widget ID to the template (outside `DashboardWidget`).
+$widgetId ??= $instance->getWidget()->getWidgetId(); // Pass the widget ID to the template (outside `DashboardWidget`).
 static $count;
 
 $content = '';
 if (empty($posts)) {
-    $wpRemote->deleteCache($wpRemote->getQueryCacheKey() ?? '');
-    $content .= '<li>' . __('Error fetching feed') . '</li>';
+    $content .= '<li>' . __('Error fetching feed') . '</li>'; // phpcs:ignore
 } else {
     foreach ($posts as $item) {
         $count++;
