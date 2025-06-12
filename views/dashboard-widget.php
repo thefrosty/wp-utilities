@@ -6,13 +6,14 @@ use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 
-/**
- * DashboardWidget object.
- * @var $instance DashboardWidget
- * @var $this View
- */
 if (!($this instanceof View)) {
     wp_die(sprintf('Please don\'t load this file outside of <code>%s.</code>', esc_attr(View::class)));
+}
+
+$instance ??= $this->getViewData()['instance'] ?? null;
+
+if (!$instance instanceof DashboardWidget) {
+    return;
 }
 
 $div_open = '<div class="rss-widget"><ul>';

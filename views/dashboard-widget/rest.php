@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use TheFrosty\WpUtilities\Api\WpRemote;
 
-$instance ??= null;
 $wpRemote = new class {
     use WpRemote;
 };
@@ -22,10 +21,10 @@ if (empty($posts)) {
         $count++;
         $content .= '<li>';
         $content .= '<a class="rsswidget" href="' . esc_url(add_query_arg([
-                'utm_medium' => 'wpadmin_dashboard',
-                'utm_term' => 'newsitem',
-                'utm_campaign' => $widgetId,
-            ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
+            'utm_medium' => 'wpadmin_dashboard',
+            'utm_term' => 'newsitem',
+            'utm_campaign' => $widgetId,
+        ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
 
         if ($count === 1 && $renderContent) {
             $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
