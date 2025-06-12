@@ -23,7 +23,6 @@ class DashboardWidget implements WpHooksInterface
 
     use HooksTrait;
 
-    public const string OBJECT_NAME = 'DashboardWidget';
     public const string HOOK_NAME_ALLOWED_S = Plugin::TAG . '/%s/dashboard_allowed';
     public const string HOOK_NAME_RENDER = Plugin::TAG . '/render/dashboard_widget';
 
@@ -71,8 +70,8 @@ class DashboardWidget implements WpHooksInterface
         wp_add_dashboard_widget(
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
-            static function (): void {
-                (new View())->render('dashboard-widget.php');
+            function (): void {
+                (new View())->render('dashboard-widget.php', ['instance' => $this]);
             }
         );
     }
