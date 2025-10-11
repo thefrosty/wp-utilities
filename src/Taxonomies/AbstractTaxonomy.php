@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Taxonomies;
 
-use TheFrosty\WpUtilities\Exceptions\Exception;
 use PostTypes\Taxonomy;
 use ReflectionClass;
+use TheFrosty\WpUtilities\Exceptions\Exception;
 use function array_filter;
+use function is_array;
 use function str_contains;
 use const ARRAY_FILTER_USE_KEY;
 
@@ -121,7 +122,7 @@ abstract class AbstractTaxonomy
     }
 
     /**
-     * Ges the Taxonomy labels.
+     * Gets the Taxonomy labels.
      * @return array
      */
     protected function getLabels(): array
@@ -145,7 +146,7 @@ abstract class AbstractTaxonomy
     private function registerPostTypes(Taxonomy $taxonomy): void
     {
         $post_types = static::POST_TYPE;
-        if (!\is_array($post_types)) {
+        if (!is_array($post_types)) {
             $post_types = [$post_types];
         }
 
