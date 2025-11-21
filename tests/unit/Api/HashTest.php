@@ -37,36 +37,38 @@ class HashTest extends TestCase
     public function testDecrypt(): void
     {
         $data = 'test data';
+        $encryption_key = 'SomeKeyWith4Delimiter|';
 
         // Encrypt the data first to get a valid encrypted string with delimiter
-        $encrypted_data = $this->encrypt($data);
+        $encrypted_data = $this->encrypt($data, $encryption_key);
         $this->assertNotEquals($data, $encrypted_data);
 
         // Decrypt the data and assert that it matches the original data
-        $decrypted_data = $this->decrypt($encrypted_data);
+        $decrypted_data = $this->decrypt($encrypted_data, $encryption_key);
         $this->assertEquals($data, $decrypted_data);
     }
 
     public function testEncrypt(): void
     {
         $data = 'test data';
+        $encryption_key = 'SomeKeyWith4Delimiter|';
 
         // Encrypt the data and assert that it is not equal to the original data
-        $encrypted_data = $this->encrypt($data);
+        $encrypted_data = $this->encrypt($data, $encryption_key);
         $this->assertNotEquals($data, $encrypted_data);
 
         // Decrypt the encrypted data and assert that it matches the original data
-        $decrypted_data = $this->decrypt($encrypted_data);
+        $decrypted_data = $this->decrypt($encrypted_data, $encryption_key);
         $this->assertEquals($data, $decrypted_data);
     }
 
-    private function decrypt(string $data): string
+    private function decrypt(string $data, string $encryption_key): string
     {
-        return $this->reflection->getMethod('decrypt')->invoke($this->hash, $data);
+        return $this->reflection->getMethod('decrypt')->invoke($this->hash, $data, $encryption_key);
     }
 
-    private function encrypt(string $data): string
+    private function encrypt(string $data, string $encryption_key): string
     {
-        return $this->reflection->getMethod('encrypt')->invoke($this->hash, $data);
+        return $this->reflection->getMethod('encrypt')->invoke($this->hash, $data, $encryption_key);
     }
 }
