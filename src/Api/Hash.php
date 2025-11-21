@@ -21,6 +21,26 @@ trait Hash
     private const string CIPHER = 'AES-256-CBC';
 
     /**
+     * Decrypt a string.
+     * @param string $data The encrypted string value.
+     * @return string
+     */
+    public function decrypt(string $data): string
+    {
+        return self::getEncrypter()->decryptString($data);
+    }
+
+    /**
+     * Encrypt a string.
+     * @param string $data The string value to encrypt
+     * @return string
+     */
+    public function encrypt(string $data): string
+    {
+        return self::getEncrypter()->encryptString($data);
+    }
+
+    /**
      * Get an encryption key.
      * @return string
      */
@@ -31,7 +51,7 @@ trait Hash
             return (string)$key;
         }
 
-        $default = wp_generate_password(length: 32, special_chars: false);
+        $default = wp_generate_password(length: 32, extra_special_chars: true);
         add_site_option(self::OPTION, $default);
         return $default;
     }
@@ -44,26 +64,6 @@ trait Hash
     protected function getHashedKey(string $data): string
     {
         return hash('sha256', $data);
-    }
-
-    /**
-     * Decrypt a string.
-     * @param string $data The encrypted string value.
-     * @return string
-     */
-    protected function decrypt(string $data): string
-    {
-        return self::getEncrypter()->decryptString($data);
-    }
-
-    /**
-     * Encrypt a string.
-     * @param string $data The string value to encrypt
-     * @return string
-     */
-    protected function encrypt(string $data): string
-    {
-        return self::getEncrypter()->encryptString($data);
     }
 
     /**
