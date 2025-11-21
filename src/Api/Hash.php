@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
+use Random\RandomException;
 use RuntimeException;
-use Throwable;
 use function base64_decode;
 use function base64_encode;
 use function explode;
@@ -60,6 +60,7 @@ trait Hash
      * @param string $data The string value to encrypt
      * @param string $encryption_key The encryption key. Example `SomeKeyWith4Delimiter|`.
      * @return string
+     * @throws RuntimeException
      */
     protected function encrypt(string $data, string $encryption_key): string
     {
@@ -73,7 +74,7 @@ trait Hash
                 throw new RuntimeException('Encryption failed');
             }
             return base64_encode($encrypted_data . '::' . base64_encode($iv)); // Append IV to encrypted data.
-        } catch (Throwable) {
+        } catch (RandomException) {
             return base64_encode($data); // Return unencrypted on error as base64 encode.
         }
     }
