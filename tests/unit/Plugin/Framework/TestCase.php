@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin\Framework;
 
-use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
-use ReflectionMethod;
 use ReflectionObject;
 use TheFrosty\WpUtilities\Plugin\Container;
 use TheFrosty\WpUtilities\Plugin\Plugin;
@@ -95,17 +93,6 @@ class TestCase extends PhpUnitTestCase
         }
 
         return $reflector[get_class($argument)];
-    }
-
-    protected function setReflectionMethod(ReflectionMethod $method, callable $implementation): Closure
-    {
-        // Create a new method with the same name and implementation
-        return $this->getMockBuilder(get_class($this))
-            ->disableOriginalConstructor()
-            ->onlyMethods([$method->name])
-            ->getMock()->{$method->name} = static function () use ($implementation) {
-            return $implementation(...func_get_args());
-        };
     }
 
     /**
