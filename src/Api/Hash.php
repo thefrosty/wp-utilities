@@ -28,21 +28,23 @@ trait Hash
     /**
      * Decrypt a string.
      * @param string $data The encrypted string value.
+     * @param string $encryption_key The encryption key.
      * @return string
      */
-    protected function decrypt(string $data): string
+    protected function decrypt(string $data, string $encryption_key): string
     {
-        return $this->getEncrypter($data)->decryptString($data);
+        return $this->getEncrypter($encryption_key)->decryptString($data);
     }
 
     /**
      * Encrypt a string.
      * @param string $data The string value to encrypt
+     * @param string $encryption_key The encryption key. Example `SomeKeyWith4Delimiter|`.
      * @return string
      */
-    protected function encrypt(string $data): string
+    protected function encrypt(string $data, string $encryption_key): string
     {
-        return $this->getEncrypter($data)->encryptString($data);
+        return $this->getEncrypter($encryption_key)->encryptString($data);
     }
 
     /**
