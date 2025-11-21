@@ -6,6 +6,13 @@ namespace TheFrosty\WpUtilities\Plugin;
 
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
+use function class_exists;
+use function debug_backtrace;
+use function interface_exists;
+use function plugin_basename;
+use function plugin_dir_path;
+use function plugin_dir_url;
+use const DEBUG_BACKTRACE_PROVIDE_OBJECT;
 
 /**
  * Class PluginFactory
@@ -46,18 +53,18 @@ class PluginFactory
         // Use the calling file as the main plugin file.
         if (empty($filename)) {
             // @codingStandardsIgnoreStart
-            $backtrace = \debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1);
             $filename = $backtrace[0]['file'];
             // @codingStandardsIgnoreEnd
         }
 
         $plugin = (new Plugin())
             ->setInit(new Init())
-            ->setBasename(\plugin_basename($filename))
-            ->setDirectory(\plugin_dir_path($filename))
+            ->setBasename(plugin_basename($filename))
+            ->setDirectory(plugin_dir_path($filename))
             ->setFile($filename)
             ->setSlug($slug)
-            ->setUrl(\plugin_dir_url($filename));
+            ->setUrl(plugin_dir_url($filename));
 
         $plugin = self::setContainer($plugin);
         $plugin->setTemplateLoader(new TemplateLoader($plugin));
@@ -74,8 +81,8 @@ class PluginFactory
     private static function setContainer(Plugin $plugin): Plugin
     {
         if (
-            \class_exists('\Pimple\Container') &&
-            \interface_exists('\Psr\Container\ContainerInterface')
+            class_exists('\Pimple\Container') &&
+            interface_exists('\Psr\Container\ContainerInterface')
         ) {
             $container = self::getContainer();
             $plugin->setContainer($container);
@@ -93,7 +100,7 @@ class PluginFactory
     {
         $reflection = new ReflectionMethod('\Psr\Container\ContainerInterface', 'has');
         if ($reflection->hasReturnType() && $reflection->getReturnType()) {
-            return new Container(); // ContainerInterface >= 2.0.0
+            return new Container(); // ContainerInterface >= 2.0.0.
         }
         $parameter = $reflection->getParameters()[0] ?? null;
         if ($parameter && $parameter->getType() && $parameter->getType()->getName() === 'string') {
