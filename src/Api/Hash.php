@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api;
 
 use Illuminate\Encryption\Encrypter;
+use function get_site_option;
+use function hash;
+use function wp_generate_password;
 
 /**
  * Trait Hash
@@ -13,7 +16,20 @@ use Illuminate\Encryption\Encrypter;
 trait Hash
 {
 
-    private const string CIPHER = 'aes-256-cbc';
+    public const string OPTION = '_wp_utilities_encryption_key';
+    private const string CIPHER = 'AES-256-CBC';
+
+    /**
+     * Get an encryption key.
+     *  To create a custom KEY, use `add_site_option(TheFrosty\WpUtilities\Api\Hash::OPTION, 'YOURKey')`.
+     * @return string
+     */
+    protected function getEncryptionKey(): string
+    {
+        static $encryption_key;
+        $encryption_key ??= wp_generate_password();
+        return get_site_option(self::OPTION, $encryption_key);
+    }
 
     /**
      * Get a sha256 hash key.
@@ -28,22 +44,24 @@ trait Hash
     /**
      * Decrypt a string.
      * @param string $data The encrypted string value.
-     * @param string $encryption_key The encryption key.
+     * @param string|null $encryption_key The encryption key.
      * @return string
      */
-    protected function decrypt(string $data, string $encryption_key): string
+    protected function decrypt(string $data, ?string $encryption_key = null): string
     {
+        $encryption_key ??= $this->getEncryptionKey();
         return $this->getEncrypter($encryption_key)->decryptString($data);
     }
 
     /**
      * Encrypt a string.
      * @param string $data The string value to encrypt
-     * @param string $encryption_key The encryption key. Example `SomeKeyWith4Delimiter|`.
+     * @param string|null $encryption_key The encryption key.
      * @return string
      */
-    protected function encrypt(string $data, string $encryption_key): string
+    protected function encrypt(string $data, ?string $encryption_key = null): string
     {
+        $encryption_key ??= $this->getEncryptionKey();
         return $this->getEncrypter($encryption_key)->encryptString($data);
     }
 
@@ -54,6 +72,8 @@ trait Hash
      */
     private function getEncrypter(string $key): Encrypter
     {
-        return new Encrypter($key, self::CIPHER);
+        static $encrypter;
+        $encrypter ??= new Encrypter($key, self::CIPHER);
+        return $encrypter;
     }
 }
