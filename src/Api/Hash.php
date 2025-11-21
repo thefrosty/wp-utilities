@@ -27,7 +27,7 @@ trait Hash
     protected function getEncryptionKey(): string
     {
         static $encryption_key;
-        $encryption_key ??= wp_generate_password();
+        $encryption_key ??= wp_generate_password(32);
         return get_site_option(self::OPTION, $encryption_key);
     }
 
