@@ -82,9 +82,9 @@ trait Hash
             return (string)$key;
         }
 
-        $default = wp_generate_password(length: 32, extra_special_chars: true);
-        add_site_option(self::OPTION, $default);
-        return $default;
+        $value = wp_generate_password(length: 32);
+        add_site_option(self::OPTION, $value);
+        return $value;
     }
 
     /**
