@@ -27,7 +27,6 @@ use const OPENSSL_RAW_DATA;
 trait Hash
 {
 
-    private string $key;
     public const string OPTION = '_wp_utilities_encryption_key';
     private const string CIPHER = 'AES-256-CBC';
 
