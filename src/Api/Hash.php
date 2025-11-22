@@ -3,13 +3,12 @@
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
-use function base64_decode;
-use function base64_encode;
+
+use Illuminate\Encryption\Encrypter;
+use function add_site_option;
+use function get_site_option;
 use function hash;
-use function openssl_decrypt;
-use function openssl_encrypt;
-use function sprintf;
-use function substr;
+use function wp_generate_password;
 
 /**
  * Trait Hash
@@ -17,6 +16,45 @@ use function substr;
  */
 trait Hash
 {
+
+    public const string OPTION = '_wp_utilities_encryption_key';
+    private const string CIPHER = 'AES-256-CBC';
+
+    /**
+     * Decrypt a string.
+     * @param string $data The encrypted string value.
+     * @return string
+     */
+    public function decrypt(string $data): string
+    {
+        return self::getEncrypter()->decryptString($data);
+    }
+
+    /**
+     * Encrypt a string.
+     * @param string $data The string value to encrypt
+     * @return string
+     */
+    public function encrypt(string $data): string
+    {
+        return self::getEncrypter()->encryptString($data);
+    }
+
+    /**
+     * Get an encryption key.
+     * @return string
+     */
+    protected static function getEncryptionKey(): string
+    {
+        $key = get_site_option(self::OPTION);
+        if ($key !== false) {
+            return (string)$key;
+        }
+
+        $default = wp_generate_password(length: 32, extra_special_chars: true);
+        add_site_option(self::OPTION, $default);
+        return $default;
+    }
 
     /**
      * Get a sha256 hash key.
@@ -29,30 +67,14 @@ trait Hash
     }
 
     /**
-     * Decrypt a string.
-     * @param string $data The encrypted string value.
-     * @param string $encryption_key The encryption key.
-     * @return string
+     * Create an instance of Encrypter.
+     * @return Encrypter
      */
-    protected function decrypt(string $data, string $encryption_key): string
+    private static function getEncrypter(): Encrypter
     {
-        $key = $this->getHashedKey($encryption_key);
-        $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
-
-        return openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, $vector);
-    }
-
-    /**
-     * Encrypt a string.
-     * @param string $data The string value to encrypt
-     * @param string $encryption_key The encryption key. Example `SomeKeyWith4Delimiter|` _maybe_.
-     * @return string
-     */
-    protected function encrypt(string $data, string $encryption_key): string
-    {
-        $key = $this->getHashedKey($encryption_key);
-        $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
-
-        return base64_encode(openssl_encrypt($data, 'AES-256-CBC', $key, 0, $vector));
+        static $encrypter;
+        $key = self::getEncryptionKey();
+        $encrypter ??= new Encrypter($key, self::CIPHER);
+        return $encrypter;
     }
 }
