@@ -27,7 +27,7 @@
     "php": ">=8.3",
     "ext-json": "*",
     "ext-openssl": "*",
-    "illuminate/encryption": "^12.39",
+    "illuminate/encryption": "^8.20 | ^12.39",
     "jjgrainger/posttypes": "^2.2",
     "johnbillion/args": "^2.1",
     "psr/container": "^2.0",
