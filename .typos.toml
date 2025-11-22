@@ -11,6 +11,9 @@ extend-ignore-re = [
 
 [default.extend-identifiers]
 # Typos
-"Encrypter" = "Encryptor"
 "Github" = "GitHub"
 "Wordpress" = "WordPress"
+
+[default.extend-words]
+# Don't correct the surname "Teh"
+Encrypter = "Encryptor"
