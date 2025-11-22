@@ -27,7 +27,6 @@
     "php": ">=8.3",
     "ext-json": "*",
     "ext-openssl": "*",
-    "illuminate/encryption": "^8.20 | ^12.39",
     "jjgrainger/posttypes": "^2.2",
     "johnbillion/args": "^2.1",
     "psr/container": "^2.0",
@@ -50,6 +49,7 @@
     "yoast/phpunit-polyfills": "^4.0"
   },
   "suggest": {
+    "illuminate/encryption": "Laravel level enrcyption & decryption.",
     "jjgrainger/posttypes": "Simple WordPress custom post types.",
     "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
   },
