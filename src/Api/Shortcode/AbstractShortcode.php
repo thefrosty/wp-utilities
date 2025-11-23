@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api\Shortcode;
 
 use TheFrosty\WpUtilities\Api\Shortcode\Handler\HandlerInterface;
-use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use function method_exists;
 
 /**
  * AbstractShortcode class
  * @package TheFrosty\WpUtilities\Api\Shortcode
  */
-abstract class AbstractShortcode extends AbstractHookProvider implements ShortcodeInterface
+abstract class AbstractShortcode implements ShortcodeInterface
 {
 
     /**
