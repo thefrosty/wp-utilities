@@ -81,7 +81,7 @@ trait Hash
             return (string)$key;
         }
 
-        $value = wp_generate_password(length: 32);
+        $value = wp_generate_password(32);
         add_site_option(self::OPTION, $value);
         return $value;
     }
