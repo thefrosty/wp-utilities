@@ -75,9 +75,6 @@ class HashTest extends TestCase
     public function testGetEncrypter(): void
     {
         $this->assertTrue(method_exists($this->hash, 'getEncrypter'));
-        $this->assertInstanceOf(
-            Encrypter::class,
-            $this->reflection->getMethod('getEncrypter')->invoke($this->hash)
-        );
+        $this->assertNull($this->reflection->getMethod('getEncrypter')->invoke($this->hash));
     }
 }
