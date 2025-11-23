@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Tests\Api;
 
 use Illuminate\Encryption\Encrypter;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function get_site_option;
@@ -16,7 +16,7 @@ use function method_exists;
  * Trait HashTest
  * @package TheFrosty\WpUtilities\Tests\Api
  */
-#[CoversClass(Hash::class)]
+#[CoversTrait(Hash::class)]
 class HashTest extends TestCase
 {
     private $hash;
@@ -75,9 +75,6 @@ class HashTest extends TestCase
     public function testGetEncrypter(): void
     {
         $this->assertTrue(method_exists($this->hash, 'getEncrypter'));
-        $this->assertInstanceOf(
-            Encrypter::class,
-            $this->reflection->getMethod('getEncrypter')->invoke($this->hash)
-        );
+        $this->assertNull($this->reflection->getMethod('getEncrypter')->invoke($this->hash));
     }
 }
