@@ -43,7 +43,6 @@ trait ShortcodeUiTrait
      * Helper to register the Shortcode UI for shortcode callback using Shortcode UI.
      * This method will have a fatal error unless the Shortcake plugin is active. The dependencies' class
      * can be used to check for whether shortcake plugin is active.
-     *
      * @param string $shortcode_slug
      * @param array $shortcode_ui_args
      */

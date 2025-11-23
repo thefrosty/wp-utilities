@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api\Shortcode;
 
 use TheFrosty\WpUtilities\Api\Shortcode\Handler\HandlerInterface;
+use function method_exists;
 
 /**
  * AbstractShortcode class
@@ -21,6 +22,9 @@ abstract class AbstractShortcode implements ShortcodeInterface
     public function __construct(protected string $tag, protected HandlerInterface $handler)
     {
         $this->handler->setTag($tag);
+        if (method_exists($this->handler, 'pluginsLoaded')) {
+            $this->handler->pluginsLoaded();
+        }
     }
 
     public function getTag(): string

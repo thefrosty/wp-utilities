@@ -12,14 +12,6 @@ use TheFrosty\WpUtilities\Api\Shortcode\Handler\HandlerInterface;
  */
 interface ShortcodeInterface
 {
-
-    /**
-     * ShortcodeInterface constructor.
-     * @param string $tag
-     * @param HandlerInterface $handler
-     */
-    public function __construct(string $tag, HandlerInterface $handler);
-
     /**
      * Returns the tag aka name for the shortcode.
      * @return string
