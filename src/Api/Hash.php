@@ -6,18 +6,17 @@ namespace TheFrosty\WpUtilities\Api;
 
 use Illuminate\Encryption\Encrypter;
 use function add_site_option;
+use function apply_filters;
 use function base64_decode;
 use function base64_encode;
 use function class_exists;
-use function explode;
 use function get_site_option;
 use function hash;
-use function openssl_cipher_iv_length;
 use function openssl_decrypt;
 use function openssl_encrypt;
-use function openssl_random_pseudo_bytes;
+use function sprintf;
+use function substr;
 use function wp_generate_password;
-use const OPENSSL_RAW_DATA;
 use const TheFrosty\WpUtilities\CIPHER;
 use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
 
@@ -32,41 +31,39 @@ trait Hash
     /**
      * Decrypt a string.
      * @param string $data The encrypted string value.
+     * @param string $encryption_key
      * @return string
      */
-    public function decrypt(string $data): string
+    public function decrypt(string $data, string $encryption_key): string
     {
         $encryptor = self::getEncrypter();
-        if ($encryptor) {
+        if ($encryptor && self::useEncrypter()) {
             return $encryptor->decryptString($data);
         }
 
-        $parts = explode('::', $data, 2);
-        $iv = base64_decode($parts[0]);
-        $ciphertext = base64_decode($parts[1]);
+        $key = $this->getHashedKey($encryption_key);
+        $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return openssl_decrypt($ciphertext, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
+        return openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, $vector);
     }
 
     /**
      * Encrypt a string.
      * @param string $data The string value to encrypt
+     * @param string $encryption_key
      * @return string
      */
-    public function encrypt(string $data): string
+    public function encrypt(string $data, string $encryption_key): string
     {
         $encryptor = self::getEncrypter();
-        if ($encryptor) {
+        if ($encryptor && self::useEncrypter()) {
             return $encryptor->encryptString($data);
         }
 
-        $iv_size = openssl_cipher_iv_length(CIPHER);
-        $iv = openssl_random_pseudo_bytes($iv_size);
-        $ciphertext = openssl_encrypt($data, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
-        $ciphertext_hex = base64_encode($ciphertext);
-        $iv_hex = base64_encode($iv);
+        $key = $this->getHashedKey($encryption_key);
+        $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return "$iv_hex::$ciphertext_hex";
+        return base64_encode(openssl_encrypt($data, 'AES-256-CBC', $key, 0, $vector));
     }
 
     /**
@@ -107,5 +104,14 @@ trait Hash
             $encrypter ??= new Encrypter($key, CIPHER);
         }
         return $encrypter;
+    }
+
+    /**
+     * Use the Illuminate Encrypter package if installed?
+     * @return bool
+     */
+    protected static function useEncrypter(): bool
+    {
+        return apply_filters('wp_utilities_use_encrypter_package', false, self::class) === true;
     }
 }
