@@ -16,6 +16,9 @@ use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_IP;
 
+const CIPHER = 'AES-256-CBC';
+const ENCRYPTION_KEY_OPTION = '_wp_utilities_encryption_key';
+
 /**
  * Get the clients IP.
  * @ref https://dev.to/rogeriotaques/an-easy-way-to-get-the-real-client-ip-in-php-4pii

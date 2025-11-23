@@ -18,6 +18,8 @@ use function openssl_encrypt;
 use function openssl_random_pseudo_bytes;
 use function wp_generate_password;
 use const OPENSSL_RAW_DATA;
+use const TheFrosty\WpUtilities\CIPHER;
+use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
 
 /**
  * Trait Hash
@@ -26,9 +28,6 @@ use const OPENSSL_RAW_DATA;
  */
 trait Hash
 {
-
-    public const string OPTION = '_wp_utilities_encryption_key';
-    private const string CIPHER = 'AES-256-CBC';
 
     /**
      * Decrypt a string.
@@ -46,7 +45,7 @@ trait Hash
         $iv = base64_decode($parts[0]);
         $ciphertext = base64_decode($parts[1]);
 
-        return openssl_decrypt($ciphertext, self::CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
+        return openssl_decrypt($ciphertext, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -61,9 +60,9 @@ trait Hash
             return $encryptor->encryptString($data);
         }
 
-        $iv_size = openssl_cipher_iv_length(self::CIPHER);
+        $iv_size = openssl_cipher_iv_length(CIPHER);
         $iv = openssl_random_pseudo_bytes($iv_size);
-        $ciphertext = openssl_encrypt($data, self::CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
+        $ciphertext = openssl_encrypt($data, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
         $ciphertext_hex = base64_encode($ciphertext);
         $iv_hex = base64_encode($iv);
 
@@ -76,13 +75,13 @@ trait Hash
      */
     protected static function getEncryptionKey(): string
     {
-        $key = get_site_option(self::OPTION);
+        $key = get_site_option(ENCRYPTION_KEY_OPTION);
         if ($key !== false) {
             return (string)$key;
         }
 
         $value = wp_generate_password(32);
-        add_site_option(self::OPTION, $value);
+        add_site_option(ENCRYPTION_KEY_OPTION, $value);
         return $value;
     }
 
@@ -105,7 +104,7 @@ trait Hash
         static $encrypter;
         $key = self::getEncryptionKey();
         if (class_exists(Encryter::class)) {
-            $encrypter ??= new Encrypter($key, self::CIPHER);
+            $encrypter ??= new Encrypter($key, CIPHER);
         }
         return $encrypter;
     }
