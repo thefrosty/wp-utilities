@@ -11,6 +11,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function get_site_option;
 use function hash;
 use function method_exists;
+use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
 
 /**
  * Trait HashTest
@@ -60,7 +61,7 @@ class HashTest extends TestCase
         $this->assertTrue(method_exists($this->hash, 'getEncryptionKey'));
         $actual = $this->reflection->getMethod('getEncryptionKey')->invoke($this->hash);
         $this->assertIsString($actual);
-        $this->assertSame(get_site_option($this->hash::OPTION), $actual);
+        $this->assertSame(get_site_option(ENCRYPTION_KEY_OPTION), $actual);
     }
 
     public function testGetHashedKey(): void
