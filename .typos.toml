@@ -16,5 +16,4 @@ extend-ignore-re = [
 
 [default.extend-words]
 # Don't correct the surname "Teh"
-Encrypter = "Encryptor"
-Encryptor = "Encrypter"
+encrypter = "encrypter"
