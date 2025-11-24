@@ -12,6 +12,7 @@ use function apply_filters;
 use function base64_decode;
 use function base64_encode;
 use function class_exists;
+use function defined;
 use function explode;
 use function get_site_option;
 use function hash;
@@ -59,13 +60,13 @@ trait Hash
                 throw new RuntimeException('The data is invalid.');
             }
 
-            return openssl_decrypt($ciphertext, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
+            return openssl_decrypt($ciphertext, self::getCipher(), self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv);
         }
 
         $key = $this->getHashedKey($encryption_key);
         $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return openssl_decrypt(base64_decode($data), CIPHER, $key, 0, $vector);
+        return openssl_decrypt(base64_decode($data), self::getCipher(), $key, 0, $vector);
     }
 
     /**
@@ -83,19 +84,21 @@ trait Hash
         }
 
         if ($encryption_key === null) {
-            $iv = random_bytes(openssl_cipher_iv_length(CIPHER));
+            $iv = random_bytes(openssl_cipher_iv_length(self::getCipher()));
 
             return sprintf(
                 '%1$s":%2$s',
                 base64_encode($iv),
-                base64_encode(openssl_encrypt($data, CIPHER, self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv))
+                base64_encode(
+                    openssl_encrypt($data, self::getCipher(), self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv)
+                )
             );
         }
 
         $key = $this->getHashedKey($encryption_key);
         $vector = substr($this->getHashedKey(sprintf('%s_iv', $encryption_key)), 0, 16);
 
-        return base64_encode(openssl_encrypt($data, CIPHER, $key, 0, $vector));
+        return base64_encode(openssl_encrypt($data, self::getCipher(), $key, 0, $vector));
     }
 
     /**
@@ -104,13 +107,14 @@ trait Hash
      */
     protected static function getEncryptionKey(): string
     {
-        $key = get_site_option(ENCRYPTION_KEY_OPTION);
+        $option = defined('ENCRYPTION_KEY_OPTION') ? ENCRYPTION_KEY_OPTION : '_wp_utilities_encryption_key';
+        $key = get_site_option($option);
         if ($key !== false) {
             return (string)$key;
         }
 
         $value = wp_generate_password(32);
-        add_site_option(ENCRYPTION_KEY_OPTION, $value);
+        add_site_option($option, $value);
         return $value;
     }
 
@@ -126,6 +130,15 @@ trait Hash
     }
 
     /**
+     * Get our defined CIPHER, with fallback for legacy installs.
+     * @return string
+     */
+    private static function getCipher(): string
+    {
+        return defined('CIPHER') ? CIPHER : 'AES-256-CBC';
+    }
+
+    /**
      * Create an instance of Encrypter.
      * @param string|null $key
      * @return Encrypter|null
@@ -135,7 +148,7 @@ trait Hash
         static $encrypter;
         $key ??= self::getEncryptionKey();
         if (class_exists(Encryter::class)) {
-            $encrypter ??= new Encrypter($key, CIPHER);
+            $encrypter ??= new Encrypter($key, self::getCipher());
         }
         return $encrypter;
     }
