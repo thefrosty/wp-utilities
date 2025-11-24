@@ -77,7 +77,7 @@ class HashTest extends TestCase
 
     public function testGetCipher(): void
     {
-        $this->assertTrue(method_exists($this->hash, 'getChipher'));
+        $this->assertTrue(method_exists($this->hash, 'getCipher'));
         $expected = 'AES-256-CBC';
         $actual = $this->reflection->getMethod('getCipher')->invoke($this->hash);
         $this->assertEquals($expected, $actual);
