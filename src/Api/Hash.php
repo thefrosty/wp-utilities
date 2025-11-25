@@ -39,10 +39,10 @@ trait Hash
      * Decrypt a string.
      * @param string $data The encrypted string value.
      * @param string|null $encryption_key
-     * @return string
+     * @return false|string
      * @throws RuntimeException
      */
-    public function decrypt(string $data, ?string $encryption_key = null): string
+    public function decrypt(string $data, ?string $encryption_key = null): false|string
     {
         $encryptor = self::getEncrypter($encryption_key);
         if ($encryptor && self::useEncrypter()) {
