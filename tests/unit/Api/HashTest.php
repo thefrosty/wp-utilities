@@ -44,6 +44,20 @@ class HashTest extends TestCase
         $this->assertEquals($data, $decrypted_data);
     }
 
+    public function testDecryptFailed(): void
+    {
+        $data = 'test data';
+        $key = 'aSecureKey|';
+
+        // Encrypt the data first to get a valid encrypted string with delimiter
+        $encrypted_data = $this->hash->encrypt($data, $key);
+        $this->assertNotEquals($data, $encrypted_data);
+
+        // Decrypt the data and assert that it matches the original data
+        $decrypted_data = $this->hash->decrypt($encrypted_data, 'SomeNewChangedKey');
+        $this->assertfalse($decrypted_data);
+    }
+
     public function testEncrypt(): void
     {
         $data = 'test data';
