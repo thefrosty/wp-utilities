@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities;
 
 use Symfony\Component\HttpFoundation\Request;
+use TheFrosty\WpUtilities\Exceptions\TerminationException;
 use function filter_var;
 use function get_bloginfo;
 use function is_array;
@@ -18,6 +19,20 @@ use const FILTER_VALIDATE_IP;
 
 const CIPHER = 'AES-256-CBC';
 const ENCRYPTION_KEY_OPTION = '_wp_utilities_encryption_key';
+
+/**
+ * Exit if condition isn't met, likely running UNIT_TESTS.
+ * @param bool $condition
+ * @return never
+ * @throws TerminationException
+ */
+function exitIf(bool $condition = false): never
+{
+    if ($condition) {
+        throw new TerminationException('');
+    }
+    exit;
+}
 
 /**
  * Get the clients IP.
