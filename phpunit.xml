@@ -15,7 +15,7 @@
     <coverage>
         <report>
             <clover outputFile="./tests/clover.xml"/>
-            <html outputDirectory="tests"/>
+            <html outputDirectory="tests/results"/>
         </report>
     </coverage>
 
