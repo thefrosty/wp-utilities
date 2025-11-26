@@ -9,29 +9,33 @@ use TheFrosty\WpUtilities\Exceptions\TerminationException;
 use function filter_var;
 use function get_bloginfo;
 use function is_array;
+use function is_callable;
 use function sanitize_text_field;
 use function version_compare;
 use function wp_enqueue_script;
 use function wp_register_script;
 use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
+use const FILTER_VALIDATE_BOOLEAN;
 use const FILTER_VALIDATE_IP;
 
 const CIPHER = 'AES-256-CBC';
 const ENCRYPTION_KEY_OPTION = '_wp_utilities_encryption_key';
 
 /**
- * Exit if condition isn't met, likely running UNIT_TESTS.
- * @param bool $condition
+ * Exit or throw an exception.
+ * @param bool|callable $throw Should an exception be thrown?
+ * @param string $message The Throwable message.
+ * @param string|int $status The exit status.
  * @return never
  * @throws TerminationException
  */
-function exitIf(bool $condition = false): never
+function exitOrThrow(bool|callable $throw = false, string $message = '', string|int $status = 0): never
 {
-    if ($condition) {
-        throw new TerminationException('');
+    if ($throw === true || (is_callable($throw) && filter_var($throw(), FILTER_VALIDATE_BOOLEAN))) {
+        throw new TerminationException($message);
     }
-    exit;
+    exit($status);
 }
 
 /**
