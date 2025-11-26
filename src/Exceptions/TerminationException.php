@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Exceptions;
 
-use Exception as BaseException;
-
 /**
- * Class Exception
+ * Class TerminationException
  * @package TheFrosty\WpUtilities\Exceptions
  */
-class Exception extends BaseException
+class TerminationException extends Exception
 {
 
 }
