@@ -6,6 +6,8 @@ namespace TheFrosty\WpUtilities\Tests\Api;
 
 use Illuminate\Encryption\Encrypter;
 use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\Group;
+use RuntimeException;
 use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function get_site_option;
@@ -18,6 +20,7 @@ use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
  * @package TheFrosty\WpUtilities\Tests\Api
  */
 #[CoversTrait(Hash::class)]
+#[Group('api')]
 class HashTest extends TestCase
 {
     private $hash;
@@ -42,6 +45,31 @@ class HashTest extends TestCase
         // Decrypt the data and assert that it matches the original data
         $decrypted_data = $this->hash->decrypt($encrypted_data, $key);
         $this->assertEquals($data, $decrypted_data);
+    }
+
+    public function testDecryptNullKey(): void
+    {
+        $data = 'test data';
+
+        // Encrypt the data first to get a valid encrypted string with delimiter
+        $encrypted_data = $this->hash->encrypt($data);
+        $this->assertNotEquals($data, $encrypted_data);
+
+        // Decrypt the data and assert that it matches the original data
+        $decrypted_data = $this->hash->decrypt($encrypted_data);
+        $this->assertEquals($data, $decrypted_data);
+    }
+
+    public function testDecryptException(): void
+    {
+        $data = 'test data';
+
+        // Encrypt the data first to get a valid encrypted string with delimiter
+        $encrypted_data = $this->hash->encrypt($data, 'SomeIncorrectKey');
+        $this->assertNotEquals($data, $encrypted_data);
+
+        $this->expectException(RuntimeException::class);
+        $this->hash->decrypt($encrypted_data);
     }
 
     public function testDecryptFailed(): void
@@ -101,5 +129,11 @@ class HashTest extends TestCase
     {
         $this->assertTrue(method_exists($this->hash, 'getEncrypter'));
         $this->assertNull($this->reflection->getMethod('getEncrypter')->invoke($this->hash));
+    }
+
+    public function testUseEncrypter(): void
+    {
+        $this->assertTrue(method_exists($this->hash, 'useEncrypter'));
+        $this->assertFalse($this->reflection->getMethod('useEncrypter')->invoke($this->hash));
     }
 }

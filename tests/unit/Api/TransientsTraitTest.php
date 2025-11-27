@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Tests\Api;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
 use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Api\TransientsTrait;
@@ -17,6 +18,7 @@ use function delete_transient;
  * @package TheFrosty\WpUtilities\Tests\Api
  */
 #[CoversClass(TransientsTrait::class)]
+#[Group('api')]
 #[UsesClass(Hash::class)]
 #[UsesClass(WpCacheTrait::class)]
 class TransientsTraitTest extends TestCase

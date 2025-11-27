@@ -87,7 +87,7 @@ trait Hash
             $iv = random_bytes(openssl_cipher_iv_length(self::getCipher()));
 
             return sprintf(
-                '%1$s":%2$s',
+                '%1$s::%2$s',
                 base64_encode($iv),
                 base64_encode(
                     openssl_encrypt($data, self::getCipher(), self::getEncryptionKey(), OPENSSL_RAW_DATA, $iv)
