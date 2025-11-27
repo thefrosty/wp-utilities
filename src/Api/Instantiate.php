@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
-use TheFrosty\WpUtilities\Plugin\{AbstractContainerProvider, WpHooksInterface};
+use TheFrosty\WpUtilities\Plugin\AbstractContainerProvider;
+use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use function class_exists;
-use function get_called_class;
 use function is_subclass_of;
 use function sprintf;
 use function str_replace;
@@ -41,7 +41,7 @@ trait Instantiate
         if ($instance instanceof WpHooksInterface) {
             $this->getPlugin()->add($instance);
         }
-        $this->instantiated_order[get_called_class()][] = $instance;
+        $this->instantiated_order[static::class][] = $instance;
         $this->addAction('after_setup_theme', function (): void {
             $this->getPlugin()->initialize(); // @phpstan-ignore-line
         });
