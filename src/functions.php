@@ -18,21 +18,28 @@ use const FILTER_FLAG_IPV4;
 use const FILTER_FLAG_IPV6;
 use const FILTER_VALIDATE_BOOLEAN;
 use const FILTER_VALIDATE_IP;
+use const PHP_SAPI;
 
 const CIPHER = 'AES-256-CBC';
 const ENCRYPTION_KEY_OPTION = '_wp_utilities_encryption_key';
 
 /**
  * Exit or throw an exception.
- * @param bool|callable $throw Should an exception be thrown?
+ * @param bool|callable|null $throw Should an exception be thrown?
  * @param string $message The Throwable message.
  * @param string|int $status The exit status.
+ * @param array|null $args callable args
  * @return never
  * @throws TerminationException
  */
-function exitOrThrow(bool|callable $throw = false, string $message = '', string|int $status = 0): never
-{
-    if ($throw === true || (is_callable($throw) && filter_var($throw(), FILTER_VALIDATE_BOOLEAN))) {
+function exitOrThrow(
+    bool|callable|null $throw = null,
+    string $message = '',
+    string|int $status = 0,
+    ?array $args = null
+): never {
+    $throw ??= isPhpunit();
+    if ($throw === true || (is_callable($throw) && filter_var($throw(...$args), FILTER_VALIDATE_BOOLEAN))) {
         throw new TerminationException($message);
     }
     exit($status);
@@ -73,6 +80,23 @@ function getIpAddress(?Request $request = null): ?string
     }
 
     return sanitize_text_field($ip);
+}
+
+/**
+ * Is the current request CLI and PHPunit?
+ * @param Request|null $request
+ * @return bool
+ * @access private
+ */
+function isPhpunit(?Request $request = null): bool
+{
+    $request ??= Request::createFromGlobals();
+    if (PHP_SAPI !== 'cli' || !$request->server->has('argv')) {
+        return false;
+    }
+
+    $argv = $request->server->get('argv');
+    return isset($argv[0]) && (str_contains($argv[0], 'phpunit') || $argv[0] === '/usr/bin/phpunit');
 }
 
 /**
