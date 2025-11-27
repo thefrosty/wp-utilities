@@ -6,6 +6,7 @@ namespace TheFrosty\WpUtilities\Tests\Api;
 
 use Illuminate\Encryption\Encrypter;
 use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\Group;
 use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function get_site_option;
@@ -18,6 +19,7 @@ use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
  * @package TheFrosty\WpUtilities\Tests\Api
  */
 #[CoversTrait(Hash::class)]
+#[Group('api')]
 class HashTest extends TestCase
 {
     private $hash;
