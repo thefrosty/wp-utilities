@@ -29,6 +29,7 @@
     "ext-openssl": "*",
     "jjgrainger/posttypes": "^2.2",
     "johnbillion/args": "^2.1",
+    "oscarotero/env": "^2.1",
     "psr/container": "^2.0",
     "symfony/http-foundation": "^7.3.4"
   },
