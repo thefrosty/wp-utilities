@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities;
 
 use ReflectionObject;
-use function get_class;
 
 /**
  * Class ReflectionTrait
@@ -24,12 +23,12 @@ trait ReflectionTrait
         static $reflector;
 
         if (
-            !isset($reflector[get_class($argument)]) ||
-            !($reflector[get_class($argument)] instanceof ReflectionObject)
+            !isset($reflector[$argument::class]) ||
+            !($reflector[$argument::class] instanceof ReflectionObject)
         ) {
-            $reflector[get_class($argument)] = new ReflectionObject($argument);
+            $reflector[$argument::class] = new ReflectionObject($argument);
         }
 
-        return $reflector[get_class($argument)];
+        return $reflector[$argument::class];
     }
 }
