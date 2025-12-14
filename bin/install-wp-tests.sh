@@ -1,30 +1,9 @@
 #!/usr/bin/env bash
+# https://github.com/wp-cli/scaffold-command/blob/main/templates/install-wp-tests.sh
 
 if [ $# -lt 3 ]; then
 	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
 	exit 1
-fi
-
-# Function to check if a command exists
-command_exists() {
-	command -v "$1" >/dev/null 2>&1
-}
-# Check if SVN is installed
-if command_exists svn; then
-	echo "SVN is already installed."
-else
-	echo "SVN is not installed. Installing SVN..."
-	# Update the package list
-	sudo apt-get update -y
-	# Install SVN
-	sudo apt-get install -y subversion
-	# Verify installation
-	if command_exists svn; then
-		echo "SVN was successfully installed."
-	else
-		echo "Failed to install SVN. Please check your system configuration."
-		exit 1
-	fi
 fi
 
 DB_NAME=$1
@@ -44,6 +23,17 @@ download() {
         curl -s "$1" > "$2";
     elif [ `which wget` ]; then
         wget -nv -O "$2" "$1"
+    else
+        echo "Error: Neither curl nor wget is installed."
+        exit 1
+    fi
+}
+
+# Check if svn is installed
+check_svn_installed() {
+    if ! command -v svn > /dev/null; then
+        echo "Error: svn is not installed. Please install svn and try again."
+        exit 1
     fi
 }
 
@@ -86,7 +76,8 @@ install_wp() {
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
 		mkdir -p $TMPDIR/wordpress-trunk
 		rm -rf $TMPDIR/wordpress-trunk/*
-		svn export https://core.svn.wordpress.org/trunk $TMPDIR/wordpress-trunk/wordpress
+        check_svn_installed
+		svn export --quiet https://core.svn.wordpress.org/trunk $TMPDIR/wordpress-trunk/wordpress
 		mv $TMPDIR/wordpress-trunk/wordpress/* $WP_CORE_DIR
 	else
 		if [ $WP_VERSION == 'latest' ]; then
@@ -130,8 +121,9 @@ install_test_suite() {
 		# set up testing suite
 		mkdir -p $WP_TESTS_DIR
 		rm -rf $WP_TESTS_DIR/{includes,data}
-		svn export --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-		svn export --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+        check_svn_installed
+		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then
