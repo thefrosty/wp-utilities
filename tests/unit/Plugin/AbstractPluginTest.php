@@ -243,8 +243,26 @@ class AbstractPluginTest extends TestCase
         $this->assertEmpty($this->plugin->getInit()->getWpHooks());
         $this->plugin->addOnHookDeferred($class::class);
         do_action('init');
-        $this->assertEmpty($this->plugin->getInit()->getWpHooks());
+        $this->assertNotEmpty($this->plugin->getInit()->getWpHooks());
         $this->plugin->addOnHookDeferred($class::class);
+        do_action('init');
+        $this->assertNotEmpty($this->plugin->getInit()->getWpHooks());
+    }
+
+    public function testAddOnHookDeferredDeferredPriority(): void
+    {
+        $class = new class implements WpHooksInterface {
+            public function addHooks(): void
+            {
+            }
+        };
+
+        $this->plugin->setInit(new Init());
+        $this->assertEmpty($this->plugin->getInit()->getWpHooks());
+        $this->plugin->addOnHookDeferred($class::class, deferred_priority: 10);
+        do_action('init');
+        $this->assertEmpty($this->plugin->getInit()->getWpHooks());
+        $this->plugin->addOnHookDeferred($class::class, deferred_priority: 10);
         do_action('init');
         $this->assertNotEmpty($this->plugin->getInit()->getWpHooks());
     }
