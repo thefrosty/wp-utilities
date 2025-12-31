@@ -373,11 +373,12 @@ abstract class AbstractPlugin implements PluginInterface
         ?string $tag = null,
         ?int $priority = null,
         ?bool $admin_only = null,
-        array $args = []
+        array $args = [],
+        ?int $deferred_priority = null,
     ): self {
         add_action($deferred_tag, function () use ($wp_hook, $tag, $admin_only, $priority, $args): void {
             $this->addOnHook($wp_hook, $tag, $priority, $admin_only, $args);
-        });
+        }, $deferred_priority ?? 2);
 
         return $this;
     }
