@@ -89,9 +89,9 @@ final class Init implements IteratorAggregate
     public function getWpHookObject(string $class_name): ?WpHooksInterface
     {
         $wp_hooks = $this->getWpHooks();
-        foreach ($wp_hooks as $key => $object) {
+        foreach ($wp_hooks as $object) {
             if ($object::class === $class_name) {
-                return $object[$key];
+                return $object;
             }
         }
 
