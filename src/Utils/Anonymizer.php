@@ -44,7 +44,7 @@ trait Anonymizer
             return $this->maskDomain($value);
         }
 
-        return $value;
+        return $this->maskString($value);
     }
 
     /**
