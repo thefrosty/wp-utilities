@@ -6,18 +6,14 @@ namespace TheFrosty\WpUtilities\Tests\Utils;
 
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Group;
-use RuntimeException;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use TheFrosty\WpUtilities\Utils\Anonymizer;
 use function get_option;
 use function get_site_option;
-use function hash;
-use function method_exists;
 use function strlen;
-use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
 
 /**
- * Trait HashTest
+ * Class AnonymizerTest
  * @package TheFrosty\WpUtilities\Tests\Utils
  */
 #[CoversTrait(Anonymizer::class)]
