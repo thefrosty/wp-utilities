@@ -30,7 +30,7 @@ trait HooksTrait
     /**
      * Add a WordPress filter.
      * @param string $hook The name of the filter to hook the $function_to_add callback to.
-     * @param callable|string|array $method The callback to be run when the filter is applied.
+     * @param callable $method The callback to be run when the filter is applied.
      * @param int $priority Optional. Used to specify the order in which the functions
      *      associated with a particular action are executed. Default 10.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
@@ -38,7 +38,7 @@ trait HooksTrait
      */
     protected function addFilter(
         string $hook,
-        callable|string|array $method,
+        callable $method,
         int $priority = 10,
         int $arg_count = 1
     ): bool {
@@ -57,7 +57,7 @@ trait HooksTrait
      * The arguments match that of add_filter(), but this function will also register a second
      * callback designed to remove the first immediately after it runs.
      * @param string $hook The name of the filter to hook the $function_to_add callback to.
-     * @param callable|string|array $method The callback to be run when the filter is applied.
+     * @param callable $method The callback to be run when the filter is applied.
      * @param int $priority Optional. Used to specify the order in which the functions
      *      associated with a particular action are executed. Default 10.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
@@ -65,7 +65,7 @@ trait HooksTrait
      */
     protected function addFilterOnce(
         string $hook,
-        callable|string|array $method,
+        callable $method,
         int $priority = 10,
         int $arg_count = 1
     ): bool {
@@ -83,7 +83,7 @@ trait HooksTrait
      * Add a WordPress action.
      * This is an alias of add_filter().
      * @param string $hook The name of the filter to hook the $function_to_add callback to.
-     * @param callable|string|array $method The callback to be run when the filter is applied.
+     * @param callable $method The callback to be run when the filter is applied.
      * @param int $priority Optional. Used to specify the order in which the functions
      *      associated with a particular action are executed. Default 10.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
@@ -91,7 +91,7 @@ trait HooksTrait
      */
     protected function addAction(
         string $hook,
-        callable|string|array $method,
+        callable $method,
         int $priority = 10,
         int $arg_count = 1
     ): bool {
@@ -103,7 +103,7 @@ trait HooksTrait
      * The arguments match that of add_action(), but this function will also register a second
      * callback designed to remove the first immediately after it runs.
      * @param string $hook The name of the filter to hook the $function_to_add callback to.
-     * @param callable|string|array $method The callback to be run when the filter is applied.
+     * @param callable $method The callback to be run when the filter is applied.
      * @param int $priority Optional. Used to specify the order in which the functions
      *      associated with a particular action are executed. Default 10.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
@@ -111,7 +111,7 @@ trait HooksTrait
      */
     protected function addActionOnce(
         string $hook,
-        callable|string|array $method,
+        callable $method,
         int $priority = 10,
         int $arg_count = 1
     ): bool {
@@ -205,11 +205,11 @@ trait HooksTrait
      * Map a filter to a closure that inherits the class' internal scope.
      * This allows hooks to use protected and private methods.
      * @param string $filter_id The name of the filter to hook the $function_to_add callback to.
-     * @param callable|string|array $method The callback to be run when the filter is applied.
+     * @param callable $method The callback to be run when the filter is applied.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return Closure The callable actually attached to a WP hook
      */
-    private function mapFilter(string $filter_id, callable|string|array $method, int $arg_count = 1): Closure
+    private function mapFilter(string $filter_id, callable $method, int $arg_count = 1): Closure
     {
         if (empty($this->filter_map[$filter_id])) {
             $this->filter_map[$filter_id] = static fn(...$args): mixed => call_user_func_array(
