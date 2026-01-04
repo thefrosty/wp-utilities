@@ -36,12 +36,8 @@ trait HooksTrait
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return bool true
      */
-    protected function addFilter(
-        string $hook,
-        callable $method,
-        int $priority = 10,
-        int $arg_count = 1
-    ): bool {
+    protected function addFilter(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
+    {
         $filter = add_filter(
             $hook,
             $this->mapFilter($this->getWpFilterId($hook, $method, $priority), $method, $arg_count),
@@ -63,12 +59,8 @@ trait HooksTrait
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return bool
      */
-    protected function addFilterOnce(
-        string $hook,
-        callable $method,
-        int $priority = 10,
-        int $arg_count = 1
-    ): bool {
+    protected function addFilterOnce(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
+    {
         $singular = function () use ($hook, $method, $priority, $arg_count, &$singular): Closure {
             $filter = $this->mapFilter($this->getWpFilterId($hook, $method, $priority), $method, $arg_count);
             $this->removeFilter($hook, $singular, $priority);
@@ -89,12 +81,8 @@ trait HooksTrait
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return bool true
      */
-    protected function addAction(
-        string $hook,
-        callable $method,
-        int $priority = 10,
-        int $arg_count = 1
-    ): bool {
+    protected function addAction(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
+    {
         return $this->addFilter($hook, $method, $priority, $arg_count);
     }
 
@@ -109,12 +97,8 @@ trait HooksTrait
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return bool
      */
-    protected function addActionOnce(
-        string $hook,
-        callable $method,
-        int $priority = 10,
-        int $arg_count = 1
-    ): bool {
+    protected function addActionOnce(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
+    {
         $singular = function () use ($hook, $method, $priority, $arg_count, &$singular): Closure {
             $filter = $this->mapFilter($this->getWpFilterId($hook, $method, $priority), $method, $arg_count);
             $this->removeAction($hook, $singular, $priority);
@@ -205,11 +189,11 @@ trait HooksTrait
      * Map a filter to a closure that inherits the class' internal scope.
      * This allows hooks to use protected and private methods.
      * @param string $filter_id The name of the filter to hook the $function_to_add callback to.
-     * @param callable $method The callback to be run when the filter is applied.
+     * @param callable|string|array $method The callback to be run when the filter is applied.
      * @param int $arg_count Optional. The number of arguments the function accepts. Default 1.
      * @return Closure The callable actually attached to a WP hook
      */
-    private function mapFilter(string $filter_id, callable $method, int $arg_count = 1): Closure
+    private function mapFilter(string $filter_id, callable|string|array $method, int $arg_count = 1): Closure
     {
         if (empty($this->filter_map[$filter_id])) {
             $this->filter_map[$filter_id] = static fn(...$args): mixed => call_user_func_array(
