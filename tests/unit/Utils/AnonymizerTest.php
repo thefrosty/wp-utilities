@@ -42,6 +42,10 @@ class AnonymizerTest extends TestCase
 
         $value = 'test';
         $anonymized = $this->anonymizer->anonymize($value);
+        $this->assertNotEquals($value, $anonymized);
+
+        $value = 'A';
+        $anonymized = $this->anonymizer->anonymize($value);
         $this->assertEquals($value, $anonymized);
     }
 
