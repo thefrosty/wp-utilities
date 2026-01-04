@@ -11,6 +11,7 @@
     <exclude-pattern>*/bower-components/*</exclude-pattern>
     <exclude-pattern>*/node_modules/*</exclude-pattern>
     <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/wordpress/*</exclude-pattern>
     <!-- Ensure certain file types aren't sniffed -->
     <exclude-pattern>*.js</exclude-pattern>
     <exclude-pattern>*.css</exclude-pattern>
