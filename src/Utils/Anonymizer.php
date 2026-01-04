@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
+use SensitiveParameter;
 use function array_slice;
 use function count;
 use function explode;
@@ -34,7 +35,7 @@ trait Anonymizer
      * @param string $value The string to anonymize.
      * @return string
      */
-    public function anonymize(string $value): string
+    public function anonymize(#[SensitiveParameter] string $value): string
     {
         if (is_email($value)) {
             return $this->maskEmail($value);
