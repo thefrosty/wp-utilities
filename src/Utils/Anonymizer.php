@@ -53,7 +53,7 @@ trait Anonymizer
      * to create a hashed site ID that anonymizes the site data.
      * @return string
      */
-    protected function uuid(): string
+    public function uuid(): string
     {
         $id = get_option('_wp_utilities_telemetry_uuid');
         if (is_string($id)) {
