@@ -52,8 +52,8 @@ class AnonymizerTest extends TestCase
     public function testUuid(): void
     {
         $this->assertFalse(get_option('_wp_utilities_telemetry_uuid'));
-        $uuid = $this->reflection->getMethod('uuid')->invoke($this->anonymizer);
-        $this->assertSame(32, strlen($uuid));
-        $this->assertSame($uuid, get_site_option('_wp_utilities_telemetry_uuid'));
+        $id = $this->anonymizer->uuid();
+        $this->assertSame(32, strlen($id));
+        $this->assertSame($id, get_site_option('_wp_utilities_telemetry_uuid'));
     }
 }
