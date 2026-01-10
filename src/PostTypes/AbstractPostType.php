@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes;
 
-use Exception;
 use PostTypes\PostType;
+use TheFrosty\WpUtilities\Exceptions\Exception;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 
 /**
@@ -17,9 +17,9 @@ abstract class AbstractPostType extends AbstractHookProvider
 
     use PostTypeTrait;
 
-    public const POST_TYPE = null;
-    public const SLUG = null;
-    public const URL_SLUG = null;
+    public const array|string|null POST_TYPE = null;
+    public const string|null SLUG = null;
+    public const string|null URL_SLUG = null;
 
     /**
      * PostType names array.

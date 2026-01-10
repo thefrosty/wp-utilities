@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes;
+use function base64_encode;
+use function lcfirst;
+use function sprintf;
+use function str_replace;
+use function ucwords;
+use function wp_parse_args;
 
 /**
  * Trait PostTypeTrait
@@ -18,7 +24,7 @@ trait PostTypeTrait
      */
     protected function setDefaultNames(array $names): array
     {
-        return \wp_parse_args($names, [
+        return wp_parse_args($names, [
             'name' => static::POST_TYPE,
             'slug' => static::SLUG,
         ]);
@@ -31,7 +37,7 @@ trait PostTypeTrait
      */
     protected function setDefaultArgs(array $args): array
     {
-        return \wp_parse_args($args, [
+        return wp_parse_args($args, [
             'public' => true,
             'exclude_from_search' => false,
             'publicly_queryable' => true,
@@ -64,10 +70,10 @@ trait PostTypeTrait
      */
     protected function buildBase64DataImage(): string
     {
-        return \sprintf(
+        return sprintf(
             'data:image/svg+xml;base64, %s',
-            \base64_encode(
-                \str_replace(
+            base64_encode(
+                str_replace(
                     ['<svg', '<path'],
                     ['<svg width="20" height="20"', '<path fill="black"'],
                     $this->getSvg()
@@ -92,10 +98,6 @@ trait PostTypeTrait
      */
     private function getUrlSlug(): string
     {
-        if (static::URL_SLUG !== null) {
-            return static::URL_SLUG;
-        }
-
-        return \str_replace(['_', '-'], '', \lcfirst(\ucwords(static::SLUG, '_-')));
+        return static::URL_SLUG ?? str_replace(['_', '-'], '', lcfirst(ucwords(static::SLUG, '_-')));
     }
 }

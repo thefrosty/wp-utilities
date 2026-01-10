@@ -14,7 +14,7 @@ use const ARRAY_FILTER_USE_KEY;
 abstract class TaxonomyRegistrar extends ObjectRegistrarManager
 {
 
-    public const TAG_TAXONOMY_MANAGER_REGISTRAR = 'wp-utilities/taxonomies/taxonomy_manager/registrar';
+    public const string TAG_TAXONOMY_MANAGER_REGISTRAR = 'wp-utilities/taxonomies/taxonomy_manager/registrar';
 
     /**
      * Add class hooks.
@@ -33,7 +33,7 @@ abstract class TaxonomyRegistrar extends ObjectRegistrarManager
     {
         return array_filter(
             apply_filters(self::TAG_TAXONOMY_MANAGER_REGISTRAR, []),
-            fn(string $taxonomy): bool => !empty($taxonomy),
+            static fn(string $taxonomy): bool => !empty($taxonomy),
             ARRAY_FILTER_USE_KEY
         );
     }
