@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostMeta\Fields;
 
+use function esc_html;
+
 /**
  * Class Text
  * @package TheFrosty\WpUtilities\PostMeta\Fields
