@@ -11,6 +11,7 @@ use TheFrosty\WpUtilities\PostMeta\Fields\Render;
 use WP_Post;
 use function add_meta_box;
 use function get_post;
+use function is_string;
 use function wp_nonce_field;
 
 /**
@@ -119,13 +120,22 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
 
     /**
      * Relate a field to the post meta box.
+     * @param array|string $object_type
      * @param string $field_name
      */
-    public function addField(string $field_name): void
+    public function addField(array|string $object_type, string $field_name): void
     {
-        $field = FieldManager::getField('post', $field_name);
-        $field->manager = $this;
-        $this->fields[] = $field;
+        if (is_string($object_type)) {
+            $object_type = (array)$object_type;
+        }
+        foreach ($object_type as $type) {
+            $field = FieldManager::getField($type, $field_name);
+            if (!$field) {
+                continue;
+            }
+            $field->manager = $this;
+            $this->fields[] = $field;
+        }
     }
 
     /**
