@@ -8,9 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use TheFrosty\WpUtilities\Api\Validator\Contracts\ValidationRule;
 use TheFrosty\WpUtilities\Api\Validator\Exceptions\ValidationFailed;
-use TheFrosty\WpUtilities\Api\Validator\Rules\In;
-use TheFrosty\WpUtilities\Api\Validator\Rules\Nullable;
-use TheFrosty\WpUtilities\Api\Validator\Rules\Required;
 use TheFrosty\WpUtilities\Api\Validator\Validator;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
@@ -30,7 +27,7 @@ class ValidatorTest extends TestCase
     public function testValidateRequiredField(): void
     {
         $rules = [
-            'field_1' => [Required::class],
+            'field_1' => ['required'],
         ];
 
         $result = $this->validator->validate(values: ['field_1' => 'value'], rules: $rules);
@@ -45,7 +42,7 @@ class ValidatorTest extends TestCase
     public function testCanValidateMoreThanOneRule(): void
     {
         $rules = [
-            'field_1' => [Required::class, In::class => ['value', 'another value']],
+            'field_1' => ['required', 'in' => ['value', 'another value']],
         ];
 
         try {
@@ -71,7 +68,7 @@ class ValidatorTest extends TestCase
     public function testCanValidateNullValues(): void
     {
         $rules = [
-            'field_1' => [Nullable::class, In::class => ['value', 'another value']],
+            'field_1' => ['nullable', 'in' => ['value', 'another value']],
         ];
 
         $result = $this->validator->validate(values: ['field_1' => null], rules: $rules);
@@ -117,6 +114,8 @@ class ValidatorTest extends TestCase
         $this->assertTrue($this->validator->validate(values: ['field_1' => 3.14], rules: $rules));
 
         $this->expectException(ValidationFailed::class);
+        $this->validator->validate(values: ['field_1' => 3.15], rules: $rules);
+
         try {
             $this->validator->validate(values: ['field_1' => 3.15], rules: $rules);
         } catch (ValidationFailed $e) {
