@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostMeta;
 
-use RuntimeException;
-use TheFrosty\WpUtilities\Api\Validator\Rules\Required;
-use TheFrosty\WpUtilities\Api\Validator\Validator;
+use BlakvGhost\PHPValidator\Validator;
+use BlakvGhost\PHPValidator\ValidatorException;
+use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
 
@@ -23,7 +23,7 @@ class FieldsRegistrar
      * Field registration.
      * @param array $args
      * @param string $object_type
-     * @throws \TheFrosty\WpUtilities\Api\Validator\Exceptions\ValidationFailed
+     * @throws ValidatorException
      */
     public static function add(array $args, string $object_type = 'post'): void
     {
@@ -57,16 +57,15 @@ class FieldsRegistrar
      * @type array $types WordPress objects the field applies to.
      * @type callback $authorization (Optional) Authorization.
      * @type callback $sanitization (Optional) Sanitization.
-     * @throws RuntimeException
      */
     protected static function register(array $args): void
     {
         foreach ($args['types'] as $type) {
-            if ($args['field'] instanceof AbstractField) {
-                throw new RuntimeException('The field arg must implement `AbstractField`');
+            if (empty(self::$fields[$args['object_type']])) {
+                self::$fields[$args['object_type']] = [];
             }
-            if (empty(self::$fields[$type])) {
-                self::$fields[$type] = [];
+            if (empty(self::$fields[$args['object_type']][$type])) {
+                self::$fields[$args['object_type']][$type] = [];
             }
             $field = $args['field'];
             self::$fields[$args['object_type']][$type][$args['id']] = new $field($args);
@@ -76,17 +75,19 @@ class FieldsRegistrar
     /**
      * Validate the field args.
      * @param array $args
-     * @throws \TheFrosty\WpUtilities\Api\Validator\Exceptions\ValidationFailed
+     * @throws ValidatorException
      */
     protected static function validate(array $args): void
     {
-        $validator = Validator::getInstance();
         $rules = [
-            'id' => [Required::class],
-            'field' => [Required::class],
-            'object_type' => [Required::class],
-            'types' => [Required::class],
+            'id' => 'required|string',
+            'field' => ['required', new InstanceOfRule([AbstractField::class])],
+            'object_type' => 'required|string',
+            'types' => 'required|string',
         ];
-        $validator->validate($args, $rules);
+        $validator = new Validator($args, $rules);
+        if (!$validator->isValid()) {
+            throw new ValidatorException('');
+        }
     }
 }
