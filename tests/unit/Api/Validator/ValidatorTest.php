@@ -93,10 +93,10 @@ class ValidatorTest extends TestCase
 
     public function testCanAddNewRuleDynamically(): void
     {
-        $rules = ['field_1' => ['is_phi']];
+        $rules = ['field_1' => ['is_pi']];
 
         $this->validator->registerRule(
-            'is_phi',
+            'is_pi',
             new class implements ValidationRule {
                 public function apply(
                     string $ruleName,
@@ -108,18 +108,20 @@ class ValidatorTest extends TestCase
                         return true;
                     }
                     throw new ValidationFailed(
-                        "The value for field `$field` is not Phi (3.15), you provided: $value."
+                        "The value for field `$field` is not Pi (3.14), you provided: $value."
                     );
                 }
             }
         );
 
+        $this->assertTrue($this->validator->validate(values: ['field_1' => 3.14], rules: $rules));
 
+        $this->expectException(ValidationFailed::class);
         try {
             $this->validator->validate(values: ['field_1' => 3.15], rules: $rules);
         } catch (ValidationFailed $e) {
             $this->assertEquals(
-                'The value for field `field_1` is not Phi (3.15), you provided: 3.15.',
+                'The value for field `field_1` is not Pi (3.14), you provided: 3.15.',
                 $e->getMessage()
             );
         }
