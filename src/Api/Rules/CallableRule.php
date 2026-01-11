@@ -17,7 +17,7 @@ class CallableRule implements Rule
 
     protected string $field;
 
-    public function __construct(protected array $parameters)
+    public function __construct(protected array $parameters = [])
     {
     }
 
