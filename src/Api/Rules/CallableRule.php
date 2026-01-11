@@ -6,13 +6,13 @@ namespace TheFrosty\WpUtilities\Api\Rules;
 
 use BlakvGhost\PHPValidator\Contracts\Rule;
 use BlakvGhost\PHPValidator\Lang\LangManager;
-use function is_a;
+use function is_callable;
 
 /**
- * Class InstanceOfRule
+ * Class CallableRule
  * @package TheFrosty\WpUtilities\Api\Rules
  */
-class InstanceOfRule implements Rule
+class CallableRule implements Rule
 {
 
     protected string $field;
@@ -21,19 +21,17 @@ class InstanceOfRule implements Rule
     {
     }
 
-    public function passes(string $field, string $value, array $data): bool
+    public function passes(string $field, mixed $value, array $data): bool
     {
         $this->field = $field;
-        $class = $this->parameters[0];
 
-        return $class === $value && is_a($value, $data[$field], true);
+        return is_callable($value);
     }
 
     public function message(): string
     {
-        return LangManager::getTranslation('validation.instance_of', [
+        return LangManager::getTranslation('validation.callable', [
             'attribute' => $this->field,
-            'values' => implode(',', $this->parameters),
         ]);
     }
 }
