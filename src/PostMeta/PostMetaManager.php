@@ -11,6 +11,7 @@ use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Field;
 use WP_Post;
 use function add_meta_box;
+use function array_key_exists;
 use function defined;
 use function is_string;
 use function wp_is_post_revision;
@@ -106,8 +107,8 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
             return;
         }
 
-        $value = $field->sanitize($this->getRequest()->request->get($field->getName()));
-        update_post_meta($this->post->ID, $field->getName(), $value);
+        $value = $field->sanitize($this->getRequest()->request->get($field->getId()));
+        update_post_meta($this->post->ID, $field->getId(), $value);
     }
 
     /**
@@ -122,11 +123,11 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
         }
         foreach ($object_type as $type) {
             $field = FieldsRegistrar::get($id, $type);
-            if (!$field) {
+            if (!$field || array_key_exists($id, $this->fields)) {
                 continue;
             }
             $field->manager = $this;
-            $this->fields[] = $field;
+            $this->fields[$id] = $field;
         }
     }
 
@@ -156,7 +157,7 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
      */
     public function authorization(AbstractField $field): bool
     {
-        return current_user_can('edit_post_meta', $this->post->ID, $field->getName());
+        return current_user_can('edit_post_meta', $this->post->ID, $field->getId());
     }
 
     /**

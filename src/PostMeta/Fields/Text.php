@@ -18,7 +18,7 @@ class Text extends AbstractField
         ?>
         <label>
             <span class="field-title"><?php echo esc_html($this->getLabel()); ?></span>
-            <input type="text" name="<?php echo $this->getName(); ?>" value="<?php echo $this->value() ?>">
+            <input type="text" name="<?php echo $this->getId(); ?>" value="<?php echo $this->value() ?>">
         </label>
         <?php
     }
