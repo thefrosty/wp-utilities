@@ -8,10 +8,16 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use TheFrosty\WpUtilities\Api\Validator\Contracts\ValidationRule;
 use TheFrosty\WpUtilities\Api\Validator\Exceptions\ValidationFailed;
+use TheFrosty\WpUtilities\Api\Validator\Rules\In;
+use TheFrosty\WpUtilities\Api\Validator\Rules\Nullable;
+use TheFrosty\WpUtilities\Api\Validator\Rules\Required;
 use TheFrosty\WpUtilities\Api\Validator\Validator;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 #[CoversClass(Validator::class)]
+#[CoversClass(In::class)]
+#[CoversClass(Nullable::class)]
+#[CoversClass(Required::class)]
 #[Group('api')]
 #[Group('validator')]
 class ValidatorTest extends TestCase
