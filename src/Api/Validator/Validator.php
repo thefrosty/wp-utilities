@@ -80,6 +80,10 @@ class Validator extends AbstractSingleton
 
     private function maybeSetRules(): void
     {
-        $this->rules = (include __DIR__ . '/config/validator.php')['rules'];
+        $this->rules = [
+            'in' => Rules\In::class,
+            'nullable' => Rules\Nullable::class,
+            'required' => Rules\Required::class,
+        ];
     }
 }
