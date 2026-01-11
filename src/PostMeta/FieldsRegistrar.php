@@ -6,12 +6,11 @@ namespace TheFrosty\WpUtilities\PostMeta;
 
 use BlakvGhost\PHPValidator\Validator;
 use BlakvGhost\PHPValidator\ValidatorException;
+use TheFrosty\WpUtilities\Api\Rules\ArrayRule;
 use TheFrosty\WpUtilities\Api\Rules\CallableRule;
 use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
-use function implode;
-use function sprintf;
 
 /**
  * Class FieldManager
@@ -86,16 +85,12 @@ class FieldsRegistrar
      */
     protected static function validate(array $args): void
     {
-        static $post_types;
-        if (empty($post_types)) {
-            $post_types = get_post_types(['public' => true]);
-        }
         $rules = [
             'id' => ['required', 'string'],
             'field' => ['required', new InstanceOfRule([AbstractField::class])],
             'object_type' => ['required', 'string'],
             'sanitization' => ['nullable', new CallableRule()],
-            'types' => ['required', sprintf('in:%s', implode(',', $post_types))],
+            'types' => ['required', new ArrayRule()],
         ];
         $validator = new Validator($args, $rules);
         if (!$validator->isValid()) {
