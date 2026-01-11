@@ -66,7 +66,6 @@ class Validator extends AbstractSingleton
      * @param string $name The name of the rule to find.
      * @return ValidationRule The found validation rule.
      * @throws Exception If the rule is not found.
-     * @throws \TheFrosty\WpUtilities\Api\Validator\Exceptions\ValidationFailed If the rule is not found.
      */
     private function findRule(string $name): ValidationRule
     {
