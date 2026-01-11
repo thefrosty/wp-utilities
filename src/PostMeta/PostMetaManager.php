@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\PostMeta;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
+use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Field;
 use WP_Post;
 use function add_meta_box;
@@ -24,6 +25,9 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
 
     use HttpFoundationRequestTrait;
 
+    /**
+     * @var AbstractField[] $fields
+     */
     protected array $fields = [];
 
     protected ?WP_Post $post = null;
@@ -108,16 +112,16 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
 
     /**
      * Relate a field to the post meta box.
+     * @param string $id
      * @param array|string $object_type
-     * @param string $field_name
      */
-    public function addField(array|string $object_type, string $field_name): void
+    public function addField(string $id, array|string $object_type): void
     {
         if (is_string($object_type)) {
             $object_type = (array)$object_type;
         }
         foreach ($object_type as $type) {
-            $field = FieldsRegistrar::get($type, $field_name);
+            $field = FieldsRegistrar::get($id, $type);
             if (!$field) {
                 continue;
             }
@@ -147,10 +151,10 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
 
     /**
      * Default authorization callback for post meta.
-     * @param Field $field Field object.
+     * @param AbstractField $field Field object.
      * @return bool Authorization yay or nay.
      */
-    public function authorization(Field $field): bool
+    public function authorization(AbstractField $field): bool
     {
         return current_user_can('edit_post_meta', $this->post->ID, $field->getName());
     }
