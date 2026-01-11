@@ -9,6 +9,8 @@ use BlakvGhost\PHPValidator\ValidatorException;
 use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
+use function implode;
+use function sprintf;
 
 /**
  * Class FieldManager
@@ -28,9 +30,12 @@ class FieldsRegistrar
     public static function add(array $args, string $object_type = 'post'): void
     {
         $defaults = [
+            'authorization' => null,
             'id' => null, // Unique identifier.
             'field' => Text::class,
+            'label' => '',
             'object_type' => $object_type,
+            'sanitization' => 'sanitize_text_field',
             'types' => null, // Post Types (post, page, user, etc.) this field applies to.
         ];
         $args = wp_parse_args($args, $defaults);
@@ -51,9 +56,10 @@ class FieldsRegistrar
     /**
      * Internally store field data.
      * @param array $args
-     * @type string $id Unique identifier.
-     * @type string $field Fully qualified class name.
-     * @type string $object_type WordPress objects the field applies to.
+     * @type string $id Unique field identifier.
+     * @type string $field Fully qualified field class name.
+     * @type string $label Field label.
+     * @type string $object_type WordPress object the field applies to.
      * @type array $types WordPress objects the field applies to.
      * @type callback $authorization (Optional) Authorization.
      * @type callback $sanitization (Optional) Sanitization.
@@ -79,11 +85,16 @@ class FieldsRegistrar
      */
     protected static function validate(array $args): void
     {
+        static $post_types;
+        if (empty($post_types)) {
+            $post_types = get_post_types(['public' => true]);
+        }
         $rules = [
-            'id' => 'required|string',
+            'id' => ['required', 'string'],
             'field' => ['required', new InstanceOfRule([AbstractField::class])],
-            'object_type' => 'required|string',
-            'types' => 'required|string',
+            'object_type' => ['required', 'string'],
+            'sanitization' => ['callable'],
+            'types' => ['required', sprintf('in:%s', implode(',', $post_types))],
         ];
         $validator = new Validator($args, $rules);
         if (!$validator->isValid()) {
