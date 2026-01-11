@@ -37,11 +37,16 @@ class ValidatorTest extends TestCase
         ];
 
         $result = $this->validator->validate(values: ['field_1' => 'value'], rules: $rules);
-
         $this->assertTrue($result);
+    }
+
+    public function testValidateRequiredFieldException(): void
+    {
+        $rules = [
+            'field_1' => ['required'],
+        ];
 
         $this->expectException(ValidationFailed::class);
-
         $this->validator->validate(values: ['another_field' => 'value'], rules: $rules);
     }
 
@@ -118,9 +123,6 @@ class ValidatorTest extends TestCase
         );
 
         $this->assertTrue($this->validator->validate(values: ['field_1' => 3.14], rules: $rules));
-
-        $this->expectException(ValidationFailed::class);
-        $this->validator->validate(values: ['field_1' => 3.15], rules: $rules);
 
         try {
             $this->validator->validate(values: ['field_1' => 3.15], rules: $rules);
