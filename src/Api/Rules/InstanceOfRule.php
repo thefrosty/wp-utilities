@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\Api\Rules;
 use BlakvGhost\PHPValidator\Contracts\Rule;
 use BlakvGhost\PHPValidator\Lang\LangManager;
 use function is_a;
+use function is_subclass_of;
 
 /**
  * Class InstanceOfRule
@@ -24,9 +25,9 @@ class InstanceOfRule implements Rule
     public function passes(string $field, string $value, array $data): bool
     {
         $this->field = $field;
-        $class = $this->parameters[0];
+        $class = $this->parameters[0] ?? null;
 
-        return $class === $value && is_a($value, $data[$field], true);
+        return isset($class) && (is_a($value, $class, true) || is_subclass_of($value, $class));
     }
 
     public function message(): string
