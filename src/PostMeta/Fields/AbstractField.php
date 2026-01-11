@@ -14,7 +14,7 @@ use TheFrosty\WpUtilities\PostMeta\PostMetaManager;
 abstract class AbstractField extends BaseModel implements Field, Render
 {
 
-    protected string $name;
+    protected string $id;
 
     protected string $label;
 
@@ -22,14 +22,14 @@ abstract class AbstractField extends BaseModel implements Field, Render
 
     public PostMetaManager $manager;
 
-    public function getName(): string
+    public function getId(): string
     {
-        return $this->name;
+        return $this->id;
     }
 
-    public function setName(string $name): void
+    public function setId(string $id): void
     {
-        $this->name = $name;
+        $this->id = $id;
     }
 
     public function getLabel(): string
@@ -64,7 +64,7 @@ abstract class AbstractField extends BaseModel implements Field, Render
 
     public function value(): mixed
     {
-        return $this->manager->value($this->name);
+        return $this->manager->value($this->id);
     }
 
     public function save(): void

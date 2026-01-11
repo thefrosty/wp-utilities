@@ -11,10 +11,9 @@ namespace TheFrosty\WpUtilities\PostMeta\Fields;
 interface Field
 {
 
+    public function getId(): string;
 
-    public function getName(): string;
-
-    public function setName(string $name): void;
+    public function setId(string $id): void;
 
     public function getLabel(): string;
 
