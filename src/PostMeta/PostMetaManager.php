@@ -4,82 +4,59 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostMeta;
 
+use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\PostMeta\Fields\Field;
-use TheFrosty\WpUtilities\PostMeta\Fields\Render;
 use WP_Post;
 use function add_meta_box;
-use function get_post;
+use function defined;
 use function is_string;
+use function wp_is_post_revision;
 use function wp_nonce_field;
 
 /**
  * Class PostMetaManager
  * @package TheFrosty\WpUtilities\PostMeta
  */
-class PostMetaManager implements HttpFoundationRequestInterface, Render
+class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequestInterface
 {
 
     use HttpFoundationRequestTrait;
 
-    /**
-     * Related fields
-     * @var Field[]
-     */
     protected array $fields = [];
 
-    protected string $name = '';
+    protected ?WP_Post $post = null;
 
-    protected string $title = '';
-
-    protected WP_Post $post;
-
-    public function __construct($args = [])
+    public function __construct(protected string $name, protected string $title, protected array $types = ['post'])
     {
-        $keys = array_keys(get_class_vars(self::class));
-        foreach ($keys as $key) {
-            if (isset($args[$key])) {
-                $this->$key = $args[$key];
-            }
-        }
+    }
 
-        if (empty($this->name)) {
-            $this->name = sanitize_title($this->title);
-        }
-
-        // Register object-specific UI.
-        add_action('add_meta_boxes', [$this, 'addMetaBox']);
-
-        // Register data-submission handler.
-        add_action('save_post', [$this, 'save'], 10, 2);
+    public function addHooks(): void
+    {
+        $this->addAction('add_meta_boxes', [$this, 'addMetaBox']);
+        $this->addAction('save_post', [$this, 'save'], 10, 2);
     }
 
     /**
      * Register the meta box.
+     * @param string $post_type
      */
-    public function addMetaBox(): void
+    protected function addMetaBox(string $post_type): void
     {
+        if (!in_array($post_type, $this->types, true)) {
+            return;
+        }
+
         add_meta_box(
             $this->name,
             $this->title,
-            function (): void {
-                $this->setPost(get_post());
+            function (?WP_Post $post): void {
+                $this->setPost($post);
                 $this->render();
             },
-            'post',
+            $this->types,
         );
-    }
-
-    /**
-     * Render fields' input elements.
-     */
-    public function render(): void
-    {
-        wp_nonce_field($this->name, $this->name);
-        foreach ($this->fields() as $field) {
-            $field->render();
-        }
     }
 
     /**
@@ -87,7 +64,7 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
      * @param int $post_id
      * @param WP_Post $post
      */
-    public function save(int $post_id, WP_Post $post): void
+    protected function save(int $post_id, WP_Post $post): void
     {
         $this->setPost($post);
 
@@ -101,6 +78,17 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
 
         foreach ($this->fields() as $field) {
             $this->saveField($field);
+        }
+    }
+
+    /**
+     * Render fields' input elements.
+     */
+    protected function render(): void
+    {
+        wp_nonce_field($this->name, $this->name);
+        foreach ($this->fields() as $field) {
+            $field->render();
         }
     }
 
@@ -129,7 +117,7 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
             $object_type = (array)$object_type;
         }
         foreach ($object_type as $type) {
-            $field = FieldManager::getField($type, $field_name);
+            $field = FieldsRegistrar::get($type, $field_name);
             if (!$field) {
                 continue;
             }
@@ -140,6 +128,7 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
 
     /**
      * Get field objects related to the post meta box.
+     * @return AbstractField[]
      */
     public function fields(): array
     {
@@ -167,10 +156,9 @@ class PostMetaManager implements HttpFoundationRequestInterface, Render
     }
 
     /**
-     * The object's data is stored within this UI/form handler object.
-     * This keeps all business logic flowing through the manager by default,
-     * and doesn't require customizing a field for each different object
-     * type. Business logic can easily be overridden at the Field object level.
+     * The object's data is stored within this UI/form handler object. This keeps all business logic flowing through
+     * the manager by default, and doesn't require customizing a field for each different object type. Business logic
+     * can easily be overridden at the Field object level.
      * @param WP_Post|null $post
      */
     private function setPost(?WP_Post $post = null): void
