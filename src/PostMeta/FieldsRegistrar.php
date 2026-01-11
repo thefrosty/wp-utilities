@@ -6,6 +6,7 @@ namespace TheFrosty\WpUtilities\PostMeta;
 
 use BlakvGhost\PHPValidator\Validator;
 use BlakvGhost\PHPValidator\ValidatorException;
+use TheFrosty\WpUtilities\Api\Rules\CallableRule;
 use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
@@ -93,7 +94,7 @@ class FieldsRegistrar
             'id' => ['required', 'string'],
             'field' => ['required', new InstanceOfRule([AbstractField::class])],
             'object_type' => ['required', 'string'],
-            'sanitization' => ['callable'],
+            'sanitization' => ['nullable', new CallableRule()],
             'types' => ['required', sprintf('in:%s', implode(',', $post_types))],
         ];
         $validator = new Validator($args, $rules);
