@@ -11,6 +11,7 @@ use TheFrosty\WpUtilities\Api\Rules\CallableRule;
 use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
+use function register_post_meta;
 
 /**
  * Class FieldManager
@@ -23,20 +24,31 @@ class FieldsRegistrar
 
     /**
      * Field registration.
-     * @param array $args
-     * @param string $object_type
+     * @param array $args Data used to describe the meta key when registered. See
+     *  {@see register_meta()} for a list of supported arguments.
+     * @param string $type if the object type is "post", the post type. If left empty, the meta key will be registered
+     *     on the entire object type. Default empty.
+     * @type string $type The type of data associated with this meta key.
+     * @param string $object_type Type of object metadata is for. Accepts 'blog', 'post', 'comment', 'term',
+     *  'user', or any other object type with an associated meta table.
      * @throws ValidatorException
      */
-    public static function add(array $args, string $object_type = 'post'): void
+    public static function add(array $args, string $type, string $object_type = 'post'): void
     {
         $defaults = [
-            'authorization' => null,
-            'id' => null, // Unique identifier.
+            'auth_callback' => null,
+            'default' => '',
+            'description' => '',
             'field' => Text::class,
+            'id' => null, // Unique identifier.
             'label' => '',
             'object_type' => $object_type,
-            'sanitization' => 'sanitize_text_field',
-            'types' => null, // Post Types (post, page, user, etc.) this field applies to.
+            'single' => false,
+            'sanitize_callback' => 'sanitize_text_field',
+            'show_in_rest' => false,
+            'type' => 'string', // Valid values are 'string', 'boolean', 'integer', 'number', 'array', and 'object'.
+            'types' => [$type], // Post Types (post, page, user, etc.) this field applies to.
+            'revisions_enabled' => false,
         ];
         $args = wp_parse_args($args, $defaults);
         self::validate($args);
@@ -54,15 +66,8 @@ class FieldsRegistrar
     }
 
     /**
-     * Internally store field data.
-     * @param array $args
-     * @type string $id Unique field identifier.
-     * @type string $field Fully qualified field class name.
-     * @type string $label Field label.
-     * @type string $object_type WordPress object the field applies to.
-     * @type array $types WordPress objects the field applies to.
-     * @type callback $authorization (Optional) Authorization.
-     * @type callback $sanitization (Optional) Sanitization.
+     * Internally store and register field data.
+     * @param array $args See {@see register_meta()} for a list of supported arguments.
      */
     protected static function register(array $args): void
     {
@@ -75,26 +80,29 @@ class FieldsRegistrar
             }
             $field = $args['field'];
             self::$fields[$args['object_type']][$type][$args['id']] = new $field($args);
+            register_post_meta($type, $args['id'], $args);
         }
     }
 
     /**
      * Validate the field args.
-     * @param array $args
+     * @param array $args See {@see register_meta()} for a list of supported arguments.
      * @throws ValidatorException
      */
     protected static function validate(array $args): void
     {
         $rules = [
+            'description' => ['string'],
             'id' => ['required', 'string'],
             'field' => ['required', new InstanceOfRule([AbstractField::class])],
-            'object_type' => ['required', 'string'],
-            'sanitization' => ['nullable', new CallableRule()],
+            'sanitize_callback' => ['nullable', new CallableRule()],
+            'single' => ['bool'],
+            'type' => ['required', 'in:string,boolean,integer,number,array,object'],
             'types' => ['required', new ArrayRule()],
         ];
         $validator = new Validator($args, $rules);
         if (!$validator->isValid()) {
-            throw new ValidatorException('');
+            throw new ValidatorException(implode("\n", $validator->getErrors()));
         }
     }
 }
