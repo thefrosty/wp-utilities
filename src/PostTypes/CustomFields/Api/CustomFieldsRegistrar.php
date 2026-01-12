@@ -16,7 +16,7 @@ use const ARRAY_FILTER_USE_KEY;
 abstract class CustomFieldsRegistrar extends ObjectRegistrarManager
 {
 
-    public const TAG_CUSTOM_FIELDS_MANAGER_REGISTRAR = 'wp-utilities/post_types/custom_fields_manager/registrar';
+    public const string TAG_CUSTOM_FIELDS_MANAGER_REGISTRAR = 'wp-utilities/post_types/custom_fields_manager/registrar';
 
     /**
      * Add class hooks.
@@ -35,7 +35,7 @@ abstract class CustomFieldsRegistrar extends ObjectRegistrarManager
     {
         return array_filter(
             apply_filters(self::TAG_CUSTOM_FIELDS_MANAGER_REGISTRAR, []),
-            fn(string $custom_field): bool => !empty($custom_field),
+            static fn(string $custom_field): bool => !empty($custom_field),
             ARRAY_FILTER_USE_KEY
         );
     }

@@ -21,10 +21,10 @@ abstract class AbstractTaxonomy
 
     use TaxonomyTrait;
 
-    public const TAXONOMY_TYPE = null;
-    public const POST_TYPE = null;
-    public const SLUG = null;
-    public const URL_SLUG = null;
+    public const string|null TAXONOMY_TYPE = null;
+    public const array|string|null POST_TYPE = null;
+    public const string|null SLUG = null;
+    public const string|null URL_SLUG = null;
 
     /**
      * Taxonomy names array.
@@ -66,9 +66,11 @@ abstract class AbstractTaxonomy
      */
     public static function getTerms(object $argument): array
     {
-        return array_filter((new ReflectionClass($argument))->getConstants(), static function (string $key): bool {
-            return str_contains($key, 'TERM_');
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            (new ReflectionClass($argument))->getConstants(),
+            static fn(string $key): bool => str_contains($key, 'TERM_'),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**

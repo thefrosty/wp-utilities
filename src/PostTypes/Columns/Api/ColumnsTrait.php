@@ -3,6 +3,17 @@
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes\Columns\Api;
+use function esc_attr;
+use function esc_attr__;
+use function esc_attr_x;
+use function esc_html__;
+use function esc_url;
+use function get_edit_post_link;
+use function get_post_type;
+use function get_post_type_object;
+use function get_the_title;
+use function printf;
+use function sprintf;
 
 /**
  * Class ColumnsTrait
@@ -19,32 +30,32 @@ trait ColumnsTrait
      */
     protected function rowActionsHtml(int $post_id, string $post_type, string $meta_key): void
     {
-        \printf(
+        printf(
             '<a href="%1$s" title="%2$s">%3$s</a> |
 <a href="javascript:;" data-select2-ajax="true" data-meta_key="%4$s" data-meta_value="%5$s">
 <span title="%7$s">%6$s</span></a>',
-            \esc_url(\get_edit_post_link($post_id)),
-            \sprintf(
-                \esc_attr__(
+            esc_url(get_edit_post_link($post_id)),
+            sprintf(
+                esc_attr__(
                     'Edit the &ldquo;%1$s&rdquo; %2$s',
                     'wp-utilities'
                 ),
-                \esc_attr(\get_the_title($post_id)),
-                \esc_attr(\get_post_type_object(\get_post_type($post_id))->labels->singular_name)
+                esc_attr(get_the_title($post_id)),
+                esc_attr(get_post_type_object(get_post_type($post_id))->labels->singular_name)
             ),
-            \esc_html__('Edit', 'wp-utilities'),
-            \esc_attr($meta_key),
-            \esc_attr($post_id),
-            \esc_html__('Filter', 'wp-utilities'),
-            \sprintf(
-                \esc_attr_x(
+            esc_html__('Edit', 'wp-utilities'),
+            esc_attr($meta_key),
+            esc_attr($post_id),
+            esc_html__('Filter', 'wp-utilities'),
+            sprintf(
+                esc_attr_x(
                     'Filter %1$s by the &ldquo;%2$s&rdquo; %3$s',
                     'Title attribute to filter by a program.',
                     'wp-utilities'
                 ),
-                \esc_attr(\get_post_type_object($post_type)->labels->name ?? ''),
-                \esc_attr(\get_the_title($post_id)),
-                \esc_attr(\get_post_type_object(\get_post_type($post_id))->labels->singular_name)
+                esc_attr(get_post_type_object($post_type)->labels->name ?? ''),
+                esc_attr(get_the_title($post_id)),
+                esc_attr(get_post_type_object(get_post_type($post_id))->labels->singular_name)
             )
         );
     }

@@ -26,9 +26,10 @@ trait CurrentPostTrait
      */
     protected function getCurrentPostId(): ?int
     {
-        if (!is_admin()) {
-            return get_the_ID() ? get_the_ID() : null;
+        if (!is_admin() && is_numeric(get_the_ID())) {
+            return get_the_ID();
         }
+
         if (!$this instanceof HttpFoundationRequestInterface) {
             throw new RuntimeException(
                 sprintf('Not an instance of %s', HttpFoundationRequestInterface::class)
@@ -36,8 +37,8 @@ trait CurrentPostTrait
         }
         $query = $this->getRequest()->query;
         $request = $this->getRequest()->request;
-        $post_id = $query->has('post') ?
-            $query->get('post') : ($request->has('post_ID') ? $request->get('post_ID') : null);
+        $ID = $request->has('post_ID') ? $request->get('post_ID') : null;
+        $post_id = $query->has('post') ? $query->get('post') : $ID;
 
         return is_numeric($post_id) ? absint($post_id) : null;
     }
