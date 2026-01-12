@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostMeta;
 
-use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
-use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
-use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use WP_Post;
 use function add_meta_box;
 use function array_key_exists;
+use function current_user_can;
 use function defined;
+use function get_post_meta;
 use function is_string;
+use function update_post_meta;
 use function wp_is_post_revision;
 use function wp_nonce_field;
 
@@ -20,94 +20,23 @@ use function wp_nonce_field;
  * Class PostMetaManager
  * @package TheFrosty\WpUtilities\PostMeta
  */
-class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequestInterface
+class PostMetaManager extends AbstractManager
 {
 
-    use HttpFoundationRequestTrait;
-
     /**
-     * @var AbstractField[] $fields
+     * PostMetaManager constructor.
+     * @param string $id
+     * @param string $title
+     * @param array|null $fields
+     * @param string $type
      */
-    protected array $fields = [];
-
-    protected ?WP_Post $post = null;
-
-    public function __construct(protected string $name, protected string $title, protected array $types = ['post'])
-    {
-    }
-
-    public function addHooks(): void
-    {
-        $this->addAction('add_meta_boxes', [$this, 'addMetaBox']);
-        $this->addAction('save_post', [$this, 'save'], 10, 2);
-    }
-
-    /**
-     * Register the meta box.
-     * @param string $post_type
-     */
-    protected function addMetaBox(string $post_type): void
-    {
-        if (!in_array($post_type, $this->types, true)) {
-            return;
-        }
-
-        add_meta_box(
-            $this->name,
-            $this->title,
-            function (?WP_Post $post): void {
-                $this->setPost($post);
-                $this->render();
-            },
-            $this->types,
-        );
-    }
-
-    /**
-     * Save_post handler.
-     * @param int $post_id
-     * @param WP_Post $post
-     */
-    protected function save(int $post_id, WP_Post $post): void
-    {
-        $this->setPost($post);
-
-        if (wp_is_post_revision($post_id)) {
-            return;
-        }
-
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return;
-        }
-
-        foreach ($this->fields() as $field) {
-            $this->saveField($field);
-        }
-    }
-
-    /**
-     * Render fields' input elements.
-     */
-    protected function render(): void
-    {
-        wp_nonce_field($this->name, $this->name);
-        foreach ($this->fields() as $field) {
-            $field->render();
-        }
-    }
-
-    /**
-     * Default save method specific to a post type.
-     * @param AbstractField $field
-     */
-    public function saveField(AbstractField $field): void
-    {
-        if (!$field->authorization()) {
-            return;
-        }
-
-        $value = $field->sanitize($this->getRequest()->request->get($field->getId()));
-        update_post_meta($this->post->ID, $field->getId(), $value);
+    public function __construct(
+        protected string $id,
+        protected string $title,
+        ?array $fields = null,
+        string $type = 'post'
+    ) {
+        parent::__construct($fields, $type);
     }
 
     /**
@@ -131,12 +60,27 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
     }
 
     /**
-     * Get field objects related to the post meta box.
-     * @return AbstractField[]
+     * Default authorization callback for post meta.
+     * @param AbstractField $field Field object.
+     * @return bool Authorization yay or nay.
      */
-    public function fields(): array
+    public function authorization(AbstractField $field): bool
     {
-        return $this->fields;
+        return current_user_can('edit_post_meta', $this->post->ID, $field->getId());
+    }
+
+    /**
+     * Default save method specific to a post type.
+     * @param AbstractField $field
+     */
+    public function saveField(AbstractField $field): void
+    {
+        if (!isset($this->post) || !$field->authorization()) {
+            return;
+        }
+
+        $value = $field->sanitize($this->getRequest()->request->get($field->getId()));
+        update_post_meta($this->post->ID, $field->getId(), $value);
     }
 
     /**
@@ -150,23 +94,55 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
     }
 
     /**
-     * Default authorization callback for post meta.
-     * @param AbstractField $field Field object.
-     * @return bool Authorization yay or nay.
+     * Register the post meta box.
+     * @param WP_Post $post
      */
-    public function authorization(AbstractField $field): bool
+    protected function addMetaBox(WP_Post $post): void
     {
-        return current_user_can('edit_post_meta', $this->post->ID, $field->getId());
+        add_meta_box($this->id, $this->title, function () use ($post): void {
+            $this->post = $post;
+            $this->render();
+        }, $this->type);
     }
 
     /**
-     * The object's data is stored within this UI/form handler object. This keeps all business logic flowing through
-     * the manager by default, and doesn't require customizing a field for each different object type. Business logic
-     * can easily be overridden at the Field object level.
-     * @param WP_Post|null $post
+     * Save post handler.
+     * @param int $post_id
+     * @param WP_Post $post
      */
-    private function setPost(?WP_Post $post = null): void
+    protected function save(int $post_id, WP_Post $post): void
     {
+        if (wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
         $this->post = $post;
+        foreach ($this->getFields() as $field) {
+            $this->saveField($field);
+        }
+    }
+
+    /**
+     * Get field objects related to the post meta box.
+     * @return AbstractField[]
+     */
+    private function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    /**
+     * Render the fields.
+     */
+    private function render(): void
+    {
+        wp_nonce_field($this->id, $this->id);
+        foreach ($this->getFields() as $field) {
+            $field->render();
+        }
     }
 }
