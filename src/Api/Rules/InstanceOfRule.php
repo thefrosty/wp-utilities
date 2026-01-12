@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api\Rules;
 
 use BlakvGhost\PHPValidator\Contracts\Rule;
-use BlakvGhost\PHPValidator\Lang\LangManager;
 use function is_a;
 use function is_subclass_of;
+use function sprintf;
 
 /**
  * Class InstanceOfRule
@@ -32,9 +32,6 @@ class InstanceOfRule implements Rule
 
     public function message(): string
     {
-        return LangManager::getTranslation('validation.instance_of', [
-            'attribute' => $this->field,
-            'values' => implode(',', $this->parameters),
-        ]);
+        return sprintf('The %s field must be an instance of %s.', $this->field, $this->parameters[0] ?? '');
     }
 }
