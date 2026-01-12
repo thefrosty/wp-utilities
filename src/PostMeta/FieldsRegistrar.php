@@ -6,9 +6,9 @@ namespace TheFrosty\WpUtilities\PostMeta;
 
 use BlakvGhost\PHPValidator\Validator;
 use BlakvGhost\PHPValidator\ValidatorException;
-use TheFrosty\WpUtilities\Api\Rules\ArrayRule;
-use TheFrosty\WpUtilities\Api\Rules\CallableRule;
-use TheFrosty\WpUtilities\Api\Rules\InstanceOfRule;
+use TheFrosty\WpUtilities\Api\ValidationRules\InstanceOfRule;
+use TheFrosty\WpUtilities\Api\ValidationRules\IsArray;
+use TheFrosty\WpUtilities\Api\ValidationRules\IsCallable;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
 use function register_post_meta;
@@ -95,10 +95,10 @@ class FieldsRegistrar
             'description' => ['string'],
             'id' => ['required', 'string'],
             'field' => ['required', new InstanceOfRule([AbstractField::class])],
-            'sanitize_callback' => ['nullable', new CallableRule()],
+            'sanitize_callback' => ['nullable', new IsCallable()],
             'single' => ['bool'],
             'type' => ['required', 'in:string,boolean,integer,number,array,object'],
-            'types' => ['required', new ArrayRule()],
+            'types' => ['required', new IsArray()],
         ];
         $validator = new Validator($args, $rules);
         if (!$validator->isValid()) {
