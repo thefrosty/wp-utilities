@@ -8,7 +8,6 @@ use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\PostMeta\Fields\AbstractField;
-use TheFrosty\WpUtilities\PostMeta\Fields\Field;
 use WP_Post;
 use function add_meta_box;
 use function array_key_exists;
@@ -99,9 +98,9 @@ class PostMetaManager extends AbstractHookProvider implements HttpFoundationRequ
 
     /**
      * Default save method specific to a post type.
-     * @param Field $field
+     * @param AbstractField $field
      */
-    public function saveField(Field $field): void
+    public function saveField(AbstractField $field): void
     {
         if (!$field->authorization()) {
             return;
