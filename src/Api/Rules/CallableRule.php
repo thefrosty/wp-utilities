@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Api\Rules;
 
 use BlakvGhost\PHPValidator\Contracts\Rule;
-use BlakvGhost\PHPValidator\Lang\LangManager;
 use function is_callable;
+use function sprintf;
 
 /**
  * Class CallableRule
@@ -30,8 +30,6 @@ class CallableRule implements Rule
 
     public function message(): string
     {
-        return LangManager::getTranslation('validation.callable', [
-            'attribute' => $this->field,
-        ]);
+        return sprintf('The %s field must be callable.', $this->field);
     }
 }
