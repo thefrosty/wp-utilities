@@ -9,6 +9,7 @@ use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use WP_Query;
 use function apply_filters;
+use function array_pad;
 use function array_shift;
 use function defined;
 use function esc_attr;
