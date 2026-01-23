@@ -13,12 +13,14 @@ use TheFrosty\WpUtilities\Plugin\Plugin;
 interface RestrictPostsInterface
 {
 
-    public const ADMIN_FILTER_FIELD_NAME = '_filter_meta_key';
-    public const ADMIN_FILTER_FIELD_VALUE = '_filter_meta_value';
-    public const ADMIN_SEARCH_FIELD_VALUE = '_search_meta_value';
-    public const HANDLE = 'restrict-manage-posts';
-    public const HANDLE_UTILITY_FUNCTIONS = 'utility-functions';
+    public const string ADMIN_FILTER_FIELD_NAME = '_filter_meta_key';
+    public const string ADMIN_FILTER_FIELD_VALUE = '_filter_meta_value';
+    public const string ADMIN_SEARCH_FIELD_VALUE = '_search_meta_value';
+    public const string HANDLE = 'restrict-manage-posts';
+    public const string HANDLE_UTILITY_FUNCTIONS = 'utility-functions';
+    public const string TAG_FILTER_ADVANCED_SEARCH = Plugin::TAG . '/restrict_manage_posts/advanced_search';
+    public const string TAG_FILTER_ENABLE_SCRIPTS = Plugin::TAG . '/restrict_manage_posts/enable_scripts';
 
-    public const TAG_FILTER_META_KEYS = Plugin::TAG . '/restrict_manage_posts/meta_keys';
-    public const TAG_FILTER_META_VALUES = Plugin::TAG . '/restrict_manage_posts/meta_values';
+    public const string TAG_FILTER_META_KEYS = Plugin::TAG . '/restrict_manage_posts/meta_keys';
+    public const string TAG_FILTER_META_VALUES = Plugin::TAG . '/restrict_manage_posts/meta_values';
 }
