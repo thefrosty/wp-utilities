@@ -109,7 +109,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         wpRegisterScript(
             self::HANDLE,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s%s.js', self::HANDLE, $min),
-            ['select2', self::HANDLE_UTILITY_FUNCTIONS],
+            (array)apply_filters(self::TAG_FILTER_SCRIPT_DEPENDENCIES, ['select2', self::HANDLE_UTILITY_FUNCTIONS]),
             args: ['in_footer' => true]
         );
         wp_enqueue_style('select2');
