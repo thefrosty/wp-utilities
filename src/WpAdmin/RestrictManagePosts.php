@@ -14,6 +14,7 @@ use function defined;
 use function esc_attr;
 use function esc_html__;
 use function esc_url;
+use function explode;
 use function is_admin;
 use function is_array;
 use function is_numeric;
@@ -186,10 +187,15 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             !empty($this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME)) &&
             !empty($this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_VALUE))
         ) {
+            $value = $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_VALUE);
+            if (str_contains($value, 'COMPARE:')) {
+                [, $compare, $value] = array_pad(explode(':', $value), 3, '');
+            }
             $query->set('meta_query', [
                 [
                     'key' => $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME),
-                    'value' => $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_VALUE),
+                    'value' => sanitize_text_field($value),
+                    'compare' => $compare ?? '=', // Default to `=`.
                 ],
             ]);
         }
