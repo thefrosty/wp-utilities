@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin;
 
+use InvalidArgumentException;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\WpAdmin\Models\OptionValueLabel;
 use function __;
@@ -58,6 +59,7 @@ post title value (ID).',
      * @param string $name The ID & query parameter.
      * @param string $default_text The Default text option.
      * @param array|null $options Array of options via [optgroup label => [[OptionValueLabel object]]].
+     * @throws InvalidArgumentException
      */
     protected function selectHtml(string $name, string $default_text, ?array $options = []): void
     {
@@ -72,7 +74,7 @@ post title value (ID).',
                 !is_array($option) ||
                 count(array_filter($option, static fn($entry): bool => !$entry instanceof OptionValueLabel)) > 0
             ) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf('An array of %s values is expected.', OptionValueLabel::class)
                 );
             }

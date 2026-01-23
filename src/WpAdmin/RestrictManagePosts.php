@@ -77,7 +77,9 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
      */
     protected function enqueueScripts(string $hook): void
     {
-        if ($hook !== 'edit.php') {
+        $enabled = apply_filters(self::TAG_FILTER_ENABLE_SCRIPTS, true);
+
+        if ($hook !== 'edit.php' || $enabled !== true) {
             return;
         }
 
@@ -155,7 +157,8 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             esc_html__('Meta Value', 'wp-utilities'),
             $meta_values
         );
-        if (!empty($meta_keys) && !empty($meta_values)) {
+        $enabled = apply_filters(self::TAG_FILTER_ADVANCED_SEARCH, true, $post_type);
+        if (!empty($meta_keys) && !empty($meta_values) && $enabled === true) {
             $this->inputHtml(self::ADMIN_SEARCH_FIELD_VALUE);
         }
         unset($meta_keys, $meta_values);
