@@ -23,4 +23,5 @@ interface RestrictPostsInterface
 
     public const string TAG_FILTER_META_KEYS = Plugin::TAG . '/restrict_manage_posts/meta_keys';
     public const string TAG_FILTER_META_VALUES = Plugin::TAG . '/restrict_manage_posts/meta_values';
+    public const string TAG_FILTER_SCRIPT_DEPENDENCIES = Plugin::TAG . '/restrict_manage_posts/script_dependencies';
 }
