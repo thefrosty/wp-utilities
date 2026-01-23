@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin;
 
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
+use function array_key_exists;
 
 /**
  * Class AddPluginIcon
@@ -48,10 +51,10 @@ class AddPluginIcons extends AbstractHookProvider
      */
     protected function filterAllPlugins(array $plugins): array
     {
-        if (\array_key_exists($this->getPlugin()->getBasename(), $plugins)) {
+        if (array_key_exists($this->getPlugin()->getBasename(), $plugins)) {
             $icons = ['svg', '1x', '2x'];
             foreach ($icons as $key) {
-                if (!\array_key_exists($key, $this->icons)) {
+                if (!array_key_exists($key, $this->icons)) {
                     continue;
                 }
                 $plugins[$this->getPlugin()->getBasename()]['icons'][$key] = $this->icons[$key];
