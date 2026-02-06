@@ -10,10 +10,10 @@ use function is_subclass_of;
 use function sprintf;
 
 /**
- * Class InstanceOfRule
+ * Class IsInstanceOf
  * @package TheFrosty\WpUtilities\Api\Rules
  */
-class InstanceOfRule implements Rule
+class IsInstanceOf implements Rule
 {
 
     protected string $field;
