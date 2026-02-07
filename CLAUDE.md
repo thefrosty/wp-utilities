@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Setup
 
-This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It requires PHP 8.3 and WordPress 6.7 or higher.
+This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It
+requires PHP 8.3 and WordPress 6.7 or higher.
 
 ## Key Architecture Components
 
@@ -17,24 +18,30 @@ The library follows a plugin factory pattern with a container-based architecture
 
 ## How to Run Tests
 
-To run the full test suite:
+Make sure Docker is running with: `docker compose up -d`.
+
+To run the full PHPUnit test suite:
+
 ```
-composer test
+composer phpunit
 ```
 
 To run a specific test:
+
 ```
 ./vendor/bin/phpunit tests/unit/Plugin/PluginTest.php
 ```
 
-To run tests with coverage:
+To run tests without coverage:
+
 ```
-composer test -- --coverage-html ./tests/results
+./vendor/bin/phpunit tests/unit
 ```
 
 ## Common Development Tasks
 
 The library provides a fluent interface for hook registration:
+
 ```php
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 $plugin = PluginFactory::create('slug')
@@ -44,6 +51,7 @@ $plugin = PluginFactory::create('slug')
 ```
 
 Hook providers can be added conditionally or on specific hooks:
+
 - `add()` - Register immediately
 - `addIfCondition()` - Register when a condition is met
 - `addOnHook()` - Register on a specific WordPress hook
@@ -52,6 +60,7 @@ Hook providers can be added conditionally or on specific hooks:
 ## Code Structure
 
 Key files:
+
 - `src/Plugin/PluginFactory.php` - Plugin instance creation and management
 - `src/Plugin/AbstractPlugin.php` - Base plugin class with hook registration methods
 - `src/Plugin/Init.php` - Hook initialization manager
@@ -67,4 +76,6 @@ Key files:
 
 ## Integration Pattern
 
-The library uses a pattern where plugin instances are created via `PluginFactory::create()` and hook providers are registered using the fluent interface. Providers can be registered with conditional logic, deferred execution, or specific WordPress hooks.
+The library uses a pattern where plugin instances are created via `PluginFactory::create()` and hook providers are
+registered using the fluent interface. Providers can be registered with conditional logic, deferred execution, or
+specific WordPress hooks.
