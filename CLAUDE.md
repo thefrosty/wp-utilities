@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Setup
 
 This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It
-requires PHP 8.3 and WordPress 6.7 or higher.
+requires PHP >= 8.3 and WordPress 6.7 or higher.
 
 ## Key Architecture Components
 
@@ -20,7 +20,7 @@ The library follows a plugin factory pattern with a container-based architecture
 
 Make sure Docker is running with: `docker compose up -d`.
 
-To run the full PHPUnit test suite:
+To run the full PHPUnit test suite (with code coverage):
 
 ```
 composer phpunit
@@ -30,12 +30,6 @@ To run a specific test:
 
 ```
 ./vendor/bin/phpunit tests/unit/Plugin/PluginTest.php
-```
-
-To run tests without coverage:
-
-```
-./vendor/bin/phpunit tests/unit
 ```
 
 ## Common Development Tasks
@@ -70,9 +64,14 @@ Key files:
 ## Build and Linting
 
 - Code standard checking: `composer phpcs`
-- PHPStan analysis: `composer phpstan`
-- Psalm analysis: `composer psalm`
-- All checks: `composer tests`
+- PHPUnit checks: `composer phpunit`
+
+## How to Write PHPUnit Tests
+
+- Current tests are for PHPUnit version 11.5.
+- All tests should extend `TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase`, which is an abstraction of
+  `PHPUnit\Framework\TestCase`.
+- All tests should use a PHPUnit Attribute for what the test covers, see https://docs.phpunit.de/en/11.5/code-coverage.html
 
 ## Integration Pattern
 
