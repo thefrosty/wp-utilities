@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 
 /**
  * Class PluginInterfaceTest
  */
+#[CoversNothing]
 class PluginInterfaceTest extends TestCase
 {
     public function testPluginInterface(): void

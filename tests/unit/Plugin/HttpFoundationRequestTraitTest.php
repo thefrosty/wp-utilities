@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
@@ -13,6 +14,7 @@ use function trait_exists;
 /**
  * Class HttpFoundationRequestTraitTest
  */
+#[CoversClass(HttpFoundationRequestTrait::class)]
 class HttpFoundationRequestTraitTest extends TestCase
 {
     public function testHasTrait(): void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
 use TheFrosty\WpUtilities\Plugin\PluginAwareInterface;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
@@ -11,6 +12,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 /**
  * Class PluginAwareInterfaceTest
  */
+#[CoversNothing]
 class PluginAwareInterfaceTest extends TestCase
 {
     public function testPluginAwareInterface(): void
