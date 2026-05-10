@@ -32,7 +32,7 @@
     "johnbillion/args": "^2.1",
     "oscarotero/env": "^2.1",
     "psr/container": "^2.0",
-    "symfony/http-foundation": "^7.3.4"
+    "symfony/http-foundation": "^7.4 || ^8.0"
   },
   "require-dev": {
     "ext-simplexml": "*",
