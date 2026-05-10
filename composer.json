@@ -51,6 +51,7 @@
     "yoast/phpunit-polyfills": "^4.0"
   },
   "suggest": {
+    "htmlburger/carbon-fields": "WordPress Custom Fields Library.",
     "illuminate/encryption": "Laravel level encryption & decryption.",
     "jjgrainger/posttypes": "Simple WordPress custom post types.",
     "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
