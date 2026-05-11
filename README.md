@@ -15,7 +15,7 @@ A library containing my standard development resources to build high quality Wor
 ### Requirements
 
 ```
-PHP >= 8.3
+PHP >= 8.4
 WordPress >= 6.7
 ```
 
