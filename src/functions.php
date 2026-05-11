@@ -83,6 +83,16 @@ function getIpAddress(?Request $request = null): ?string
 }
 
 /**
+ * Get the current HTTP Request.
+ * @param Request|null $request
+ * @return Request
+ */
+function getRequest(?Request $request = null): Request
+{
+    return $request ?? Request::createFromGlobals();
+}
+
+/**
  * Is the current request CLI and PHPunit?
  * @param Request|null $request
  * @return bool
