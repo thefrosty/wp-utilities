@@ -12,6 +12,7 @@ use TheFrosty\WpUtilities\Exceptions\TerminationException;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function TheFrosty\WpUtilities\exitOrThrow;
 use function TheFrosty\WpUtilities\getIpAddress;
+use function TheFrosty\WpUtilities\getRequest;
 use function TheFrosty\WpUtilities\isPhpunit;
 use function TheFrosty\WpUtilities\wpEnqueueScript;
 use function TheFrosty\WpUtilities\wpRegisterScript;
@@ -24,6 +25,7 @@ use function wp_script_is;
  */
 #[CoversFunction('TheFrosty\WpUtilities\exitOrThrow')]
 #[CoversFunction('TheFrosty\WpUtilities\getIpAddress')]
+#[CoversFunction('TheFrosty\WpUtilities\getRequest')]
 #[CoversFunction('TheFrosty\WpUtilities\isPhpunit')]
 #[CoversFunction('TheFrosty\WpUtilities\wpEnqueueScript')]
 #[CoversFunction('TheFrosty\WpUtilities\wpRegisterScript')]
@@ -48,6 +50,12 @@ class FunctionsTest extends TestCase
         $request->server->set('HTTP_CLIENT_IP', '1999.0991.200.89');
         $request->server->set('REMOTE_ADDR', '1999.0991.200.89');
         $this->assertNull(getIpAddress($request));
+    }
+
+    public function testGetRequest(): void
+    {
+        $request = Request::createFromGlobals();
+        $this->assertSame($request, getRequest($request));
     }
 
     public function testIsPhpunit(): void
