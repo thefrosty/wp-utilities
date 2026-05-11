@@ -18,22 +18,26 @@ use const Carbon_Fields\URL;
 use const Carbon_Fields\VERSION;
 
 /**
- * Class CarbonFields
+ * Class AbstractCarbonFields
  * @package TheFrosty\WpUtilities\Integration\CarbonFields
  */
-abstract class CarbonFields extends AbstractContainerProvider implements FieldsInterface, TypeInterface
+abstract class AbstractCarbonFields extends AbstractContainerProvider implements FieldsInterface, TypeInterface
 {
 
     use FieldsFactory;
 
-    protected string $id = 'x402';
+    // Unique id of the container.
+    protected string $id = 'wp_utilities_';
 
+    /**
+     * Add class hooks.
+     */
     public function addHooks(): void
     {
         // Hack Carbon Fields asset "location".
         $this->addAction('plugins_loaded', function (): void {
             if (!defined('Carbon_Fields\URL')) {
-                define('Carbon_Fields\URL', $this->getPlugin()->getUrl('assets/vendor/htmlburger/carbon-fields'));
+                define('Carbon_Fields\URL', $this->getPath());
             }
         });
         $this->addAction('after_setup_theme', [Carbon_Fields::class, 'boot']);
@@ -73,6 +77,19 @@ abstract class CarbonFields extends AbstractContainerProvider implements FieldsI
         return $container;
     }
 
+    /**
+     * Get the path to the assets' directory. Usually set via `frontpack/composer-assets-plugin`.
+     * This should be overwritten if path is different.
+     * @return string
+     */
+    protected function getPath(): string
+    {
+        return $this->getPlugin()->getUrl('assets/vendor/htmlburger/carbon-fields');
+    }
+
+    /**
+     * Carbon Fields loaded action hook.
+     */
     protected function loaded(): void
     {
         $this->addAction('admin_enqueue_scripts', [$this, 'reEnqueueScripts'], 12);
@@ -103,5 +120,8 @@ abstract class CarbonFields extends AbstractContainerProvider implements FieldsI
         );
     }
 
+    /**
+     * Register Carbon Fields.
+     */
     abstract protected function registerFields(): void;
 }
