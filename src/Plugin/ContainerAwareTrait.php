@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Plugin;
 
 use Psr\Container\ContainerInterface;
+use function call_user_func_array;
+use function is_callable;
 
 /**
  * Container aware trait.
@@ -52,8 +54,8 @@ trait ContainerAwareTrait
     {
         if ($this->container && $this->container->has($method)) {
             $object = $this->container->get($method);
-            if (\is_callable($object)) {
-                return \call_user_func_array($object, $args);
+            if (is_callable($object)) {
+                return call_user_func_array($object, $args);
             }
         }
 
