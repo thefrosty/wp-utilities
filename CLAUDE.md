@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Setup
 
 This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It
-requires PHP >= 8.3 and WordPress 6.7 or higher.
+requires PHP >= 8.4 and WordPress 6.9 or higher.
 
 ## Key Architecture Components
 
