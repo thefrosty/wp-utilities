@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use Pimple\Exception\UnknownIdentifierException;
 use Psr\Container\ContainerInterface;
@@ -12,6 +13,7 @@ use TheFrosty\WpUtilities\Plugin\ContainerAwareTrait;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function is_callable;
 
+#[CoversClass(Container::class)]
 #[CoversTrait(ContainerAwareTrait::class)]
 class ContainerAwareTraitTest extends TestCase
 {
@@ -113,7 +115,7 @@ class ContainerAwareTraitTest extends TestCase
          $container['service'] = 'value';
          $subject->setContainer($container);
 
-         $this->assertTrue(isset($subject->getContainer()['service']));
+         $this->assertTrue($subject->__isset('service'));
      }
 
      /**
