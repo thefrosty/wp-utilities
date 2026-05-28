@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.4" ]
+        php-version: [ "8.4", "8.5" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -47,8 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.4" ]
-        wp-version: [ 'latest' ]
+        php-version: [ "8.4", "8.5" ]
+        wp-version: [ '6.9', 'latest' ]
         coverage: [ true ]
     services:
       mysql:
@@ -95,7 +95,7 @@ jobs:
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
 
       - name: Upload coverage to Codecov
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' && matrix.php-version == '8.4' && matrix.wp-version == 'latest' }}
         uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: false
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: [ "8.4" ]
+        php-version: [ "8.4", "8.5" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v6

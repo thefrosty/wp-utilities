@@ -1,14 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
 use Psr\Container\ContainerInterface;
+use function call_user_func_array;
+use function is_callable;
 
 /**
  * Container aware trait.
- *
  * Container implementation courtesy of Slim 3.
- *
+ * phpcs:disable SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
  * @package TheFrosty\WpUtilities\Plugin
  * @link https://github.com/slimphp/Slim/blob/e80b0f8b4d23e165783e8bf241b31c35272b0e28/Slim/App.php
  */
@@ -19,11 +22,10 @@ trait ContainerAwareTrait
      * Container instance.
      * @var ContainerInterface|null
      */
-    private ?ContainerInterface $container;
+    private ?ContainerInterface $container = null;
 
     /**
      * Proxy access to container services.
-     *
      * @param string $name Service name.
      * @return mixed
      */
@@ -34,7 +36,6 @@ trait ContainerAwareTrait
 
     /**
      * Whether a container service exists.
-     *
      * @param string $name Service name.
      * @return bool
      */
@@ -46,7 +47,6 @@ trait ContainerAwareTrait
     /**
      * Calling a non-existent method on the class checks to see if there's an
      * item in the container that is callable and if so, calls it.
-     *
      * @param string $method Method name.
      * @param array $args Method arguments.
      * @return mixed
@@ -55,8 +55,8 @@ trait ContainerAwareTrait
     {
         if ($this->container && $this->container->has($method)) {
             $object = $this->container->get($method);
-            if (\is_callable($object)) {
-                return \call_user_func_array($object, $args);
+            if (is_callable($object)) {
+                return call_user_func_array($object, $args);
             }
         }
 
@@ -65,7 +65,6 @@ trait ContainerAwareTrait
 
     /**
      * Enable access to the DI container by plugin consumers.
-     *
      * @return ContainerInterface|null
      */
     public function getContainer(): ?ContainerInterface
