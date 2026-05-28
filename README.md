@@ -16,7 +16,7 @@ A library containing my standard development resources to build high quality Wor
 
 ```
 PHP >= 8.4
-WordPress >= 6.7
+WordPress >= 6.8
 ```
 
 The required WordPress version will always be the most recent point release of
@@ -31,7 +31,7 @@ compatibility is entirely coincidental.
 To install this library, use Composer:
 
 ```
-composer require thefrosty/wp-utilities:^3.5
+composer require thefrosty/wp-utilities:^3.12
 ```
 
 Then follow examples in the [Plugin README](./src/Plugin/README.md)
