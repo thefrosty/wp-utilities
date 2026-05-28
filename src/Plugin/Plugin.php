@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
@@ -10,5 +12,5 @@ class Plugin extends AbstractPlugin
 {
     use ContainerAwareTrait;
 
-    public const TAG = 'thefrosty/wp_utilities';
+    public const string TAG = 'thefrosty/wp_utilities';
 }
