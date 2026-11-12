@@ -17,7 +17,7 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "8.4"
+      "php": "8.4.1"
     },
     "sort-packages": true
   },
@@ -32,7 +32,7 @@
     "johnbillion/args": "^2.1",
     "oscarotero/env": "^2.1",
     "psr/container": "^2.0",
-    "symfony/http-foundation": "^7.4 || ^8.1.7"
+    "symfony/http-foundation": "^8.1.11"
   },
   "require-dev": {
     "ext-simplexml": "*",
