@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use ReflectionMethod;
 use ReflectionProperty;
-use TheFrosty\WpUtilities\Exceptions\DidActionException;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use TheFrosty\WpUtilities\WpAdmin\GitHubUpdateChecker;
@@ -40,25 +39,6 @@ class GitHubUpdateCheckerTest extends TestCase
 
         $this->slugs = [];
         parent::tearDown();
-    }
-
-    public function testAddHooksThrowsWhenPluginsLoadedAlreadyFired(): void
-    {
-        global $wp_actions;
-
-        $previous = $wp_actions['plugins_loaded'] ?? null;
-        $wp_actions['plugins_loaded'] = 1;
-
-        try {
-            $checker = new GitHubUpdateChecker('thefrosty/wp-utilities');
-            $this->expectException(DidActionException::class);
-            $this->expectExceptionMessage(
-                GitHubUpdateChecker::class . ' expects to be called on `plugins_loaded`.'
-            );
-            $checker->addHooks();
-        } finally {
-            $this->restorePluginsLoaded($previous);
-        }
     }
 
     public function testAddHooksRegistersGitHubCheckerWithoutToken(): void
@@ -96,7 +76,7 @@ class GitHubUpdateCheckerTest extends TestCase
         $this->assertSame('https://github.com/thefrosty/private-plugin/', $updateChecker->metadataUrl);
         $this->assertSame('private-plugin', $updateChecker->slug);
         $api = $this->assertGitHubApi($updateChecker, true);
-        $this->assertSame($token, (new ReflectionProperty(GitHubApi::class, 'accessToken'))->getValue($api));
+        $this->assertSame($token, new ReflectionProperty(GitHubApi::class, 'accessToken')->getValue($api));
     }
 
     public function testBuildUrlStripsTrailingSlashes(): void
@@ -115,10 +95,7 @@ class GitHubUpdateCheckerTest extends TestCase
         $plugin->method('getFile')->willReturn($pluginFile);
         $plugin->method('getSlug')->willReturn($slug);
         $checker->setPlugin($plugin);
-
-        $this->withoutPluginsLoaded(static function () use ($checker): void {
-            $checker->addHooks();
-        });
+        $checker->addHooks();
 
         $updateChecker = $this->findUpdateChecker($slug);
         if (!$updateChecker instanceof PluginUpdateChecker) {
@@ -126,37 +103,6 @@ class GitHubUpdateCheckerTest extends TestCase
         }
 
         return $updateChecker;
-    }
-
-    /**
-     * Run a callback before `plugins_loaded` has fired.
-     * The WordPress test bootstrap has already fired that action, and addHooks() refuses to run afterward.
-     */
-    private function withoutPluginsLoaded(callable $callback): void
-    {
-        global $wp_actions;
-
-        $previous = $wp_actions['plugins_loaded'] ?? null;
-        unset($wp_actions['plugins_loaded']);
-
-        try {
-            $callback();
-        } finally {
-            $this->restorePluginsLoaded($previous);
-        }
-    }
-
-    private function restorePluginsLoaded(?int $previous): void
-    {
-        global $wp_actions;
-
-        if ($previous === null) {
-            unset($wp_actions['plugins_loaded']);
-
-            return;
-        }
-
-        $wp_actions['plugins_loaded'] = $previous;
     }
 
     private function findUpdateChecker(string $slug): ?PluginUpdateChecker
