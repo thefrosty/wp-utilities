@@ -152,16 +152,6 @@ trait HooksTrait
     }
 
     /**
-     * Retrieves the number of times an action has been fired during the current request.
-     * @param string $action The action to run
-     * @return int
-     */
-    protected function didAction(string $action): int
-    {
-        return did_action($action);
-    }
-
-    /**
      * Run do_action.
      * @param string $action The action to run
      * @param array ...$args Any extra arguments to pass to do_action

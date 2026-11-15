@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\WpAdmin;
 use TheFrosty\WpUtilities\Exceptions\DidActionException;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use YahnisElsts\PluginUpdateChecker\v6\PucFactory;
+use function did_action;
 use function untrailingslashit;
 
 /**
@@ -33,7 +34,7 @@ class GitHubUpdateChecker extends AbstractHookProvider
      */
     public function addHooks(): void
     {
-        if ($this->didAction('plugins_loaded')) {
+        if (did_action('plugins_loaded')) {
             throw new DidActionException(sprintf('%s expects to be called on `plugins_loaded`.', self::class));
         }
 
