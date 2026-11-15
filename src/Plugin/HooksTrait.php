@@ -10,7 +10,6 @@ use function add_filter;
 use function apply_filters;
 use function array_slice;
 use function call_user_func_array;
-use function did_action;
 use function do_action;
 use function remove_filter;
 
