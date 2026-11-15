@@ -32,7 +32,8 @@
     "johnbillion/args": "^2.1",
     "oscarotero/env": "^2.1",
     "psr/container": "^2.0",
-    "symfony/http-foundation": "^8.1.11"
+    "symfony/http-foundation": "^8.1.11",
+    "yahnis-elsts/plugin-update-checker": "^6.0"
   },
   "require-dev": {
     "ext-simplexml": "*",
