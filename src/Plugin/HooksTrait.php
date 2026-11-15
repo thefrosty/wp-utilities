@@ -10,7 +10,6 @@ use function add_filter;
 use function apply_filters;
 use function array_slice;
 use function call_user_func_array;
-use function did_action;
 use function do_action;
 use function remove_filter;
 
@@ -149,16 +148,6 @@ trait HooksTrait
         int $arg_count = 1
     ): bool {
         return $this->removeFilter($hook, $method, $priority, $arg_count);
-    }
-
-    /**
-     * Retrieves the number of times an action has been fired during the current request.
-     * @param string $action The action to run
-     * @return int
-     */
-    protected function didAction(string $action): int
-    {
-        return did_action($action);
     }
 
     /**
