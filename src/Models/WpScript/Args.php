@@ -15,8 +15,7 @@ class Args extends Base
     /**
      * The enqueued data strategy.
      * Optional. If provided, may be either 'defer' or 'async'.
-     * @var string $strategy
-     * @var 'defer'|'async'
+     * @var string $strategy 'defer'|'async'
      * Default empty string.
      */
     public string $strategy;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use Pimple\Container as PimpleContainer;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 use function class_exists;
@@ -82,7 +83,7 @@ class PluginFactory
     private static function setContainer(Plugin $plugin): Plugin
     {
         if (
-            class_exists(\Pimple\Container::class) &&
+            class_exists(PimpleContainer::class) &&
             interface_exists(ContainerInterface::class)
         ) {
             $container = self::getContainer();

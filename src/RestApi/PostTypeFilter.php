@@ -79,7 +79,7 @@ class PostTypeFilter implements WpHooksInterface
      * Add the `filter` parameter to the REST call query which is then passed to WP_Query.
      * @see https://developer.wordpress.org/reference/classes/wp_query/ For available params to pass to the filter.
      * @param array $args The query arguments.
-     * @param \WP_REST_Request $request Full details about the request.
+     * @param WP_REST_Request $request Full details about the request.
      * @return array $args.
      */
     protected function addFilterParam(array $args, WP_REST_Request $request): array
@@ -109,12 +109,13 @@ class PostTypeFilter implements WpHooksInterface
 
     /**
      * Get WordPress' global public query vars, and merge them with our custom allowed vars.
-     * @param \WP_REST_Request|null $request Pass in the current WP_REST_Request object to the filter.
+     * @param WP_REST_Request|null $request Pass in the current WP_REST_Request object to the filter.
      * @return array
      */
     private function getPublicQueryVars(?WP_REST_Request $request = null): array
     {
-        $vars = apply_filters('rest_query_vars', $GLOBALS['wp']->public_query_vars, $request);
+        global $wp;
+        $vars = apply_filters('rest_query_vars', $wp->public_query_vars, $request);
 
         return array_unique(array_merge($vars, self::QUERY_VARS));
     }

@@ -24,7 +24,7 @@ try {
         ->withPaths([
             __DIR__ . '/src',
         ])
-        // uncomment to reach your current PHP version
+        // uncomment to reach your current PHP version.
         ->withPhpSets(php84: true)
         ->withPreparedSets(
             codingStyle: true,
@@ -59,4 +59,5 @@ try {
         ->withImportNames(importDocBlockNames: false)
         ->withTypeCoverageLevel(10);
 } catch (InvalidConfigurationException $e) {
+    // Don't do anything.
 }

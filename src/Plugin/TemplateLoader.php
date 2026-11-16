@@ -87,7 +87,7 @@ class TemplateLoader implements TemplateLoaderInterface
             set_query_var($var ?? self::VAR, $data);
         }
 
-        // Add $var_name to custom variable store if not default value
+        // Add $var_name to custom variable store if not default value.
         if (!is_null($var) && $var !== self::VAR) {
             $this->template_data_var_names[] = $var;
         }
@@ -188,7 +188,7 @@ class TemplateLoader implements TemplateLoaderInterface
      * Retrieve the name of the highest priority template file that exists.
      * @param array $template_names Template file(s) to search for, in order.
      * @return string
-     * @throws Exception
+     * @throws RuntimeException
      */
     private function getLocatedFile(array $template_names): string
     {

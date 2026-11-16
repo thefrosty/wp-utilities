@@ -90,7 +90,7 @@ class PageTemplates extends AbstractHookProvider
     {
         global $post;
 
-        // Return the search template if we're searching (instead of the template for the first result)
+        // Return the search template if we're searching (instead of the template for the first result).
         if (is_search()) {
             return $template;
         }
@@ -112,12 +112,11 @@ class PageTemplates extends AbstractHookProvider
 
         $file = sprintf('%s/%s', untrailingslashit($filepath), $page_template);
 
-        // Just to be safe, we check if the file exist first
+        // Just to be safe, we check if the file exist first.
         if (file_exists($file)) {
             return $file;
         }
 
-        // Return template
         return $template;
     }
 

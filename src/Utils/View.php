@@ -136,13 +136,13 @@ final class View
         $this->setDefaultPaths();
         [$view, $data] = $args;
 
-        // Add a file extension the view
+        // Add a file extension the view.
         $file = $this->sanitizeFileExtension($view . '.php');
 
-        // Get the view path
+        // Get the view path.
         $viewPath = $this->getViewPath($file);
 
-        // Display error if view not found
+        // Display error if view not found.
         if ($viewPath === null) {
             $this->viewNotFoundError($file);
         }

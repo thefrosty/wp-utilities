@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
@@ -18,12 +19,11 @@ class Container extends Pimple implements ContainerInterface
 
     /**
      * Finds an entry of the container by its identifier and returns it.
-     *
+     * phpcs:disable SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      * @param string $id Identifier of the entry to look for.
-     *
      * @return mixed Entry.
-     * @throws ContainerExceptionInterface Error while retrieving the entry.
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
+     * @throws \Psr\Container\NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
     #[ReturnTypeWillChange]
     public function get(string $id)
@@ -34,10 +34,8 @@ class Container extends Pimple implements ContainerInterface
     /**
      * Returns true if the container can return an entry for the given identifier.
      * Returns false otherwise.
-     *
      * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
      * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
-     *
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */

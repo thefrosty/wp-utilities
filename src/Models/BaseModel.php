@@ -52,7 +52,7 @@ abstract class BaseModel
      * You should implement customized toArray() if you are using logic different from described in
      * getSerializableFields() in child classes.
      * @return array
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function toArray(): array
     {
@@ -137,7 +137,7 @@ abstract class BaseModel
     protected function populate(array $fields): void
     {
         foreach ($fields as $field => $value) {
-            // If field value is null we just leave it blank
+            // If field value is null we just leave it blank.
             if (is_null($value)) {
                 continue;
             }
@@ -145,10 +145,10 @@ abstract class BaseModel
             $setter_method = $this->getSetterMethod($field);
             $populate_method = $this->getPopulateMethod($field);
 
-            // First try to proceed with custom population logic
+            // First try to proceed with custom population logic.
             if (method_exists($this, $populate_method)) {
                 $this->$populate_method($value);
-                // If no custom logic found proceed with regular setters
+                // If no custom logic found proceed with regular setters.
             } elseif (method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
                 if (in_array($field, $this->getDateTimeFields(), strict: true)) {

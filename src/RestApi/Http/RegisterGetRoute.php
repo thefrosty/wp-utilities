@@ -8,6 +8,7 @@ use WP_REST_Server;
 
 /**
  * Class RegisterGetRoute
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
  * @package TheFrosty\WpUtilities\RestApi\Http
  */
 abstract class RegisterGetRoute extends RouteService

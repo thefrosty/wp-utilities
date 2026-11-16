@@ -12,6 +12,7 @@ use function wp_parse_args;
 
 /**
  * Class RouteService
+ * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
  * @package TheFrosty\WpUtilities\RestApi\Http
  */
 abstract class RouteService implements RestRouteInterface, WpHooksInterface

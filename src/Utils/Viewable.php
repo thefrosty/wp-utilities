@@ -27,6 +27,7 @@ trait Viewable
      * Get an instance of View.
      * @param string $id Identifier of the entry to look for.
      * @return View|null View object, null if
+     * @throws RuntimeException
      */
     public function getView(string $id): ?View
     {

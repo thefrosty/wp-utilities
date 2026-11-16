@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Dashboard;
 
+use SimplePie\SimplePie as SimplePieSimplePie;
 use TheFrosty\WpUtilities\Api\Hash;
 use function delete_transient;
 use function fetch_feed;
@@ -34,12 +35,12 @@ trait SimplePie
 
         /**
          * @param string $url
-         * @return array|\SimplePie\SimplePie
+         * @return array|SimplePieSimplePie
          */
         $get_pie = static function (string $url) {
             $pie = fetch_feed($url);
-            // Bail if feed doesn't work
-            if (!($pie instanceof \SimplePie\SimplePie) || is_wp_error($pie)) {
+            // Bail if feed doesn't work.
+            if (!($pie instanceof SimplePieSimplePie) || is_wp_error($pie)) {
                 return [];
             }
 
@@ -47,22 +48,22 @@ trait SimplePie
         };
 
         $pie = $get_pie($url);
-        // Bail if feed doesn't work
-        if (!($pie instanceof \SimplePie\SimplePie)) {
+        // Bail if feed doesn't work.
+        if (!($pie instanceof SimplePieSimplePie)) {
             return [];
         }
 
         /**
-         * @param array|\SimplePie\SimplePie $pie
+         * @param array|SimplePieSimplePie $pie
          * @return array|null $get_items
          */
-        $get_items = (static fn($pie) => ($pie instanceof \SimplePie\SimplePie) ? $pie->get_items(
+        $get_items = (static fn($pie) => ($pie instanceof SimplePieSimplePie) ? $pie->get_items(
             0,
             $pie->get_item_quantity($max)
         ) : []);
 
         $pie_items = $get_items($pie);
-        // If the feed was erroneous
+        // If the feed was erroneous.
         if (!$pie_items) {
             $key = $this->getHashedKey($url);
             delete_transient('feed_' . $key);
