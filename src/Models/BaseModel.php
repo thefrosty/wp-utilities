@@ -99,7 +99,7 @@ abstract class BaseModel
      * script functionality.
      * @param BaseModel[] $models
      * @return array
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function toArrayDeep(array $models): array
     {
