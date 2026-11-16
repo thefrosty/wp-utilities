@@ -1,11 +1,10 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) & Grok Build (x.ai.build) when working with code in this repository.
 
 ## Development Setup
 
-This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It
-requires PHP >= 8.4 and WordPress 6.9 or higher.
+This is a PHP library for WordPress development that provides utilities for building high-quality WordPress plugins. It requires PHP >= 8.4 and WordPress 6.9 or higher.
 
 ## Key Architecture Components
 
