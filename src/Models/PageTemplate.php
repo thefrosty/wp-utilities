@@ -11,9 +11,9 @@ namespace TheFrosty\WpUtilities\Models;
 class PageTemplate extends BaseModel
 {
 
-    public const FIELD_DESC = 'description';
-    public const FIELD_FILE = 'file';
-    public const FIELD_PATH = 'path';
+    public const string FIELD_DESC = 'description';
+    public const string FIELD_FILE = 'file';
+    public const string FIELD_PATH = 'path';
 
     /**
      * Template description (example: "Awesome Template").
