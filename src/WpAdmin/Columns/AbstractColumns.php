@@ -100,6 +100,7 @@ abstract class AbstractColumns extends AbstractHookProvider
             $data[$key] = is_array($value) ? array_shift($value) : $value;
         });
         foreach (array_filter(array_unique($data)) as $item) {
+            $title = null;
             if (is_numeric($item) && get_post($item)) {
                 $title = get_post($item)->post_title;
             }
