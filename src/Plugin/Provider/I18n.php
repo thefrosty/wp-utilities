@@ -15,10 +15,12 @@ use function load_plugin_textdomain;
 /**
  * Internationalization class.
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\Provider\I18nTest
  */
 class I18n implements PluginAwareInterface, WpHooksInterface
 {
-    use HooksTrait, PluginAwareTrait;
+    use HooksTrait;
+    use PluginAwareTrait;
 
     /**
      * Register hooks.
@@ -31,6 +33,7 @@ class I18n implements PluginAwareInterface, WpHooksInterface
 
             return;
         }
+
         $this->addAction('init', [$this, 'loadTextDomain']);
     }
 

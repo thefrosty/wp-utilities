@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use Pimple\Container as PimpleContainer;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 use function class_exists;
@@ -22,7 +23,7 @@ class PluginFactory
 {
 
     /** @var Plugin[] $instances */
-    private static array $instances;
+    private static array $instances = [];
 
     /**
      * Get the plugin instance.
@@ -31,11 +32,7 @@ class PluginFactory
      */
     public static function getInstance(string $slug): Plugin
     {
-        if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
-            return self::$instances[$slug];
-        }
-
-        return self::create($slug);
+        return self::$instances[$slug] ?? self::create($slug);
     }
 
     /**
@@ -50,6 +47,7 @@ class PluginFactory
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
         }
+
         // Use the calling file as the main plugin file.
         if (empty($filename)) {
             // @codingStandardsIgnoreStart
@@ -58,7 +56,7 @@ class PluginFactory
             // @codingStandardsIgnoreEnd
         }
 
-        $plugin = (new Plugin())
+        $plugin = new Plugin()
             ->setInit(new Init())
             ->setBasename(plugin_basename($filename))
             ->setDirectory(plugin_dir_path($filename))
@@ -81,8 +79,8 @@ class PluginFactory
     private static function setContainer(Plugin $plugin): Plugin
     {
         if (
-            class_exists('\Pimple\Container') &&
-            interface_exists('\Psr\Container\ContainerInterface')
+            class_exists(PimpleContainer::class) &&
+            interface_exists(ContainerInterface::class)
         ) {
             $container = self::getContainer();
             $plugin->setContainer($container);
@@ -98,10 +96,11 @@ class PluginFactory
      */
     private static function getContainer(): ContainerInterface
     {
-        $reflection = new ReflectionMethod('\Psr\Container\ContainerInterface', 'has');
+        $reflection = new ReflectionMethod(ContainerInterface::class, 'has');
         if ($reflection->hasReturnType() && $reflection->getReturnType()) {
             return new Container(); // ContainerInterface >= 2.0.0.
         }
+
         $parameter = $reflection->getParameters()[0] ?? null;
         if ($parameter && $parameter->getType() && $parameter->getType()->getName() === 'string') {
             return new Container110();

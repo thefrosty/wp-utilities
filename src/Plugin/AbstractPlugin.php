@@ -19,6 +19,7 @@ use function sprintf;
  * Base plugin class.
  * phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\AbstractPluginTest
  */
 abstract class AbstractPlugin implements PluginInterface
 {
@@ -450,6 +451,6 @@ abstract class AbstractPlugin implements PluginInterface
      */
     private function classImplementsWpHooks(string $wp_hook): bool
     {
-        return in_array(WpHooksInterface::class, class_implements($wp_hook), true);
+        return in_array(WpHooksInterface::class, class_implements($wp_hook), strict: true);
     }
 }

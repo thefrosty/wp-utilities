@@ -69,7 +69,7 @@ abstract class AbstractPostType extends AbstractHookProvider
 
     /**
      * Gets the Post Type name(s).
-     * @return array
+     * @return string[]
      */
     protected function getNames(): array
     {
@@ -87,7 +87,7 @@ abstract class AbstractPostType extends AbstractHookProvider
 
     /**
      * Gets the Post Type args.
-     * @return array
+     * @return string[]
      */
     protected function getArgs(): array
     {
@@ -105,7 +105,7 @@ abstract class AbstractPostType extends AbstractHookProvider
 
     /**
      * Gets the Post Type labels.
-     * @return array
+     * @return string[]
      */
     protected function getLabels(): array
     {

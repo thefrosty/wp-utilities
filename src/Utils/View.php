@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
@@ -32,7 +34,7 @@ final class View
      * Paths that are loaded with addPath are prepended to the array.
      * @var array $viewPaths
      */
-    protected array $viewPaths = [];
+    private array $viewPaths = [];
 
     /**
      * View data
@@ -134,13 +136,13 @@ final class View
         $this->setDefaultPaths();
         [$view, $data] = $args;
 
-        // Add a file extension the view
+        // Add a file extension the view.
         $file = $this->sanitizeFileExtension($view . '.php');
 
-        // Get the view path
+        // Get the view path.
         $viewPath = $this->getViewPath($file);
 
-        // Display error if view not found
+        // Display error if view not found.
         if ($viewPath === null) {
             $this->viewNotFoundError($file);
         }
@@ -196,7 +198,7 @@ final class View
      * @param string $file
      * @throws RuntimeException
      */
-    private function viewNotFoundError(string $file): void
+    private function viewNotFoundError(string $file): never
     {
         $errText = PHP_EOL .
             'View file "' . $file . '" not found.' . PHP_EOL .

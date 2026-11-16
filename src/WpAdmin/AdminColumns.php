@@ -49,7 +49,7 @@ class AdminColumns extends AbstractContainerProvider
 
     /**
      * Manage all Post Type columns, by adding our custom filter allowing new columns.
-     * @param array $columns
+     * @param array<string, mixed> $columns
      * @return array
      */
     protected function postsColumns(array $columns): array
@@ -59,6 +59,7 @@ class AdminColumns extends AbstractContainerProvider
             $date = $columns['date'];
             unset($columns['date']);
         }
+
         $columns = apply_filters(self::TAG_MANAGE_POSTS_COLUMNS, $columns, $post_type);
         if (isset($date)) {
             $columns['date'] = $date;

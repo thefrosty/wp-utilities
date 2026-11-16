@@ -43,6 +43,7 @@
     "phpunit/php-code-coverage": "^11",
     "phpunit/phpunit": "^11.1",
     "pimple/pimple": "^3.5",
+    "rector/rector": "^2.8",
     "roots/wordpress": "^7.0",
     "slevomat/coding-standard": "^8.18",
     "squizlabs/php_codesniffer": "^3.9",
@@ -84,7 +85,7 @@
       "bash ./bin/phpstan.sh"
     ],
     "phpunit": [
-      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 2"
+      "./vendor/bin/phpunit --colors --coverage-html ./tests/results && php ./tests/clover-results.php ./tests/clover.xml 60"
     ],
     "psalm": [
       "bash ./bin/psalm.sh"
@@ -92,6 +93,8 @@
     "tests": [
       "@phpcs",
       "@phpunit"
-    ]
+    ],
+    "refactor": "rector --ansi",
+    "test:refactor": "rector --dry-run --debug --ansi"
   }
 }

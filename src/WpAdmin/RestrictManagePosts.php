@@ -36,7 +36,8 @@ use const SCRIPT_DEBUG;
 class RestrictManagePosts extends AbstractHookProvider implements HttpFoundationRequestInterface, RestrictPostsInterface
 {
 
-    use FormElementsTrait, HttpFoundationRequestTrait;
+    use FormElementsTrait;
+    use HttpFoundationRequestTrait;
 
     /**
      * Add class hooks.
@@ -93,15 +94,17 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
                 ver: '4.0.13'
             );
         }
+
         if (!wp_script_is('select2', 'registered')) {
             wpRegisterScript(
                 'select2',
                 sprintf('https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2%s.js', $min),
                 ['jquery'],
                 '4.0.13',
-                true
+                args: true
             );
         }
+
         wpRegisterScript(
             self::HANDLE_UTILITY_FUNCTIONS,
             sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/utilities/functions%s.js', $min),
@@ -163,6 +166,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         if (!empty($meta_keys) && !empty($meta_values) && $enabled === true) {
             $this->inputHtml(self::ADMIN_SEARCH_FIELD_VALUE);
         }
+
         unset($meta_keys, $meta_values);
     }
 
@@ -192,6 +196,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             if (str_contains($value, 'COMPARE:')) {
                 [, $compare, $value] = array_pad(explode(':', $value), 3, '');
             }
+
             $query->set('meta_query', [
                 [
                     'key' => $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME),
@@ -222,6 +227,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
 
                 return;
             }
+
             $query->set('meta_query', [
                 [
                     'key' => $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME),

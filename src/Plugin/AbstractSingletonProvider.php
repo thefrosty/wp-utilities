@@ -12,7 +12,8 @@ use TheFrosty\WpUtilities\Utils\AbstractSingleton;
  */
 abstract class AbstractSingletonProvider extends AbstractSingleton implements WpHooksInterface, PluginAwareInterface
 {
-    use HooksTrait, PluginAwareTrait;
+    use HooksTrait;
+    use PluginAwareTrait;
 
     /**
      * Registers hooks for the plugin.

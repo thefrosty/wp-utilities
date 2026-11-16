@@ -9,3 +9,4 @@ docker-compose.yml export-ignore
 phpcs-ruleset.xml export-ignore
 phpstan.neon.dist export-ignore
 phpunit.xml export-ignore
+rector.php export-ignore

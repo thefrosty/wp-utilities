@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Dashboard;
 
@@ -8,18 +10,17 @@ use function strtolower;
 
 /**
  * Class Widget
- *
  * @package TheFrosty\WpUtilities\WpAdmin\Dashboard
  */
 class Widget extends BaseModel
 {
 
-    public const FEED_URL = 'feed_url';
-    public const TYPE = 'type';
-    public const TYPE_REST = 'rest';
-    public const TYPE_RSS = 'rss';
-    public const WIDGET_ID = 'widget_id';
-    public const WIDGET_NAME = 'widget_name';
+    public const string FEED_URL = 'feed_url';
+    public const string TYPE = 'type';
+    public const string TYPE_REST = 'rest';
+    public const string TYPE_RSS = 'rss';
+    public const string WIDGET_ID = 'widget_id';
+    public const string WIDGET_NAME = 'widget_name';
 
     /** @var string $feed_url */
     private string $feed_url;
@@ -75,9 +76,10 @@ class Widget extends BaseModel
      */
     protected function setType(string $type): void
     {
-        if (!in_array(strtolower($type), [self::TYPE_REST, self::TYPE_RSS], true)) {
+        if (!in_array(strtolower($type), [self::TYPE_REST, self::TYPE_RSS], strict: true)) {
             return;
         }
+
         $this->type = $type;
     }
 

@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\Plugin;
 /**
  * Main plugin class.
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\PluginTest
  */
 class Plugin extends AbstractPlugin
 {

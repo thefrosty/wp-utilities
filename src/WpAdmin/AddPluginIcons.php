@@ -14,23 +14,21 @@ use function array_key_exists;
 class AddPluginIcons extends AbstractHookProvider
 {
     /**
-     * Path to plugin icon. Often using `plugin_dir_url`.
-     * Example: [
-     *  'svg' => '<url>]/icon.svg',
-     *  '1x' => '<url>]/icon-128x128.png|jpg',
-     *  '2x' => '<url>]/icon-256x256.png|jpg'
-     * ]
-     * @var array $icons
-     */
-    private array $icons;
-
-    /**
      * AddPluginIcon constructor.
      * @param array $icons
      */
-    public function __construct(array $icons)
-    {
-        $this->icons = $icons;
+    public function __construct(
+        /**
+         * Path to plugin icon. Often using `plugin_dir_url`.
+         * @ref https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/
+         * Example: [
+         *  'svg' => '<url>]/icon.svg',
+         *  '1x' => '<url>]/icon-128x128.png|jpg',
+         *  '2x' => '<url>]/icon-256x256.png|jpg'
+         * ]
+         */
+        private readonly array $icons
+    ) {
     }
 
     /**
@@ -46,7 +44,7 @@ class AddPluginIcons extends AbstractHookProvider
     /**
      * Disable plugin update checks for the current plugin
      * @link https://gist.github.com/robincornett/1fe6045b1acc64a329460e5c6023853e
-     * @param array $plugins
+     * @param array<string, mixed> $plugins
      * @return array
      */
     protected function filterAllPlugins(array $plugins): array
@@ -57,6 +55,7 @@ class AddPluginIcons extends AbstractHookProvider
                 if (!array_key_exists($key, $this->icons)) {
                     continue;
                 }
+
                 $plugins[$this->getPlugin()->getBasename()]['icons'][$key] = $this->icons[$key];
             }
         }

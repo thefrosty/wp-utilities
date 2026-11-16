@@ -10,29 +10,24 @@ namespace TheFrosty\WpUtilities\WpAdmin\Models;
  */
 class OptionValueLabel
 {
-    public const KEY_LABEL = 'label';
-    public const KEY_VALUE = 'value';
-
-    /**
-     * Option value.
-     * @var string $value
-     */
-    private string $value;
-    /**
-     * Option label (text).
-     * @var string $label
-     */
-    private string $label;
+    public const string KEY_LABEL = 'label';
+    public const string KEY_VALUE = 'value';
 
     /**
      * OptionValueLabel constructor.
      * @param string $value
      * @param string $label
      */
-    public function __construct(string $value, string $label)
-    {
-        $this->value = $value;
-        $this->label = $label;
+    public function __construct(
+        /**
+         * Option value.
+         */
+        private readonly string $value,
+        /**
+         * Option label (text).
+         */
+        private readonly string $label
+    ) {
     }
 
     /**
@@ -55,7 +50,7 @@ class OptionValueLabel
 
     /**
      * Return an array of value/label keys and their values.
-     * @return array
+     * @return array<string, string>
      */
     public function toArray(): array
     {

@@ -1,14 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Models;
 
-use Exception;
+use RuntimeException;
+use function array_merge;
 use function date_create;
+use function implode;
 use function in_array;
 use function is_array;
 use function is_null;
 use function is_object;
 use function method_exists;
+use function str_replace;
+use function ucwords;
 
 /**
  * Class BaseModel
@@ -26,13 +32,14 @@ abstract class BaseModel
         if (!is_array($fields)) {
             return;
         }
+
         $this->populate($fields);
     }
 
     /**
      * Optional. Implement customized getCustomDelimiters() to return values
      * to search and replace for getMethod().
-     * @return array
+     * @return mixed[]
      */
     public function getCustomDelimiters(): array
     {
@@ -45,7 +52,7 @@ abstract class BaseModel
      * You should implement customized toArray() if you are using logic different from described in
      * getSerializableFields() in child classes.
      * @return array
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function toArray(): array
     {
@@ -57,11 +64,13 @@ abstract class BaseModel
                 if (!method_exists($this, $method)) {
                     continue;
                 }
+
                 $value = $this->$method();
                 if (is_object($value) && method_exists($value, 'toArray')) {
                     $result[$field_name] = $value->toArray();
                     continue;
                 }
+
                 if (
                     (is_array($value) && !empty($value[0])) &&
                     (is_object($value[0]) && method_exists($value[0], 'toArray'))
@@ -69,12 +78,14 @@ abstract class BaseModel
                     $result[$field_name] = $this->toArrayDeep($value);
                     continue;
                 }
+
                 $result[$field_name] = $value;
             }
 
             return $result;
         }
-        throw new Exception(
+
+        throw new RuntimeException(
             'If you are going to use toArray() in your model you have
            to implement custom logic or return a list of fields in getSerializableFields().'
         );
@@ -83,14 +94,12 @@ abstract class BaseModel
     /**
      * Method to convert an array of BaseModels to an array of BaseModel objects converted to an
      * array.
-     *
      * This is useful in situations where you have an array of BaseModels and need to convert it
      * into an array for the purpose of sending it to the front end through WordPress' localize
      * script functionality.
-     *
      * @param BaseModel[] $models
      * @return array
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function toArrayDeep(array $models): array
     {
@@ -104,7 +113,7 @@ abstract class BaseModel
 
     /**
      * Get datetime fields.
-     * @return array
+     * @return mixed[]
      */
     protected function getDateTimeFields(): array
     {
@@ -114,7 +123,7 @@ abstract class BaseModel
     /**
      * Get the fields to be used in toArray()
      * Field names should be in camelCase (ex. propertyName) so that getPropertyName could easily be called
-     * @return array
+     * @return mixed[]
      */
     protected function getSerializableFields(): array
     {
@@ -128,7 +137,7 @@ abstract class BaseModel
     protected function populate(array $fields): void
     {
         foreach ($fields as $field => $value) {
-            // If field value is null we just leave it blank
+            // If field value is null we just leave it blank.
             if (is_null($value)) {
                 continue;
             }
@@ -136,15 +145,16 @@ abstract class BaseModel
             $setter_method = $this->getSetterMethod($field);
             $populate_method = $this->getPopulateMethod($field);
 
-            // First try to proceed with custom population logic
+            // First try to proceed with custom population logic.
             if (method_exists($this, $populate_method)) {
                 $this->$populate_method($value);
-                // If no custom logic found proceed with regular setters
+                // If no custom logic found proceed with regular setters.
             } elseif (method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
-                if (in_array($field, $this->getDateTimeFields(), true)) {
+                if (in_array($field, $this->getDateTimeFields(), strict: true)) {
                     $value = date_create($value);
                 }
+
                 $this->$setter_method($value);
             }
         }
@@ -188,10 +198,10 @@ abstract class BaseModel
      */
     private function getMethod(string $prefix, string $field): string
     {
-        $search = \array_merge(['_', '-'], $this->getCustomDelimiters());
+        $search = array_merge(['_', '-'], $this->getCustomDelimiters());
         $delimiters = '_-';
-        $delimiters .= !empty($this->getCustomDelimiters()) ? \implode('', $this->getCustomDelimiters()) : '';
+        $delimiters .= !empty($this->getCustomDelimiters()) ? implode('', $this->getCustomDelimiters()) : '';
 
-        return $prefix . \str_replace($search, '', \ucwords($field, $delimiters));
+        return $prefix . str_replace($search, '', ucwords($field, $delimiters));
     }
 }

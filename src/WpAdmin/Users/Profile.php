@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Users;
 
-use TheFrosty\WpUtilities\Utils\View;
-use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use TheFrosty\WpUtilities\Plugin\AbstractContainerProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
+use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\Utils\Viewable;
+use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use WP_User;
 use function apply_filters;
 use function array_filter;
@@ -29,7 +29,8 @@ use function wp_get_current_user;
 class Profile extends AbstractContainerProvider implements HttpFoundationRequestInterface
 {
 
-    use HttpFoundationRequestTrait, Viewable;
+    use HttpFoundationRequestTrait;
+    use Viewable;
 
     public const string ACTION = 'wp_utilities_user_profile';
     public const string HOOK_NAME_REGISTER_USER_META_FIELDS = self::ACTION . '_register_fields';
@@ -44,6 +45,7 @@ class Profile extends AbstractContainerProvider implements HttpFoundationRequest
         foreach (['edit', 'show'] as $prefix) {
             $this->addAction("{$prefix}_user_profile", [$this, 'userProfile']);
         }
+
         $this->addAction('personal_options_update', [$this, 'saveProfileFields']);
         $this->addAction('edit_user_profile_update', [$this, 'saveProfileFields']);
     }
@@ -75,7 +77,7 @@ class Profile extends AbstractContainerProvider implements HttpFoundationRequest
          */
         do_action(sprintf(self::HOOK_NAME_USER_PROFILE_S, current_action()), $user, $fields);
 
-        (new View())->render(
+        new View()->render(
             'wp-admin/users/profile',
             [
                 'current_user' => wp_get_current_user(),
@@ -107,6 +109,7 @@ class Profile extends AbstractContainerProvider implements HttpFoundationRequest
             if (!$request->has($field->getName())) {
                 continue;
             }
+
             $prev_value = get_user_meta($user_id, $field->getName(), true);
             update_user_meta($user_id, $field->getName(), $request->get($field->getName()), $prev_value);
         }

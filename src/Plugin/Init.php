@@ -18,7 +18,7 @@ final class Init implements IteratorAggregate
      * A container for objects that have been initiated.
      * @var array $initiated
      */
-    protected array $initiated = [];
+    private array $initiated = [];
 
     /**
      * A container for objects that implement WpHooksInterface.
@@ -88,13 +88,6 @@ final class Init implements IteratorAggregate
      */
     public function getWpHookObject(string $class_name): ?WpHooksInterface
     {
-        $wp_hooks = $this->getWpHooks();
-        foreach ($wp_hooks as $object) {
-            if ($object::class === $class_name) {
-                return $object;
-            }
-        }
-
-        return null;
+        return array_find($this->wp_hooks, static fn($object): bool => $object::class === $class_name);
     }
 }

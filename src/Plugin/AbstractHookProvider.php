@@ -7,10 +7,12 @@ namespace TheFrosty\WpUtilities\Plugin;
 /**
  * Class AbstractHookProvider
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\AbstractHookProviderTest
  */
 abstract class AbstractHookProvider implements WpHooksInterface, PluginAwareInterface
 {
-    use HooksTrait, PluginAwareTrait;
+    use HooksTrait;
+    use PluginAwareTrait;
 
     /**
      * Registers hooks for the plugin.

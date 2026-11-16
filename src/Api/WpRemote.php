@@ -38,9 +38,10 @@ trait WpRemote
      */
     public function retrieveBody(string $url, array $args = [], string $method = 'GET'): mixed
     {
-        if (!in_array($method, ['GET', 'POST'], true)) {
+        if (!in_array($method, ['GET', 'POST'], strict: true)) {
             return false;
         }
+
         $function = sprintf('wpRemote%1$s', ucfirst(strtolower($method)));
         $response = wp_remote_retrieve_body($this->$function(esc_url($url), $this->buildRequestArgs($args)));
         if (!is_wp_error($response) && $response !== '') {
@@ -82,6 +83,7 @@ trait WpRemote
                     ),
                 ];
             }
+
             $body = $this->retrieveBody($url, $args ?? []);
             if (!empty($body)) {
                 $this->setTransient($transient, $body, $expiration ?? DAY_IN_SECONDS);

@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
-use TheFrosty\WpUtilities\Models\PageTemplate;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
+use WP_Post;
+use function array_merge;
+use function file_exists;
+use function get_post_meta;
+use function is_null;
+use function is_search;
+use function is_string;
+use function sprintf;
+use function str_replace;
+use function untrailingslashit;
 
 /**
  * Class PageTemplates
@@ -26,22 +35,19 @@ class PageTemplates extends AbstractHookProvider
      */
     private ?array $wpTemplates = null;
 
-    private const PREFIX = 'PageTemplates/';
+    private const string PREFIX = 'PageTemplates/';
 
     /**
      * PageTemplates constructor.
-     * @param PageTemplate[]|null $templates
+     * @param \TheFrosty\WpUtilities\Models\PageTemplate[]|null $templates
      */
     public function __construct(?array $templates = null)
     {
-        if (\is_null($templates)) {
+        if (is_null($templates)) {
             return;
         }
 
         foreach ($templates as $template) {
-            if (!$template instanceof PageTemplate) {
-                continue;
-            }
             $this->pageTemplates[$template->getFile()] = $template->getPath();
             $this->wpTemplates[$this->getPrefix($template->getFile())] = $template->getDescription();
         }
@@ -64,8 +70,9 @@ class PageTemplates extends AbstractHookProvider
     protected function addNewTemplate(array $posts_templates): array
     {
         if ($this->wpTemplates) {
-            return \array_merge($posts_templates, $this->wpTemplates);
+            return array_merge($posts_templates, $this->wpTemplates);
         }
+
         return $posts_templates;
     }
 
@@ -78,34 +85,33 @@ class PageTemplates extends AbstractHookProvider
     {
         global $post;
 
-        // Return the search template if we're searching (instead of the template for the first result)
-        if (\is_search()) {
+        // Return the search template if we're searching (instead of the template for the first result).
+        if (is_search()) {
             return $template;
         }
 
-        if (!$post instanceof \WP_Post) {
+        if (!$post instanceof WP_Post) {
             return $template;
         }
 
-        $page_template = \get_post_meta($post->ID, '_wp_page_template', true);
+        $page_template = get_post_meta($post->ID, '_wp_page_template', true);
         if (
-            (!\is_string($page_template) || empty($page_template)) ||
+            (!is_string($page_template) || empty($page_template)) ||
             !isset($this->wpTemplates[$page_template])
         ) {
             return $template;
         }
 
-        $page_template = \str_replace(self::PREFIX, '', $page_template);
-        $filepath = \str_replace($page_template, '', $this->pageTemplates[$page_template]);
+        $page_template = str_replace(self::PREFIX, '', $page_template);
+        $filepath = str_replace($page_template, '', $this->pageTemplates[$page_template]);
 
-        $file = \sprintf('%s/%s', \untrailingslashit($filepath), $page_template);
+        $file = sprintf('%s/%s', untrailingslashit($filepath), $page_template);
 
-        // Just to be safe, we check if the file exist first
-        if (\file_exists($file)) {
+        // Just to be safe, we check if the file exist first.
+        if (file_exists($file)) {
             return $file;
         }
 
-        // Return template
         return $template;
     }
 
@@ -116,6 +122,6 @@ class PageTemplates extends AbstractHookProvider
      */
     private function getPrefix(string $file): string
     {
-        return \sprintf('%s%s', self::PREFIX, $file);
+        return sprintf('%s%s', self::PREFIX, $file);
     }
 }
