@@ -23,7 +23,7 @@ class PluginFactory
 {
 
     /** @var Plugin[] $instances */
-    private static array $instances;
+    private static array $instances = [];
 
     /**
      * Get the plugin instance.
@@ -44,7 +44,7 @@ class PluginFactory
      */
     public static function create(string $slug, ?string $filename = ''): Plugin
     {
-        if (self::$instances[$slug] instanceof Plugin) {
+        if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
         }
 
