@@ -100,7 +100,7 @@ class TemplateLoader implements TemplateLoaderInterface
      * @param string $slug Template slug.
      * @param string|null $name Optional. Template variation name. Default null.
      * @return string URI string to the template path file.
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function getTemplatePart(string $slug, ?string $name = null): string
     {
@@ -114,7 +114,7 @@ class TemplateLoader implements TemplateLoaderInterface
      * Retrieve a template part.
      * @param string $slug Template slug.
      * @param string|null $name Optional. Template variation name. Default null.
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function loadTemplatePart(string $slug, ?string $name = null): void
     {
@@ -127,7 +127,7 @@ class TemplateLoader implements TemplateLoaderInterface
      * Retrieve the name of the highest priority template file that exists and returns it.
      * @param array $template_names Template file(s) to search for, in order.
      * @return string
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function getTemplate(array $template_names): string
     {
@@ -137,7 +137,7 @@ class TemplateLoader implements TemplateLoaderInterface
     /**
      * Retrieve the name of the highest priority template file that exists and loads it.
      * @param array $template_names Template file(s) to search for, in order.
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function loadTemplate(array $template_names): void
     {
