@@ -49,10 +49,6 @@ class PageTemplates extends AbstractHookProvider
         }
 
         foreach ($templates as $template) {
-            if (!$template instanceof PageTemplate) {
-                continue;
-            }
-
             $this->pageTemplates[$template->getFile()] = $template->getPath();
             $this->wpTemplates[$this->getPrefix($template->getFile())] = $template->getDescription();
         }
