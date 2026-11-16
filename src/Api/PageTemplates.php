@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
-use TheFrosty\WpUtilities\Models\PageTemplate;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use WP_Post;
 use function array_merge;
@@ -40,7 +39,7 @@ class PageTemplates extends AbstractHookProvider
 
     /**
      * PageTemplates constructor.
-     * @param PageTemplate[]|null $templates
+     * @param \TheFrosty\WpUtilities\Models\PageTemplate[]|null $templates
      */
     public function __construct(?array $templates = null)
     {
