@@ -32,11 +32,7 @@ class PluginFactory
      */
     public static function getInstance(string $slug): Plugin
     {
-        if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
-            return self::$instances[$slug];
-        }
-
-        return self::create($slug);
+        return self::$instances[$slug] ?? self::create($slug);
     }
 
     /**
