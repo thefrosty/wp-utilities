@@ -49,6 +49,7 @@ try {
             TypedPropertyFromStrictConstructorRector::class,
         ])
         ->withSkip([
+            __DIR__ . '/src/Api/Shortcode/Handler/templates/*',
             ArrayToFirstClassCallableRector::class,
             FunctionFirstClassCallableRector::class,
             NewlineBetweenClassLikeStmtsRector::class,
