@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi\Api;
 
@@ -45,6 +47,6 @@ trait SunsetsEndpoints
      */
     private function normalizeDate(string $date): string
     {
-        return (new DateTimeImmutable($date, wp_timezone()))->format(DateTimeInterface::RFC7231);
+        return new DateTimeImmutable($date, wp_timezone())->format(DateTimeInterface::RFC7231);
     }
 }

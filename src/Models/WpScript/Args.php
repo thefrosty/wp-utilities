@@ -16,7 +16,7 @@ class Args extends Base
      * The enqueued data strategy.
      * Optional. If provided, may be either 'defer' or 'async'.
      * @var string $strategy
-     * @phpstan-var 'defer'|'async'
+     * @var 'defer'|'async'
      * Default empty string.
      */
     public string $strategy;

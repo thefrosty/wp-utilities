@@ -67,7 +67,7 @@ class FieldsRegistrar
 
     /**
      * Internally store and register field data.
-     * @param array $args See {@see register_meta()} for a list of supported arguments.
+     * @param array<string, mixed> $args See {@see register_meta()} for a list of supported arguments.
      */
     protected static function register(array $args): void
     {
@@ -75,9 +75,11 @@ class FieldsRegistrar
             if (empty(self::$fields[$args['object_type']])) {
                 self::$fields[$args['object_type']] = [];
             }
+
             if (empty(self::$fields[$args['object_type']][$type])) {
                 self::$fields[$args['object_type']][$type] = [];
             }
+
             $field = $args['field'];
             self::$fields[$args['object_type']][$type][$args['id']] = new $field($args);
             register_post_meta($type, $args['id'], $args);

@@ -33,14 +33,17 @@ trait Instantiate
         if (!class_exists($class)) {
             return;
         }
+
         if (is_subclass_of($class, AbstractContainerProvider::class)) {
             $instance = new $class();
             $instance->setContainer($this->getPlugin()->getContainer());
         }
+
         $instance ??= new $class();
         if ($instance instanceof WpHooksInterface) {
             $this->getPlugin()->add($instance);
         }
+
         $this->instantiated_order[static::class][] = $instance;
         $this->addAction('after_setup_theme', function (): void {
             $this->getPlugin()->initialize(); // @phpstan-ignore-line

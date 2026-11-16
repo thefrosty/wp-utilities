@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
@@ -6,7 +8,6 @@ use Psr\Container\ContainerInterface;
 use RuntimeException;
 use TheFrosty\WpUtilities\Plugin\ContainerAwareTrait;
 use Throwable;
-use function get_class;
 use function method_exists;
 
 /**
@@ -31,7 +32,7 @@ trait Viewable
     {
         if (!method_exists($this, 'getContainer') || !$this->getContainer() instanceof ContainerInterface) {
             throw new RuntimeException(
-                sprintf('%s must use %s', get_class($this), ContainerAwareTrait::class)
+                sprintf('%s must use %s', $this::class, ContainerAwareTrait::class)
             );
         }
 

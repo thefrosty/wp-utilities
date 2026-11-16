@@ -67,7 +67,7 @@ abstract class AbstractTaxonomy
     public static function getTerms(object $argument): array
     {
         return array_filter(
-            (new ReflectionClass($argument))->getConstants(),
+            new ReflectionClass($argument)->getConstants(),
             static fn(string $key): bool => str_contains($key, 'TERM_'),
             ARRAY_FILTER_USE_KEY
         );
@@ -89,7 +89,7 @@ abstract class AbstractTaxonomy
 
     /**
      * Gets the Taxonomy name(s).
-     * @return array
+     * @return string[]
      */
     protected function getNames(): array
     {
@@ -107,7 +107,7 @@ abstract class AbstractTaxonomy
 
     /**
      * Gets the Taxonomy args.
-     * @return array
+     * @return string[]
      */
     protected function getArgs(): array
     {
@@ -125,7 +125,7 @@ abstract class AbstractTaxonomy
 
     /**
      * Gets the Taxonomy labels.
-     * @return array
+     * @return string[]
      */
     protected function getLabels(): array
     {

@@ -50,7 +50,7 @@ post title value (ID).',
                     'wp-utilities'
                 )
             ),
-            esc_attr("meta_key:\"\" post_title:\"\" post_type:\"\"")
+            esc_attr('meta_key:"" post_title:"" post_type:""')
         );
     }
 
@@ -66,6 +66,7 @@ post title value (ID).',
         if (empty($options)) {
             return;
         }
+
         printf('<select name="%s">', esc_attr(sanitize_key($name)));
         printf('<option value="">%s</option>', esc_html($default_text));
         $current = $this->getRequest()->query->get($name);
@@ -78,9 +79,10 @@ post title value (ID).',
                     sprintf('An array of %s values is expected.', OptionValueLabel::class)
                 );
             }
+
             printf('<optgroup label="%s">', esc_attr($optgroup));
             array_walk($option, static function (OptionValueLabel $model) use ($current, $optgroup): void {
-                [$label, $extra] = array_pad(explode('|', $model->getLabel()), 2, null);
+                [$label, $extra] = array_pad(explode('|', $model->getLabel()), 2, value: null);
                 [$value] = explode('|', $model->getValue());
                 printf(
                     '<option value="%1$s" label="%2$s" data-query="%4$s"%3$s%5$s>%2$s</option>',
@@ -93,6 +95,7 @@ post title value (ID).',
             });
             echo '</optgroup>';
         }
+
         echo '</select>';
     }
 }

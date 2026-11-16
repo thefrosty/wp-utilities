@@ -54,6 +54,7 @@ trait Hash
             if (empty($parts[0]) || empty($parts[1])) {
                 throw new RuntimeException('Could not decrypt the data.');
             }
+
             $iv = base64_decode($parts[0]);
             $ciphertext = base64_decode($parts[1]);
             if ($iv === false || $ciphertext === false) {
@@ -150,6 +151,7 @@ trait Hash
         if (class_exists(Encryter::class)) {
             $encrypter ??= new Encrypter($key, self::getCipher());
         }
+
         return $encrypter;
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Columns;
 
+use BadMethodCallException;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Api\WpQueryTrait;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
@@ -23,6 +24,7 @@ use function strval;
 use function time;
 use function wp_next_scheduled;
 use function wp_schedule_single_event;
+use const WEEK_IN_SECONDS;
 
 /**
  * Class AbstractColumns
@@ -33,7 +35,7 @@ abstract class AbstractColumns extends AbstractHookProvider
 
     use WpQueryTrait;
 
-    private const HOOK_WP_QUERY_GET_ALL_IDS = '%s_wp_query_get_all_ids';
+    private const string HOOK_WP_QUERY_GET_ALL_IDS = '%s_wp_query_get_all_ids';
 
     /**
      * Add Post Type Columns
@@ -89,7 +91,7 @@ abstract class AbstractColumns extends AbstractHookProvider
      * Set the option(s) key values by reference to the array.
      * @param array $data The array of data (usually meta values)
      * @param string $key The Meta Key
-     * @param array $options The passed options array for the collection of fields
+     * @param array<string, mixed> $options The passed options array for the collection of fields
      */
     protected function setOptionKeyValues(array $data, string $key, array &$options = []): void
     {
@@ -100,6 +102,7 @@ abstract class AbstractColumns extends AbstractHookProvider
             if (is_numeric($item) && get_post($item)) {
                 $title = get_post($item)->post_title;
             }
+
             $options[$key][] = new OptionValueLabel(strval($item), esc_html($title ?? $item));
         }
     }
@@ -114,7 +117,7 @@ abstract class AbstractColumns extends AbstractHookProvider
     protected function getCachedPostsDeferred(
         string $post_type,
         ?array $args = null,
-        int $expiration = \WEEK_IN_SECONDS
+        int $expiration = WEEK_IN_SECONDS
     ): array {
         $args ??= [];
         $key = $this->getHashedKey(sprintf('%s-%s', __METHOD__, $post_type));
@@ -122,6 +125,7 @@ abstract class AbstractColumns extends AbstractHookProvider
         if (is_array($post_ids) && !empty($post_ids)) {
             return $post_ids;
         }
+
         // If we don't have the cache, trigger a single cron event to populate it in the background.
         $hook = sprintf(self::HOOK_WP_QUERY_GET_ALL_IDS, $post_type);
         if (!wp_next_scheduled($hook, [$key, $post_type, $args, $expiration])) {
@@ -149,12 +153,12 @@ abstract class AbstractColumns extends AbstractHookProvider
      * @param string $field_name
      * @param Request|null $request
      * @return bool
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     protected function requestHas(string $field_name, ?Request $request = null): bool
     {
         if ($request === null && (!\method_exists($this, 'getRequest') || $this->getRequest() === null)) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 sprintf(
                     'Class missing `%s` implementation or passing `%s` as a param.',
                     HttpFoundationRequestInterface::class,
@@ -162,6 +166,7 @@ abstract class AbstractColumns extends AbstractHookProvider
                 )
             );
         }
+
         $request ??= $this->getRequest();
 
         return ($request->query->has('s') ||

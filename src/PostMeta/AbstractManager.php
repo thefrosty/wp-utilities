@@ -36,6 +36,7 @@ abstract class AbstractManager extends AbstractHookProvider implements HttpFound
         if (empty($this->fields) || $this->type !== 'post') {
             return;
         }
+
         $this->addAction("add_meta_boxes_$this->type", [$this, 'addMetaBox']);
         $this->addAction("save_post_$this->type", [$this, 'save'], 10, 2);
     }

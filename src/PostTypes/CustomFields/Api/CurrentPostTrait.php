@@ -35,6 +35,7 @@ trait CurrentPostTrait
                 sprintf('Not an instance of %s', HttpFoundationRequestInterface::class)
             );
         }
+
         $query = $this->getRequest()->query;
         $request = $this->getRequest()->request;
         $ID = $request->has('post_ID') ? $request->get('post_ID') : null;

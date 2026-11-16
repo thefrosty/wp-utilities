@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
+use WP_Post;
 use TheFrosty\WpUtilities\Models\PageTemplate;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 
@@ -26,7 +27,7 @@ class PageTemplates extends AbstractHookProvider
      */
     private ?array $wpTemplates = null;
 
-    private const PREFIX = 'PageTemplates/';
+    private const string PREFIX = 'PageTemplates/';
 
     /**
      * PageTemplates constructor.
@@ -42,6 +43,7 @@ class PageTemplates extends AbstractHookProvider
             if (!$template instanceof PageTemplate) {
                 continue;
             }
+
             $this->pageTemplates[$template->getFile()] = $template->getPath();
             $this->wpTemplates[$this->getPrefix($template->getFile())] = $template->getDescription();
         }
@@ -66,6 +68,7 @@ class PageTemplates extends AbstractHookProvider
         if ($this->wpTemplates) {
             return \array_merge($posts_templates, $this->wpTemplates);
         }
+
         return $posts_templates;
     }
 
@@ -83,7 +86,7 @@ class PageTemplates extends AbstractHookProvider
             return $template;
         }
 
-        if (!$post instanceof \WP_Post) {
+        if (!$post instanceof WP_Post) {
             return $template;
         }
 

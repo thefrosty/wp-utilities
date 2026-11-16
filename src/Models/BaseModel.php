@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Models;
 
 use Exception;
+use RuntimeException;
 use function date_create;
 use function in_array;
 use function is_array;
@@ -26,6 +29,7 @@ abstract class BaseModel
         if (!is_array($fields)) {
             return;
         }
+
         $this->populate($fields);
     }
 
@@ -57,11 +61,13 @@ abstract class BaseModel
                 if (!method_exists($this, $method)) {
                     continue;
                 }
+
                 $value = $this->$method();
                 if (is_object($value) && method_exists($value, 'toArray')) {
                     $result[$field_name] = $value->toArray();
                     continue;
                 }
+
                 if (
                     (is_array($value) && !empty($value[0])) &&
                     (is_object($value[0]) && method_exists($value[0], 'toArray'))
@@ -69,12 +75,14 @@ abstract class BaseModel
                     $result[$field_name] = $this->toArrayDeep($value);
                     continue;
                 }
+
                 $result[$field_name] = $value;
             }
 
             return $result;
         }
-        throw new Exception(
+
+        throw new RuntimeException(
             'If you are going to use toArray() in your model you have
            to implement custom logic or return a list of fields in getSerializableFields().'
         );
@@ -83,11 +91,9 @@ abstract class BaseModel
     /**
      * Method to convert an array of BaseModels to an array of BaseModel objects converted to an
      * array.
-     *
      * This is useful in situations where you have an array of BaseModels and need to convert it
      * into an array for the purpose of sending it to the front end through WordPress' localize
      * script functionality.
-     *
      * @param BaseModel[] $models
      * @return array
      * @throws Exception
@@ -142,9 +148,10 @@ abstract class BaseModel
                 // If no custom logic found proceed with regular setters
             } elseif (method_exists($this, $setter_method)) {
                 // Should we convert it to datetime?
-                if (in_array($field, $this->getDateTimeFields(), true)) {
+                if (in_array($field, $this->getDateTimeFields(), strict: true)) {
                     $value = date_create($value);
                 }
+
                 $this->$setter_method($value);
             }
         }

@@ -9,10 +9,13 @@ use Psr\Container\ContainerInterface;
 /**
  * Class AbstractContainerProvider
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\AbstractContainerProviderTest
  */
 abstract class AbstractContainerProvider implements WpHooksInterface, PluginAwareInterface
 {
-    use ContainerAwareTrait, HooksTrait, PluginAwareTrait;
+    use ContainerAwareTrait;
+    use HooksTrait;
+    use PluginAwareTrait;
 
     /**
      * AbstractContainerProvider constructor.

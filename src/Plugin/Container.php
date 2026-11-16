@@ -13,6 +13,7 @@ use ReturnTypeWillChange;
  * Extends Pimple to satisfy the ContainerInterface >= v2.0.0.
  * @ref https://github.com/php-fig/container/blob/2.0.0/src/ContainerInterface.php
  * @package TheFrosty\WpUtilities\Plugin
+ * @see \TheFrosty\WpUtilities\Tests\Plugin\ContainerTest
  */
 class Container extends Pimple implements ContainerInterface
 {

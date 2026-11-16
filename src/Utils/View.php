@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Utils;
 
@@ -32,7 +34,7 @@ final class View
      * Paths that are loaded with addPath are prepended to the array.
      * @var array $viewPaths
      */
-    protected array $viewPaths = [];
+    private array $viewPaths = [];
 
     /**
      * View data

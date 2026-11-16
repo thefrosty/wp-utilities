@@ -50,6 +50,7 @@ class PluginFactory
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
         }
+
         // Use the calling file as the main plugin file.
         if (empty($filename)) {
             // @codingStandardsIgnoreStart
@@ -58,7 +59,7 @@ class PluginFactory
             // @codingStandardsIgnoreEnd
         }
 
-        $plugin = (new Plugin())
+        $plugin = new Plugin()
             ->setInit(new Init())
             ->setBasename(plugin_basename($filename))
             ->setDirectory(plugin_dir_path($filename))
@@ -81,8 +82,8 @@ class PluginFactory
     private static function setContainer(Plugin $plugin): Plugin
     {
         if (
-            class_exists('\Pimple\Container') &&
-            interface_exists('\Psr\Container\ContainerInterface')
+            class_exists(\Pimple\Container::class) &&
+            interface_exists(ContainerInterface::class)
         ) {
             $container = self::getContainer();
             $plugin->setContainer($container);
@@ -98,10 +99,11 @@ class PluginFactory
      */
     private static function getContainer(): ContainerInterface
     {
-        $reflection = new ReflectionMethod('\Psr\Container\ContainerInterface', 'has');
+        $reflection = new ReflectionMethod(ContainerInterface::class, 'has');
         if ($reflection->hasReturnType() && $reflection->getReturnType()) {
             return new Container(); // ContainerInterface >= 2.0.0.
         }
+
         $parameter = $reflection->getParameters()[0] ?? null;
         if ($parameter && $parameter->getType() && $parameter->getType()->getName() === 'string') {
             return new Container110();

@@ -68,7 +68,7 @@ class DashboardWidget implements WpHooksInterface
             $this->getWidget()->getWidgetId(),
             $this->getWidget()->getWidgetName(),
             function (): void {
-                (new View())->render(
+                new View()->render(
                     'dashboard-widget.php',
                     [
                         'instance' => $this,

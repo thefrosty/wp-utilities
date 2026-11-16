@@ -56,9 +56,10 @@ trait SimplePie
          * @param array|\SimplePie\SimplePie $pie
          * @return array|null $get_items
          */
-        $get_items = static function ($pie) use ($max) {
-            return ($pie instanceof \SimplePie\SimplePie) ? $pie->get_items(0, $pie->get_item_quantity($max)) : [];
-        };
+        $get_items = (static fn($pie) => ($pie instanceof \SimplePie\SimplePie) ? $pie->get_items(
+            0,
+            $pie->get_item_quantity($max)
+        ) : []);
 
         $pie_items = $get_items($pie);
         // If the feed was erroneous

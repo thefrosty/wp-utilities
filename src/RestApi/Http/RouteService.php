@@ -1,22 +1,24 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi\Http;
 
+use WP_REST_Server;
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 
 /**
  * Class RouteService
- *
  * @package TheFrosty\WpUtilities\RestApi\Http
  */
 abstract class RouteService implements RestRouteInterface, WpHooksInterface
 {
     use HooksTrait;
 
-    protected const ARG_METHODS = 'methods';
-    protected const ARG_CALLBACK = 'callback';
-    protected const ARG_PERMISSION_CALLBACK = 'permission_callback';
+    protected const string ARG_METHODS = 'methods';
+    protected const string ARG_CALLBACK = 'callback';
+    protected const string ARG_PERMISSION_CALLBACK = 'permission_callback';
 
     /**
      * Add class hook(s).
@@ -49,7 +51,7 @@ abstract class RouteService implements RestRouteInterface, WpHooksInterface
     /**
      * {@inheritdoc}
      */
-    abstract public function initializeRoute(\WP_REST_Server $server): void;
+    abstract public function initializeRoute(WP_REST_Server $server): void;
 
     /**
      * {@inheritdoc}

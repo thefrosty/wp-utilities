@@ -27,7 +27,7 @@ class IsInstanceOf implements Rule
         $this->field = $field;
         $class = $this->parameters[0] ?? null;
 
-        return isset($class) && (is_a($value, $class, true) || is_subclass_of($value, $class));
+        return isset($class) && (is_a($value, $class, allow_string: true) || is_subclass_of($value, $class));
     }
 
     public function message(): string

@@ -1,6 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi\Http;
+
+use WP_REST_Server;
 
 /**
  * Class RegisterGetRoute
@@ -13,6 +17,6 @@ abstract class RegisterPostRoute extends RouteService
      */
     public function registerRoute(string $namespace, string $route, callable $callback, array $args = []): void
     {
-        $this->registerRestRoute($namespace, $route, $callback, \WP_REST_Server::CREATABLE, $args);
+        $this->registerRestRoute($namespace, $route, $callback, WP_REST_Server::CREATABLE, $args);
     }
 }

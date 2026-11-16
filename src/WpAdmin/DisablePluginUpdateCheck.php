@@ -2,9 +2,25 @@
 
 namespace TheFrosty\WpUtilities\WpAdmin;
 
+use WP_Http;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_Error;
+use function esc_html__;
+use function get_file_data;
+use function is_array;
+use function is_object;
+use function is_string;
+use function json_decode;
+use function parse_str;
+use function parse_url;
+use function sanitize_key;
+use function sprintf;
+use function str_starts_with;
+use function wp_cache_get;
+use function wp_cache_set;
+use function wp_json_encode;
+use const PHP_URL_QUERY;
 
 /**
  * Class DisablePluginUpdateCheck
@@ -13,9 +29,9 @@ use WP_Error;
 class DisablePluginUpdateCheck extends AbstractHookProvider
 {
 
-    private const BYPASS_KEY = 'bypass-http-request';
-    private const WP_ORG_UPDATE_CHECK = 'https://api.wordpress.org/plugins/update-check/';
-    private const WP_ORG_PLUGINS_INFO = 'https://api.wordpress.org/plugins/info/';
+    private const string BYPASS_KEY = 'bypass-http-request';
+    private const string WP_ORG_UPDATE_CHECK = 'https://api.wordpress.org/plugins/update-check/';
+    private const string WP_ORG_PLUGINS_INFO = 'https://api.wordpress.org/plugins/info/';
 
     /**
      * Add class hooks
@@ -30,24 +46,23 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
     /**
      * Disable plugin update checks for the current plugin
      * @link https://stackoverflow.com/a/39217270/558561
-     * @param array $args An array of HTTP request arguments.
+     * @param array<string, mixed> $args An array of HTTP request arguments.
      * @param string $url The request URL.
      * @return array
      */
     protected function httpRequestRemovePluginBasename(array $args, string $url): array
     {
-        if (\str_starts_with($url, self::WP_ORG_UPDATE_CHECK)) {
-            if (!empty($args['body']['plugins'])) {
-                $plugins = \json_decode($args['body']['plugins'], true);
-                unset($plugins['plugins'][$this->getPlugin()->getBasename()]);
-                $args['body']['plugins'] = \wp_json_encode($plugins);
-            }
+        if (str_starts_with($url, self::WP_ORG_UPDATE_CHECK) && !empty($args['body']['plugins'])) {
+            $plugins = json_decode($args['body']['plugins'], associative: true);
+            unset($plugins['plugins'][$this->getPlugin()->getBasename()]);
+            $args['body']['plugins'] = wp_json_encode($plugins);
         }
+
         if (
-            \str_starts_with($url, self::WP_ORG_PLUGINS_INFO) &&
-            \is_string(\parse_url($url, \PHP_URL_QUERY))
+            str_starts_with($url, self::WP_ORG_PLUGINS_INFO) &&
+            is_string(parse_url($url, PHP_URL_QUERY))
         ) {
-            \parse_str(\parse_url($url, \PHP_URL_QUERY), $result);
+            parse_str(parse_url($url, PHP_URL_QUERY), $result);
             if (
                 !empty($result['request']) &&
                 !empty($result['request']['slug']) &&
@@ -66,12 +81,12 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      * @todo I was initially investigating certain plugins throwing 404's when they should not be called by the
      * info API endpoint, but don't see an easy way to validate this, so I will "disable" the key in the
      * `httpRequestRemovePluginBasename` method.
-     * @param false|array|WP_Error $preempt A preemptive return value of an HTTP request. Default false.
-     * @param array $parsed_args HTTP request arguments.
+     * @param array|false|WP_Error $preempt A preemptive return value of an HTTP request. Default false.
+     * @param array<string, mixed> $parsed_args HTTP request arguments.
      * @param string $url The request URL.
-     * @return mixed
+     * @return array|false|WP_Error
      */
-    protected function bypassHttpRequest($preempt, array $parsed_args, string $url): mixed
+    protected function bypassHttpRequest($preempt, array $parsed_args, string $url): array|false|WP_Error
     {
         if (
             str_starts_with($url, self::WP_ORG_PLUGINS_INFO) &&
@@ -80,14 +95,14 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
         ) {
             return new WP_Error(
                 'bypass_http_request',
-                \sprintf(
-                    \esc_html__(
+                sprintf(
+                    esc_html__(
                         'The plugin `%s` has requested to bypass api.wp.org/plugin/info.',
                         'wp-utilities'
                     ),
                     $this->getPlugin()->getSlug(),
                 ),
-                ['status' => \WP_Http::NOT_FOUND]
+                ['status' => WP_Http::NOT_FOUND]
             );
         }
 
@@ -103,7 +118,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      */
     protected function transientRemovePluginBasename(mixed $value): mixed
     {
-        if (isset($value) && \is_object($value) && (!empty($value->response) && \is_array($value->response))) {
+        if (isset($value) && is_object($value) && (!empty($value->response) && is_array($value->response))) {
             if (!$this->hasGitHubUpdater()) {
                 unset($value->response[$this->getPlugin()->getBasename()]);
             }
@@ -119,13 +134,13 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
      */
     private function hasGitHubUpdater(): bool
     {
-        $key = \sprintf('%s/get_file_data_%s', Plugin::TAG, \sanitize_key($this->getPlugin()->getSlug()));
-        $data = \wp_cache_get($key, 'wp-utilities');
+        $key = sprintf('%s/get_file_data_%s', Plugin::TAG, sanitize_key($this->getPlugin()->getSlug()));
+        $data = wp_cache_get($key, 'wp-utilities');
         if ($data === false) {
-            $data = \get_file_data($this->getPlugin()->getFile(), ['GitHubPluginURI' => 'GitHub Plugin URI'], 'plugin');
-            \wp_cache_set($key, $data, 'wp-utilities', \DAY_IN_SECONDS);
+            $data = get_file_data($this->getPlugin()->getFile(), ['GitHubPluginURI' => 'GitHub Plugin URI'], 'plugin');
+            wp_cache_set($key, $data, 'wp-utilities', \DAY_IN_SECONDS);
         }
 
-        return \is_array($data) && !empty($data['GitHubPluginURI']);
+        return is_array($data) && !empty($data['GitHubPluginURI']);
     }
 }

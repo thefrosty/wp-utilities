@@ -1,6 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi\Http;
+
+use WP_REST_Server;
 
 /**
  * Interface RestRouteInterface
@@ -28,9 +32,9 @@ interface RestRouteInterface
 
     /**
      * Initialize the route on `rest_api_init`.
-     * @param \WP_REST_Server $server The instantiated Server object.
+     * @param WP_REST_Server $server The instantiated Server object.
      */
-    public function initializeRoute(\WP_REST_Server $server): void;
+    public function initializeRoute(WP_REST_Server $server): void;
 
     /**
      * Register the route call.

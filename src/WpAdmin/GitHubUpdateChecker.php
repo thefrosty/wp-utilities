@@ -11,6 +11,7 @@ use function untrailingslashit;
 /**
  * Class GitHubUpdateChecker
  * @package TheFrosty\WpUtilities\WpAdmin
+ * @see \TheFrosty\WpUtilities\Tests\WpAdmin\GitHubUpdateCheckerTest
  */
 class GitHubUpdateChecker extends AbstractHookProvider
 {

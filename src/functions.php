@@ -42,6 +42,7 @@ function exitOrThrow(
     if ($throw === true || (is_callable($throw) && filter_var($throw(...$args), FILTER_VALIDATE_BOOLEAN))) {
         throw new TerminationException($message);
     }
+
     exit($status);
 }
 

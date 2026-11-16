@@ -49,11 +49,13 @@ class PostMetaManager extends AbstractManager
         if (is_string($object_type)) {
             $object_type = (array)$object_type;
         }
+
         foreach ($object_type as $type) {
             $field = FieldsRegistrar::get($id, $type);
             if (!$field || array_key_exists($id, $this->fields)) {
                 continue;
             }
+
             $field->manager = $this;
             $this->fields[$id] = $field;
         }
@@ -121,18 +123,9 @@ class PostMetaManager extends AbstractManager
         }
 
         $this->post = $post;
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields as $field) {
             $this->saveField($field);
         }
-    }
-
-    /**
-     * Get field objects related to the post meta box.
-     * @return AbstractField[]
-     */
-    private function getFields(): array
-    {
-        return $this->fields;
     }
 
     /**
@@ -141,7 +134,7 @@ class PostMetaManager extends AbstractManager
     private function render(): void
     {
         wp_nonce_field($this->id, $this->id);
-        foreach ($this->getFields() as $field) {
+        foreach ($this->fields as $field) {
             $field->render();
         }
     }
