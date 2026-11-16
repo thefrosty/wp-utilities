@@ -104,7 +104,14 @@ class FieldsRegistrar
         ];
         $validator = new Validator($args, $rules);
         if (!$validator->isValid()) {
-            throw new ValidatorException(implode("\n", $validator->getErrors()));
+            $messages = [];
+            foreach ($validator->getErrors() as $fieldErrors) {
+                foreach ($fieldErrors as $fieldError) {
+                    $messages[] = $fieldError;
+                }
+            }
+
+            throw new ValidatorException(implode("\n", $messages));
         }
     }
 }
