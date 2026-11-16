@@ -36,7 +36,7 @@ abstract class BaseModel
     /**
      * Optional. Implement customized getCustomDelimiters() to return values
      * to search and replace for getMethod().
-     * @return array
+     * @return mixed[]
      */
     public function getCustomDelimiters(): array
     {
@@ -110,7 +110,7 @@ abstract class BaseModel
 
     /**
      * Get datetime fields.
-     * @return array
+     * @return mixed[]
      */
     protected function getDateTimeFields(): array
     {
@@ -120,7 +120,7 @@ abstract class BaseModel
     /**
      * Get the fields to be used in toArray()
      * Field names should be in camelCase (ex. propertyName) so that getPropertyName could easily be called
-     * @return array
+     * @return mixed[]
      */
     protected function getSerializableFields(): array
     {

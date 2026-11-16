@@ -198,7 +198,7 @@ final class View
      * @param string $file
      * @throws RuntimeException
      */
-    private function viewNotFoundError(string $file): void
+    private function viewNotFoundError(string $file): never
     {
         $errText = PHP_EOL .
             'View file "' . $file . '" not found.' . PHP_EOL .
