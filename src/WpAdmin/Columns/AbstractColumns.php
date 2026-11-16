@@ -19,6 +19,7 @@ use function esc_html;
 use function get_post;
 use function is_array;
 use function is_numeric;
+use function method_exists;
 use function sprintf;
 use function strval;
 use function time;
@@ -157,7 +158,7 @@ abstract class AbstractColumns extends AbstractHookProvider
      */
     protected function requestHas(string $field_name, ?Request $request = null): bool
     {
-        if ($request === null && (!\method_exists($this, 'getRequest') || $this->getRequest() === null)) {
+        if ($request === null && (!method_exists($this, 'getRequest') || $this->getRequest() === null)) {
             throw new BadMethodCallException(
                 sprintf(
                     'Class missing `%s` implementation or passing `%s` as a param.',

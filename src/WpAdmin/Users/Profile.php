@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\WpAdmin\Users;
 
-use TheFrosty\WpUtilities\Utils\View;
-use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use TheFrosty\WpUtilities\Plugin\AbstractContainerProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
+use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\Utils\Viewable;
+use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use WP_User;
 use function apply_filters;
 use function array_filter;
@@ -31,6 +31,7 @@ class Profile extends AbstractContainerProvider implements HttpFoundationRequest
 
     use HttpFoundationRequestTrait;
     use Viewable;
+
     public const string ACTION = 'wp_utilities_user_profile';
     public const string HOOK_NAME_REGISTER_USER_META_FIELDS = self::ACTION . '_register_fields';
     public const string HOOK_NAME_USER_PROFILE_S = self::ACTION . '_%s';

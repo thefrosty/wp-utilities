@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Models;
 
-use Exception;
 use RuntimeException;
+use function array_merge;
 use function date_create;
+use function implode;
 use function in_array;
 use function is_array;
 use function is_null;
 use function is_object;
 use function method_exists;
+use function str_replace;
+use function ucwords;
 
 /**
  * Class BaseModel
@@ -195,10 +198,10 @@ abstract class BaseModel
      */
     private function getMethod(string $prefix, string $field): string
     {
-        $search = \array_merge(['_', '-'], $this->getCustomDelimiters());
+        $search = array_merge(['_', '-'], $this->getCustomDelimiters());
         $delimiters = '_-';
-        $delimiters .= !empty($this->getCustomDelimiters()) ? \implode('', $this->getCustomDelimiters()) : '';
+        $delimiters .= !empty($this->getCustomDelimiters()) ? implode('', $this->getCustomDelimiters()) : '';
 
-        return $prefix . \str_replace($search, '', \ucwords($field, $delimiters));
+        return $prefix . str_replace($search, '', ucwords($field, $delimiters));
     }
 }

@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi;
 
-use WP_Post_Type;
-use WP_REST_Request;
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
+use WP_Post_Type;
+use WP_REST_Request;
+use function apply_filters;
+use function array_filter;
+use function array_merge;
+use function array_unique;
+use function array_walk;
+use function get_post_type_object;
 use function get_post_types;
+use function sprintf;
 
 /**
  * Class PostTypeFilter
@@ -57,11 +64,11 @@ class PostTypeFilter implements WpHooksInterface
      */
     protected function addRestFilters(): void
     {
-        $post_types = \array_filter(
-            \apply_filters(\sprintf('%s/filter_post_types', Plugin::TAG), $this->post_types)
+        $post_types = array_filter(
+            apply_filters(sprintf('%s/filter_post_types', Plugin::TAG), $this->post_types)
         );
-        \array_walk($post_types, function (string $slug): void {
-            $post_type = \get_post_type_object($slug);
+        array_walk($post_types, function (string $slug): void {
+            $post_type = get_post_type_object($slug);
             if ($post_type instanceof WP_Post_Type) {
                 $this->addFilter("rest_{$post_type->name}_query", [$this, 'addFilterParam'], 10, 2);
             }
@@ -107,8 +114,8 @@ class PostTypeFilter implements WpHooksInterface
      */
     private function getPublicQueryVars(?WP_REST_Request $request = null): array
     {
-        $vars = \apply_filters('rest_query_vars', $GLOBALS['wp']->public_query_vars, $request);
+        $vars = apply_filters('rest_query_vars', $GLOBALS['wp']->public_query_vars, $request);
 
-        return \array_unique(\array_merge($vars, self::QUERY_VARS));
+        return array_unique(array_merge($vars, self::QUERY_VARS));
     }
 }

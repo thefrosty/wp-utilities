@@ -3,9 +3,7 @@
 namespace TheFrosty\WpUtilities\Plugin;
 
 use Pimple\Container as Pimple;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReturnTypeWillChange;
 
 /**

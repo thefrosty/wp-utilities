@@ -2,10 +2,11 @@
 
 namespace TheFrosty\WpUtilities\WpAdmin;
 
-use WP_Http;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_Error;
+use WP_Http;
+use function __return_true;
 use function esc_html__;
 use function get_file_data;
 use function is_array;
@@ -20,6 +21,7 @@ use function str_starts_with;
 use function wp_cache_get;
 use function wp_cache_set;
 use function wp_json_encode;
+use const DAY_IN_SECONDS;
 use const PHP_URL_QUERY;
 
 /**
@@ -67,7 +69,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
                 !empty($result['request']) &&
                 !empty($result['request']['slug']) &&
                 $result['request']['slug'] === $this->getPlugin()->getSlug() &&
-                \__return_true() === false // Re-enable when we can validate this works.
+                __return_true() === false // Re-enable when we can validate this works.
             ) {
                 $args[self::BYPASS_KEY] = $this->getPlugin()->getSlug();
             }
@@ -138,7 +140,7 @@ class DisablePluginUpdateCheck extends AbstractHookProvider
         $data = wp_cache_get($key, 'wp-utilities');
         if ($data === false) {
             $data = get_file_data($this->getPlugin()->getFile(), ['GitHubPluginURI' => 'GitHub Plugin URI'], 'plugin');
-            wp_cache_set($key, $data, 'wp-utilities', \DAY_IN_SECONDS);
+            wp_cache_set($key, $data, 'wp-utilities', DAY_IN_SECONDS);
         }
 
         return is_array($data) && !empty($data['GitHubPluginURI']);

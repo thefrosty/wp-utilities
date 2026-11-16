@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\RestApi\Http;
 
-use WP_REST_Server;
 use TheFrosty\WpUtilities\Plugin\HooksTrait;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
+use WP_REST_Server;
+use function register_rest_route;
+use function wp_parse_args;
 
 /**
  * Class RouteService
@@ -43,9 +45,9 @@ abstract class RouteService implements RestRouteInterface, WpHooksInterface
             self::ARG_CALLBACK => $callback,
             self::ARG_PERMISSION_CALLBACK => '__return_true',
         ];
-        $args = \wp_parse_args($args, $defaults);
+        $args = wp_parse_args($args, $defaults);
 
-        return \register_rest_route($namespace, $route, $args);
+        return register_rest_route($namespace, $route, $args);
     }
 
     /**

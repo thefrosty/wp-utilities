@@ -28,8 +28,7 @@ class AddPluginIcons extends AbstractHookProvider
          * ]
          */
         private readonly array $icons
-    )
-    {
+    ) {
     }
 
     /**

@@ -38,6 +38,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
 
     use FormElementsTrait;
     use HttpFoundationRequestTrait;
+
     /**
      * Add class hooks.
      */
