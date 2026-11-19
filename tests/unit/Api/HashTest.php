@@ -12,7 +12,15 @@ use TheFrosty\WpUtilities\Api\Hash;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function get_site_option;
 use function hash;
+use function base64_decode;
+use function base64_encode;
 use function method_exists;
+use function openssl_encrypt;
+use function random_bytes;
+use function sprintf;
+use function str_starts_with;
+use function substr;
+use const OPENSSL_RAW_DATA;
 use const TheFrosty\WpUtilities\ENCRYPTION_KEY_OPTION;
 
 /**
@@ -135,5 +143,65 @@ class HashTest extends TestCase
     {
         $this->assertTrue(method_exists($this->hash, 'useEncrypter'));
         $this->assertFalse($this->reflection->getMethod('useEncrypter')->invoke($this->hash));
+    }
+
+    public function testEncryptUsesTheAuthenticatedFormatWithARandomNonce(): void
+    {
+        $first = $this->hash->encrypt('same value', 'aSecureKey|');
+        $second = $this->hash->encrypt('same value', 'aSecureKey|');
+
+        $this->assertTrue(str_starts_with($first, 'v2::'));
+        $this->assertNotSame($first, $second, 'Identical plaintexts must not produce identical ciphertexts.');
+        $this->assertSame('same value', $this->hash->decrypt($first, 'aSecureKey|'));
+        $this->assertSame('same value', $this->hash->decrypt($second, 'aSecureKey|'));
+    }
+
+    public function testTamperedCiphertextIsRejected(): void
+    {
+        $encrypted = $this->hash->encrypt('test data', 'aSecureKey|');
+        $raw = base64_decode(substr($encrypted, 4));
+        $raw[-1] = $raw[-1] === 'a' ? 'b' : 'a';
+        $tampered = 'v2::' . base64_encode($raw);
+
+        $this->assertFalse($this->hash->decrypt($tampered, 'aSecureKey|'));
+
+        // With the default key a failed authentication throws, matching the legacy null-key behaviour.
+        $raw = base64_decode(substr($this->hash->encrypt('test data'), 4));
+        $raw[-1] = $raw[-1] === 'a' ? 'b' : 'a';
+        $this->expectException(RuntimeException::class);
+        $this->hash->decrypt('v2::' . base64_encode($raw));
+    }
+
+    public function testLegacyKeyedValuesStillDecrypt(): void
+    {
+        $key = 'aSecureKey|';
+        $legacy = base64_encode(openssl_encrypt(
+            'legacy data',
+            'AES-256-CBC',
+            hash('sha256', $key),
+            0,
+            substr(hash('sha256', sprintf('%s_iv', $key)), 0, 16)
+        ));
+
+        $this->assertSame('legacy data', $this->hash->decrypt($legacy, $key));
+    }
+
+    public function testLegacyDefaultKeyValuesStillDecrypt(): void
+    {
+        $key = $this->reflection->getMethod('getEncryptionKey')->invoke($this->hash);
+        $iv = random_bytes(16);
+        $legacy = sprintf(
+            '%1$s::%2$s',
+            base64_encode($iv),
+            base64_encode(openssl_encrypt('legacy data', 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv))
+        );
+
+        $this->assertSame('legacy data', $this->hash->decrypt($legacy));
+    }
+
+    public function testGetEncryptionKeyIsStable(): void
+    {
+        $method = $this->reflection->getMethod('getEncryptionKey');
+        $this->assertSame($method->invoke($this->hash), $method->invoke($this->hash));
     }
 }
