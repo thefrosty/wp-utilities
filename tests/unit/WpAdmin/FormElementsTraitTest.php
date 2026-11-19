@@ -55,7 +55,7 @@ class FormElementsTraitTest extends TestCase
         $payloads = [
             'Title|&quot;&gt;&lt;img src=x onerror=alert(1)&gt;',
             'Title|"><script>alert(1)</script>',
-            'Title| onmouseover="alert(1)" data-ok="a&quot;b"',
+            'Title| onmouseover="alert(1)" data-ok="a&amp;b"',
         ];
         foreach ($payloads as $payload) {
             ob_start();
@@ -70,7 +70,7 @@ class FormElementsTraitTest extends TestCase
             $this->assertStringNotContainsString('onmouseover', $select);
         }
 
-        $this->assertStringContainsString(' data-ok="a&quot;b"', $select);
+        $this->assertStringContainsString(' data-ok="a&amp;b"', $select);
     }
 
     public function testSelectHtmlRejectsInvalidOptionsAndSkipsAnEmptyList(): void
