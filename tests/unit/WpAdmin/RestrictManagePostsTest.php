@@ -81,11 +81,6 @@ class RestrictManagePostsTest extends TestCase
 
     public function testOwnScriptsAreServedFromThePackageNotACdnTag(): void
     {
-        // Initialising the script/style registries calls wp_is_block_theme(), which emits a _doing_it_wrong notice
-        // (marking this test risky) unless a theme directory is registered.
-        if (empty($GLOBALS['wp_theme_directories'])) {
-            register_theme_directory(get_theme_root());
-        }
         wp_deregister_script(RestrictManagePosts::HANDLE);
         wp_deregister_script(RestrictManagePosts::HANDLE_UTILITY_FUNCTIONS);
         (new ReflectionMethod(RestrictManagePosts::class, 'enqueueScripts'))->invoke($this->manager, 'edit.php');
