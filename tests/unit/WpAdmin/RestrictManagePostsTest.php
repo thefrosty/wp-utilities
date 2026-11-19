@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\Tests\WpAdmin;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\Attributes\UsesFunction;
 use PHPUnit\Framework\Attributes\UsesTrait;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -34,6 +35,7 @@ use WP_Query;
 #[UsesClass(Plugin::class)]
 #[UsesClass(PluginFactory::class)]
 #[UsesClass(TemplateLoader::class)]
+#[UsesFunction('TheFrosty\WpUtilities\wpRegisterScript')]
 #[Group('wp-admin')]
 class RestrictManagePostsTest extends TestCase
 {
