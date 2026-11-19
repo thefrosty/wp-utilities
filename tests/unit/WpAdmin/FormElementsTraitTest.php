@@ -44,6 +44,33 @@ class FormElementsTraitTest extends TestCase
         $this->assertStringContainsString('<optgroup label="Colors">', $select);
         $this->assertStringContainsString('value="red"', $select);
         $this->assertStringContainsString('Red', $select);
+        $this->assertStringContainsString(' data-extra="1"', $select);
+    }
+
+    public function testSelectHtmlOnlyAllowsEscapedDataAttributesFromTheLabel(): void
+    {
+        $form = $this->form(Request::create('/'));
+
+        // Simulates a post title / meta value saved by a lower privileged user (entities survive kses).
+        $payloads = [
+            'Title|&quot;&gt;&lt;img src=x onerror=alert(1)&gt;',
+            'Title|"><script>alert(1)</script>',
+            'Title| onmouseover="alert(1)" data-ok="a&amp;b"',
+        ];
+        foreach ($payloads as $payload) {
+            ob_start();
+            $form->select('meta_key', 'Choose', [
+                'Group' => [new OptionValueLabel('1', $payload)],
+            ]);
+            $select = ob_get_clean();
+
+            $this->assertStringNotContainsString('<img', $select);
+            $this->assertStringNotContainsString('<script', $select);
+            $this->assertStringNotContainsString('onerror', $select);
+            $this->assertStringNotContainsString('onmouseover', $select);
+        }
+
+        $this->assertStringContainsString(' data-ok="a&amp;b"', $select);
     }
 
     public function testSelectHtmlRejectsInvalidOptionsAndSkipsAnEmptyList(): void

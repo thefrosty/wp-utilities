@@ -12,11 +12,17 @@ use function array_walk;
 use function esc_attr;
 use function esc_html;
 use function html_entity_decode;
+use function implode;
 use function is_array;
+use function preg_match_all;
 use function printf;
 use function sanitize_key;
 use function selected;
+use function sprintf;
+use function strtolower;
 use function wp_unslash;
+use const ENT_QUOTES;
+use const PREG_SET_ORDER;
 
 /**
  * Trait FormElementsTrait
@@ -90,12 +96,40 @@ post title value (ID).',
                     esc_html($label),
                     selected($current, $value, false),
                     esc_attr($optgroup),
-                    html_entity_decode($extra ?? '')
+                    self::buildOptionDataAttributes($extra)
                 );
             });
             echo '</optgroup>';
         }
 
         echo '</select>';
+    }
+
+    /**
+     * Build the extra option attributes from the label's `|` suffix (e.g. `Label| data-foo="bar"`).
+     * Only `data-*` attributes are allowed and every value is escaped, so label content coming from
+     * the database (post titles, meta values) can't inject markup or event handlers.
+     * @param string|null $extra The raw label suffix.
+     * @return string
+     */
+    private static function buildOptionDataAttributes(?string $extra): string
+    {
+        if ($extra === null || $extra === '') {
+            return '';
+        }
+
+        preg_match_all(
+            '/(?<![\\w-])(data-[a-z0-9_-]+)\s*=\s*(["\'])(.*?)\2/i',
+            html_entity_decode($extra, ENT_QUOTES),
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        $attributes = [];
+        foreach ($matches as $match) {
+            $attributes[] = sprintf(' %s="%s"', strtolower($match[1]), esc_attr($match[3]));
+        }
+
+        return implode('', $attributes);
     }
 }
