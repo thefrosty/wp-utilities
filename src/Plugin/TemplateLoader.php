@@ -19,7 +19,9 @@ use function is_string;
 use function ksort;
 use function load_template;
 use function ltrim;
+use function preg_match;
 use function set_query_var;
+use function str_contains;
 use const SORT_NUMERIC;
 
 /**
@@ -209,6 +211,10 @@ class TemplateLoader implements TemplateLoaderInterface
         foreach ($template_names as $template_name) {
             // Trim off any slashes from the template name.
             $template_name = ltrim($template_name, '/');
+            // Templates must stay inside the registered template paths: reject traversal and null bytes.
+            if (self::isTraversal($template_name)) {
+                continue;
+            }
 
             // Try locating this template file by looping through the template paths.
             foreach ($template_paths as $template_path) {
@@ -263,5 +269,15 @@ class TemplateLoader implements TemplateLoaderInterface
         $values = array_values($names);
 
         return array_shift($values);
+    }
+
+    /**
+     * Does the template name try to escape the template paths?
+     * @param string $template_name
+     * @return bool
+     */
+    private static function isTraversal(string $template_name): bool
+    {
+        return str_contains($template_name, "\0") || preg_match('#(^|[\\\\/])\.\.([\\\\/]|$)#', $template_name) === 1;
     }
 }

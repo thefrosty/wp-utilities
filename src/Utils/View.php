@@ -11,13 +11,16 @@ use function count;
 use function dirname;
 use function extract;
 use function file_exists;
+use function func_get_arg;
 use function get_object_vars;
 use function is_array;
 use function is_object;
 use function ob_get_clean;
 use function ob_start;
+use function preg_match;
 use function realpath;
 use function sprintf;
+use function str_contains;
 use function str_replace;
 use function trailingslashit;
 
@@ -151,8 +154,13 @@ final class View
             $this->viewData = array_merge($this->viewData, $data);
         }
 
-        extract($this->viewData);
-        include $viewPath;
+        // Render in an isolated scope with no named locals, so view data can't overwrite the path being included.
+        // The closure is intentionally not static: views may reference `$this` (the View instance).
+        // phpcs:ignore SlevomatCodingStandard.Functions.StaticClosure.ClosureNotStatic
+        (function (): void {
+            extract(func_get_arg(1));
+            include func_get_arg(0);
+        })($viewPath, $this->viewData);
     }
 
     /**
@@ -184,6 +192,11 @@ final class View
     private function getViewPath(string $file): ?string
     {
         $file = $this->sanitizeFileExtension($file);
+        // Views are always relative to a registered view directory: reject traversal and null bytes.
+        if (str_contains($file, "\0") || preg_match('#(^|[\\\\/])\.\.([\\\\/]|$)#', $file) === 1) {
+            return null;
+        }
+
         foreach ($this->viewPaths as $viewDir) {
             if (file_exists($viewDir . $file)) {
                 return $viewDir . $file;
