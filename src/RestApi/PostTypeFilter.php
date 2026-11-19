@@ -14,8 +14,11 @@ use function array_filter;
 use function array_merge;
 use function array_unique;
 use function array_walk;
+use function current_user_can;
 use function get_post_type_object;
 use function get_post_types;
+use function in_array;
+use function is_string;
 use function sprintf;
 
 /**
@@ -27,13 +30,22 @@ class PostTypeFilter implements WpHooksInterface
     use HooksTrait;
 
     public const string QUERY_PARAM = 'filter';
+    public const string HOOK_ALLOW_META_QUERY = Plugin::TAG . '/filter_allow_meta_query';
     private const array QUERY_VARS = [
+        'post__in',
+        'post_name__in',
+    ];
+
+    /**
+     * Meta query vars. These can be used as a boolean oracle to read private (`_` prefixed) meta values, so they
+     * are only accepted from users who can edit the queried post type, unless explicitly allowed via the
+     * `HOOK_ALLOW_META_QUERY` filter.
+     */
+    private const array META_QUERY_VARS = [
         'meta_query',
         'meta_compare',
         'meta_key',
         'meta_value',
-        'post__in',
-        'post_name__in',
     ];
 
     /**
@@ -98,13 +110,41 @@ class PostTypeFilter implements WpHooksInterface
         }
 
         $vars = $this->getPublicQueryVars($request);
+        $allow_meta = $this->canQueryMeta($args, $request);
         foreach ($vars as $var) {
-            if (isset($filter[$var])) {
-                $args[$var] = $filter[$var];
+            if (!isset($filter[$var])) {
+                continue;
             }
+
+            if (!$allow_meta && in_array($var, self::META_QUERY_VARS, true)) {
+                continue;
+            }
+
+            $args[$var] = $filter[$var];
         }
 
         return $args;
+    }
+
+    /**
+     * Can the current user filter the REST query by post meta?
+     * @param array $args The query arguments.
+     * @param WP_REST_Request $request Full details about the request.
+     * @return bool
+     */
+    private function canQueryMeta(array $args, WP_REST_Request $request): bool
+    {
+        $post_type = is_string($args['post_type'] ?? null) ? $args['post_type'] : 'post';
+        $post_type_object = get_post_type_object($post_type);
+        $capability = $post_type_object instanceof WP_Post_Type ? $post_type_object->cap->edit_posts : 'edit_posts';
+
+        /**
+         * Filters whether the `filter[meta_*]` REST query vars are allowed for this request.
+         * @param bool $allowed Defaults to whether the current user can edit posts of the queried post type.
+         * @param string $post_type The queried post type.
+         * @param WP_REST_Request $request The current request.
+         */
+        return apply_filters(self::HOOK_ALLOW_META_QUERY, current_user_can($capability), $post_type, $request) === true;
     }
 
     /**
@@ -117,6 +157,6 @@ class PostTypeFilter implements WpHooksInterface
         global $wp;
         $vars = apply_filters('rest_query_vars', $wp->public_query_vars, $request);
 
-        return array_unique(array_merge($vars, self::QUERY_VARS));
+        return array_unique(array_merge($vars, self::QUERY_VARS, self::META_QUERY_VARS));
     }
 }
