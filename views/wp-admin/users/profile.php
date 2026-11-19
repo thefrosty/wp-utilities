@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use Symfony\Component\HttpFoundation\Request;
+use TheFrosty\WpUtilities\WpAdmin\Users\Fields\FieldType;
 use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use TheFrosty\WpUtilities\WpAdmin\Users\Profile;
-use TheFrosty\WpUtilities\WpAdmin\Users\Fields\FieldType;
-use Symfony\Component\HttpFoundation\Request;
 
 $current_user ??= wp_get_current_user();
 /** UserMetaField objects @var UserMetaField[] $fields */
