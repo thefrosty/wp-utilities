@@ -15,6 +15,7 @@ use TheFrosty\WpUtilities\Api\WpRemote;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use TheFrosty\WpUtilities\Utils\View;
+use TheFrosty\WpUtilities\WpAdmin\Dashboard\SimplePie;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 use WP_Error;
@@ -28,6 +29,7 @@ use WP_Error;
 #[UsesClass(View::class)]
 #[UsesClass(Widget::class)]
 #[UsesTrait(Hash::class)]
+#[UsesTrait(SimplePie::class)]
 #[UsesTrait(TransientsTrait::class)]
 #[UsesTrait(WpCacheTrait::class)]
 #[UsesTrait(WpRemote::class)]
@@ -69,6 +71,46 @@ class DashboardWidgetTest extends TestCase
         $registered['callback']();
         $html = ob_get_clean();
         $this->assertStringContainsString('rss-widget', $html);
+    }
+
+    public function testRendersAnRssTypeWidget(): void
+    {
+        $rss = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Feed</title><link>https://example.com/</link><description>d</description>
+<item><title>First &lt;b&gt;post&lt;/b&gt;</title><link>https://example.com/first</link>
+<pubDate>Thu, 19 Nov 2026 10:00:00 +0000</pubDate>
+<description>&lt;script&gt;alert(1)&lt;/script&gt;Summary text</description></item>
+</channel></rss>
+XML;
+        add_filter('pre_http_request', static fn(): array => [
+            'headers' => ['content-type' => 'application/rss+xml'],
+            'body' => $rss,
+            'response' => ['code' => 200, 'message' => 'OK'],
+            'cookies' => [],
+            'filename' => null,
+        ]);
+        $widget = new DashboardWidget([
+            Widget::FEED_URL => 'https://example.com/rss-feed-' . wp_generate_password(6, false),
+            Widget::TYPE => Widget::TYPE_RSS,
+            Widget::WIDGET_ID => 'rss_widget',
+            Widget::WIDGET_NAME => 'RSS',
+        ]);
+        $widget->addHooks();
+        do_action('load-index.php');
+        do_action('wp_dashboard_setup');
+
+        $registered = $GLOBALS['wp_meta_boxes']['dashboard']['normal']['core']['rss_widget'] ?? null;
+        $this->assertIsArray($registered);
+        ob_start();
+        $registered['callback']();
+        $html = ob_get_clean();
+
+        $this->assertStringContainsString('class="rsswidget"', $html);
+        $this->assertStringContainsString('utm_campaign=rss_widget', $html);
+        $this->assertStringContainsString('Summary text', $html);
+        $this->assertStringNotContainsString('<script', $html);
+        $this->assertStringNotContainsString('<b>', $html);
     }
 
     public function testSkipsTheWidgetWhenTheAllowFilterReturnsFalse(): void
