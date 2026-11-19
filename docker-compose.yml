@@ -5,7 +5,7 @@ services:
     command: --mysql-native-password=ON
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306" # Local only; root/root is a dev credential.
     environment:
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_DATABASE: "wordpress_test"
