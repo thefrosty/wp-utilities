@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use Symfony\Component\HttpFoundation\Request;
+use TheFrosty\WpUtilities\WpAdmin\Users\Fields\FieldType;
 use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use TheFrosty\WpUtilities\WpAdmin\Users\Profile;
-use TheFrosty\WpUtilities\WpAdmin\Users\Fields\FieldType;
-use Symfony\Component\HttpFoundation\Request;
 
 $current_user ??= wp_get_current_user();
 /** UserMetaField objects @var UserMetaField[] $fields */
@@ -31,8 +31,7 @@ $buildFieldType = static function (UserMetaField $field) use ($user): string {
 echo '<table class="form-table">';
 
 foreach ($fields as $field) {
-    $condition = $field->getCondition();
-    if (is_callable($condition) && $condition() === true) {
+    if (Profile::isFieldHidden($field)) {
         continue;
     }
     printf(
