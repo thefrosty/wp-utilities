@@ -104,4 +104,18 @@ class DisablePluginUpdateCheckTest extends TestCase
 
         $this->assertArrayHasKey('wp-utilities/wp-utilities.php', $method->invoke($checker, $value)->response);
     }
+    public function testPluginInfoRequestsForThisPluginAreNotBypassedYet(): void
+    {
+        $checker = new DisablePluginUpdateCheck();
+        $checker->setPlugin($this->plugin);
+        $method = new ReflectionMethod(DisablePluginUpdateCheck::class, 'httpRequestRemovePluginBasename');
+        $url = add_query_arg(
+            ['action' => 'plugin_information', 'request' => ['slug' => $this->plugin->getSlug()]],
+            'https://api.wordpress.org/plugins/info/1.2/'
+        );
+
+        // The bypass is intentionally disabled (`__return_true() === false`) until it can be validated.
+        $this->assertSame(['timeout' => 5], $method->invoke($checker, ['timeout' => 5], $url));
+    }
+
 }

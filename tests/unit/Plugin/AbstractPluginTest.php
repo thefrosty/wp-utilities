@@ -12,6 +12,7 @@ use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
 use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
+use TheFrosty\WpUtilities\Plugin\TemplateLoader;
 use TheFrosty\WpUtilities\Plugin\WpHooksInterface;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use function do_action;
@@ -23,6 +24,7 @@ use function get_class;
  */
 #[CoversClass(AbstractPlugin::class)]
 #[UsesClass(Init::class)]
+#[UsesClass(TemplateLoader::class)]
 class AbstractPluginTest extends TestCase
 {
 
@@ -298,4 +300,15 @@ class AbstractPluginTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $getWpHook->invoke($this->plugin, $class::class);
     }
+    /**
+     * Test getTemplateLoader() & setTemplateLoader().
+     */
+    public function testGetAndSetTemplateLoader(): void
+    {
+        $loader = new TemplateLoader($this->plugin);
+
+        $this->assertSame($this->plugin, $this->plugin->setTemplateLoader($loader));
+        $this->assertSame($loader, $this->plugin->getTemplateLoader());
+    }
+
 }

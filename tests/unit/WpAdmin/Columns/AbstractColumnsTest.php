@@ -74,6 +74,29 @@ class AbstractColumnsTest extends TestCase
         $this->assertTrue($columns->hasRequest('isbn', $request));
         $this->assertFalse($columns->hasRequest('other', $request));
     }
+    public function testDeferredCacheReturnsCachedIdsAndTheCronCallbackPopulatesTheCache(): void
+    {
+        $columns = new ColumnFixture();
+        $postId = wp_insert_post(['post_title' => 'Cached column post', 'post_status' => 'publish']);
+
+        // The first call schedules the background cron event that populates the cache.
+        $hook = 'post_wp_query_get_all_ids';
+        $this->assertSame([], $columns->cached('post'));
+        $key = null;
+        foreach (_get_cron_array() ?: [] as $hooks) {
+            foreach ($hooks[$hook] ?? [] as $event) {
+                $key = $event['args'][0];
+            }
+        }
+        $this->assertIsString($key);
+        $columns->hooks('post');
+        do_action($hook, $key, 'post', [], 60);
+
+        $cached = $columns->cached('post');
+        $this->assertContains($postId, $cached);
+        wp_delete_post($postId, true);
+    }
+
 }
 
 class ColumnFixture extends AbstractColumns

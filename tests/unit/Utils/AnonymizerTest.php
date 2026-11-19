@@ -55,5 +55,31 @@ class AnonymizerTest extends TestCase
         $id = $this->anonymizer->uuid();
         $this->assertSame(32, strlen($id));
         $this->assertSame($id, get_site_option('_wp_utilities_telemetry_uuid'));
+        // The stored ID is reused.
+        $this->assertSame($id, $this->anonymizer->uuid());
+    }
+
+    public function testAnonymizeMasksEmailsAndMultiPartDomains(): void
+    {
+        $this->assertSame('j**n@m**l.e*****e.com', $this->anonymizer->anonymize('john@mail.example.com'));
+        $this->assertSame('j**n@e*****e.com', $this->anonymizer->anonymize('john@example.com'));
+        $this->assertSame('a*', $this->anonymizer->anonymize('ab'));
+    }
+
+    public function testMaskDomainKeepsShortSecondLevelSuffixes(): void
+    {
+        $mask = $this->reflection->getMethod('maskDomain');
+
+        $this->assertSame('m**l.e*****e.co.uk', $mask->invoke($this->anonymizer, 'mail.example.co.uk'));
+        $this->assertSame('w*w.e*****e.com', $mask->invoke($this->anonymizer, 'www.example.com'));
+        $this->assertSame('e*****e.org', $mask->invoke($this->anonymizer, 'example.org'));
+        $this->assertSame('', $mask->invoke($this->anonymizer, ''));
+    }
+
+    public function testMaskEmailAndMaskStringEdgeCases(): void
+    {
+        $this->assertSame('not-an-email', $this->reflection->getMethod('maskEmail')->invoke($this->anonymizer, 'not-an-email'));
+        $this->assertSame('', $this->reflection->getMethod('maskString')->invoke($this->anonymizer, ''));
+        $this->assertSame('x', $this->reflection->getMethod('maskString')->invoke($this->anonymizer, 'x'));
     }
 }

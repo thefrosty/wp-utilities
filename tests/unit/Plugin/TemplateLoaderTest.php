@@ -71,4 +71,15 @@ class TemplateLoaderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $loader->getTemplatePart('../plugin');
     }
+    public function testDestructorRemovesTheTemplateDataQueryVars(): void
+    {
+        $loader = new TemplateLoader($this->plugin);
+        $loader->setTemplateData(['title' => 'Temporary'], 'temporary_data');
+        $this->assertSame(['title' => 'Temporary'], TemplateLoader::getData('temporary_data'));
+
+        unset($loader);
+
+        $this->assertSame([], TemplateLoader::getData('temporary_data'));
+    }
+
 }

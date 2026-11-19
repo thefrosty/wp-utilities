@@ -58,4 +58,40 @@ class AbstractTaxonomyTest extends TestCase
         do_action('init');
         $this->assertInstanceOf(WP_Taxonomy::class, get_taxonomy('genre'));
     }
+
+    public function testConstructorRequiresTheClassProperties(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Required class properties not set.');
+        new class extends AbstractTaxonomy {
+            public const string|null TAXONOMY_TYPE = 'genre_missing_props';
+            public const array|string|null POST_TYPE = 'book';
+            public const string|null SLUG = 'genre_missing_props';
+        };
+    }
+
+    public function testUrlSlugOverridesTheDerivedSlug(): void
+    {
+        $taxonomy = new class extends AbstractTaxonomy {
+            public const string|null TAXONOMY_TYPE = 'genre_url_slug';
+            public const array|string|null POST_TYPE = 'book';
+            public const string|null SLUG = 'book_genre';
+            public const string|null URL_SLUG = 'genres';
+
+            public function __construct()
+            {
+                $this->setNames(['singular' => 'Genre', 'plural' => 'Genres']);
+                $this->setArgs([]);
+                $this->setLabels(['name' => 'Genres']);
+                parent::__construct();
+            }
+
+            public function args(): array
+            {
+                return $this->getArgs();
+            }
+        };
+
+        $this->assertSame('genres', $taxonomy->args()['rewrite']['slug']);
+    }
 }
