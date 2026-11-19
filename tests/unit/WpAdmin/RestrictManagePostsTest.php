@@ -79,6 +79,58 @@ class RestrictManagePostsTest extends TestCase
         );
     }
 
+    public function testOwnScriptsAreServedFromThePackageNotACdnTag(): void
+    {
+        wp_deregister_script(RestrictManagePosts::HANDLE);
+        wp_deregister_script(RestrictManagePosts::HANDLE_UTILITY_FUNCTIONS);
+        (new ReflectionMethod(RestrictManagePosts::class, 'enqueueScripts'))->invoke($this->manager, 'edit.php');
+
+        foreach ([RestrictManagePosts::HANDLE, RestrictManagePosts::HANDLE_UTILITY_FUNCTIONS] as $handle) {
+            $script = wp_scripts()->registered[$handle] ?? null;
+            $this->assertNotNull($script);
+            $this->assertStringNotContainsString('cdn.jsdelivr.net/gh/', $script->src);
+            $this->assertStringContainsString('assets/js/', $script->src);
+        }
+        $this->assertStringEndsWith(
+            'assets/js/restrict-manage-posts.js',
+            wp_scripts()->registered[RestrictManagePosts::HANDLE]->src
+        );
+    }
+
+    public function testAssetUrlIsFilterable(): void
+    {
+        add_filter(RestrictManagePosts::TAG_FILTER_ASSETS_URL, static fn(): string => 'https://example.com/js');
+        $url = (new ReflectionMethod(RestrictManagePosts::class, 'getAssetUrl'))
+            ->invoke($this->manager, 'restrict-manage-posts.js');
+        remove_all_filters(RestrictManagePosts::TAG_FILTER_ASSETS_URL);
+
+        $this->assertSame('https://example.com/js/restrict-manage-posts.js', $url);
+    }
+
+    public function testSubresourceIntegrityIsAddedToSelect2WhenAHashIsProvided(): void
+    {
+        $script = new ReflectionMethod(RestrictManagePosts::class, 'modifyScriptType');
+        $style = new ReflectionMethod(RestrictManagePosts::class, 'modifyStyleTag');
+        $scriptTag = "<script src='https://cdn.jsdelivr.net/npm/select2.js' id='select2-js'></script>";
+        $styleTag = "<link rel='stylesheet' id='select2-css' href='https://cdn.jsdelivr.net/npm/select2.css' />";
+
+        // No hash configured: tags are untouched.
+        $this->assertSame($scriptTag, $script->invoke($this->manager, $scriptTag, 'select2', ''));
+        $this->assertSame($styleTag, $style->invoke($this->manager, $styleTag, 'select2'));
+
+        add_filter(RestrictManagePosts::TAG_FILTER_SRI_HASHES, static fn(): array => [
+            'select2' => 'sha384-abc"def',
+        ]);
+        $scriptTagSri = $script->invoke($this->manager, $scriptTag, 'select2', '');
+        $styleTagSri = $style->invoke($this->manager, $styleTag, 'select2');
+        $otherTag = $style->invoke($this->manager, $styleTag, 'other');
+        remove_all_filters(RestrictManagePosts::TAG_FILTER_SRI_HASHES);
+
+        $this->assertStringContainsString('integrity="sha384-abc&quot;def" crossorigin="anonymous"', $scriptTagSri);
+        $this->assertStringContainsString('integrity="sha384-abc&quot;def" crossorigin="anonymous"', $styleTagSri);
+        $this->assertSame($styleTag, $otherTag);
+    }
+
     public function testManagePostsHtmlAndMetaQuery(): void
     {
         add_filter(RestrictManagePosts::TAG_FILTER_META_KEYS, static fn(): array => [

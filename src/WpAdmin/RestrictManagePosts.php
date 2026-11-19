@@ -12,18 +12,26 @@ use function apply_filters;
 use function array_pad;
 use function array_shift;
 use function defined;
+use function dirname;
 use function esc_attr;
 use function esc_html__;
 use function esc_url;
 use function explode;
+use function file_exists;
+use function filemtime;
 use function is_admin;
 use function is_array;
 use function is_numeric;
+use function is_string;
+use function plugins_url;
 use function preg_match;
 use function sanitize_text_field;
 use function sprintf;
+use function str_contains;
+use function str_replace;
 use function strcasecmp;
 use function TheFrosty\WpUtilities\wpRegisterScript;
+use function trailingslashit;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
 use function wp_register_style;
@@ -46,6 +54,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
     {
         $this->addAction('admin_enqueue_scripts', [$this, 'enqueueScripts'], 19);
         $this->addFilter('script_loader_tag', [$this, 'modifyScriptType'], 10, 3);
+        $this->addFilter('style_loader_tag', [$this, 'modifyStyleTag'], 10, 2);
         $this->addAction('restrict_manage_posts', [$this, 'addManagePostsHtml']);
         $this->addAction('pre_get_posts', [$this, 'preGetPostsFilterMetaQuery']);
     }
@@ -107,13 +116,15 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
 
         wpRegisterScript(
             self::HANDLE_UTILITY_FUNCTIONS,
-            sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/utilities/functions%s.js', $min),
+            $this->getAssetUrl('utilities/functions.js'),
+            ver: $this->getAssetVersion('utilities/functions.js'),
             args: ['in_footer' => true]
         );
         wpRegisterScript(
             self::HANDLE,
-            sprintf('https://cdn.jsdelivr.net/gh/thefrosty/wp-utilities@3/assets/js/%s%s.js', self::HANDLE, $min),
+            $this->getAssetUrl(self::HANDLE . '.js'),
             (array)apply_filters(self::TAG_FILTER_SCRIPT_DEPENDENCIES, ['select2', self::HANDLE_UTILITY_FUNCTIONS]),
+            $this->getAssetVersion(self::HANDLE . '.js'),
             args: ['in_footer' => true]
         );
         wp_enqueue_style('select2');
@@ -129,6 +140,10 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
      */
     protected function modifyScriptType(string $tag, string $handle, string $src): string
     {
+        if ($handle === 'select2') {
+            return $this->addSubresourceIntegrity($tag, $handle, '<script ');
+        }
+
         if ($handle !== self::HANDLE_UTILITY_FUNCTIONS) {
             return $tag;
         }
@@ -235,6 +250,72 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
                 ],
             ]);
         }
+    }
+
+    /**
+     * Add the SRI `integrity` & `crossorigin` attributes to the third-party (CDN) Select2 stylesheet.
+     * @param string $tag The link tag for the enqueued style.
+     * @param string $handle The style's registered handle.
+     * @return string
+     */
+    protected function modifyStyleTag(string $tag, string $handle): string
+    {
+        if ($handle !== 'select2') {
+            return $tag;
+        }
+
+        return $this->addSubresourceIntegrity($tag, $handle, '<link ');
+    }
+
+    /**
+     * Get the URL to one of this library's bundled JS assets.
+     * Assets are served from the installed package (not a CDN tracking a moving git tag) so the code running in
+     * wp-admin is always the code that was installed. Filterable for installs outside the plugins directory.
+     * @param string $file The file path relative to `assets/js/`.
+     * @return string
+     */
+    protected function getAssetUrl(string $file): string
+    {
+        $base = apply_filters(
+            self::TAG_FILTER_ASSETS_URL,
+            plugins_url('assets/js/', dirname(__DIR__, 2) . '/composer.json')
+        );
+
+        return trailingslashit(is_string($base) ? $base : '') . $file;
+    }
+
+    /**
+     * Get a cache busting version for a bundled JS asset.
+     * @param string $file The file path relative to `assets/js/`.
+     * @return string|null
+     */
+    protected function getAssetVersion(string $file): ?string
+    {
+        $path = dirname(__DIR__, 2) . '/assets/js/' . $file;
+
+        return file_exists($path) ? (string)filemtime($path) : null;
+    }
+
+    /**
+     * Add SRI attributes to a tag when a hash is provided for the handle.
+     * @param string $tag The HTML tag.
+     * @param string $handle The registered handle.
+     * @param string $opening The opening of the tag to inject the attributes after.
+     * @return string
+     */
+    private function addSubresourceIntegrity(string $tag, string $handle, string $opening): string
+    {
+        $hashes = apply_filters(self::TAG_FILTER_SRI_HASHES, []);
+        $hash = is_array($hashes) ? ($hashes[$handle] ?? null) : null;
+        if (!is_string($hash) || $hash === '' || str_contains($tag, 'integrity=')) {
+            return $tag;
+        }
+
+        return str_replace(
+            $opening,
+            sprintf('%sintegrity="%s" crossorigin="anonymous" ', $opening, esc_attr($hash)),
+            $tag
+        );
     }
 
     /**
