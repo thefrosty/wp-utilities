@@ -9,6 +9,7 @@ use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\Utils\View;
 use TheFrosty\WpUtilities\Utils\Viewable;
+use TheFrosty\WpUtilities\WpAdmin\Users\Fields\Type;
 use TheFrosty\WpUtilities\WpAdmin\Users\Models\UserMetaField;
 use WP_User;
 use function apply_filters;
@@ -18,6 +19,9 @@ use function current_user_can;
 use function do_action;
 use function esc_html__;
 use function get_user_meta;
+use function is_callable;
+use function is_scalar;
+use function sanitize_text_field;
 use function sprintf;
 use function update_user_meta;
 use function wp_get_current_user;
@@ -106,12 +110,45 @@ class Profile extends AbstractContainerProvider implements HttpFoundationRequest
         }
 
         foreach ($fields as $field) {
-            if (!$request->has($field->getName())) {
+            // Fields hidden from the form (by their condition) must not be writable either.
+            if (self::isFieldHidden($field) || !$request->has($field->getName())) {
+                continue;
+            }
+
+            $value = $request->all()[$field->getName()] ?? null;
+            if (!is_scalar($value)) {
                 continue;
             }
 
             $prev_value = get_user_meta($user_id, $field->getName(), true);
-            update_user_meta($user_id, $field->getName(), $request->get($field->getName()), $prev_value);
+            $value = self::sanitizeFieldValue($field, (string)$value);
+            update_user_meta($user_id, $field->getName(), $value, $prev_value);
         }
+    }
+
+    /**
+     * Is the field hidden from the current user? A field is hidden when its condition returns `true`.
+     * @param UserMetaField $field
+     * @return bool
+     */
+    public static function isFieldHidden(UserMetaField $field): bool
+    {
+        $condition = $field->getCondition();
+
+        return is_callable($condition) && $condition() === true;
+    }
+
+    /**
+     * Sanitize a submitted value based on the field type.
+     * @param UserMetaField $field
+     * @param string $value
+     * @return string
+     */
+    private static function sanitizeFieldValue(UserMetaField $field, string $value): string
+    {
+        return match ($field->getType()) {
+            Type::CHECKBOX => $value === '1' ? '1' : 'off',
+            Type::TEXT => sanitize_text_field($value),
+        };
     }
 }

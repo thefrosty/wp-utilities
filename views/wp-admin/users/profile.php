@@ -31,8 +31,7 @@ $buildFieldType = static function (UserMetaField $field) use ($user): string {
 echo '<table class="form-table">';
 
 foreach ($fields as $field) {
-    $condition = $field->getCondition();
-    if (is_callable($condition) && $condition() === true) {
+    if (Profile::isFieldHidden($field)) {
         continue;
     }
     printf(
