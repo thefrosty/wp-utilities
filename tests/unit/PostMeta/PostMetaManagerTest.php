@@ -92,6 +92,38 @@ class PostMetaManagerTest extends TestCase
         $this->assertNotEmpty($GLOBALS['wp_meta_boxes']['post'] ?? []);
     }
 
+    public function testSaveRequiresAValidNonce(): void
+    {
+        update_post_meta($this->postId, 'subtitle', 'Original');
+        $save = new \ReflectionMethod(PostMetaManager::class, 'save');
+
+        $this->manager->getRequest()->request->replace(['subtitle' => 'Forged']);
+        $save->invoke($this->manager, $this->postId, get_post($this->postId));
+        $this->assertSame('Original', get_post_meta($this->postId, 'subtitle', true));
+
+        $this->manager->getRequest()->request->replace(['details' => 'bad-nonce', 'subtitle' => 'Forged']);
+        $save->invoke($this->manager, $this->postId, get_post($this->postId));
+        $this->assertSame('Original', get_post_meta($this->postId, 'subtitle', true));
+
+        $this->manager->getRequest()->request->replace([
+            'details' => wp_create_nonce('details'),
+            'subtitle' => 'Updated',
+        ]);
+        $save->invoke($this->manager, $this->postId, get_post($this->postId));
+        $this->assertSame('Updated', get_post_meta($this->postId, 'subtitle', true));
+    }
+
+    public function testSaveDoesNotWipeFieldsMissingFromTheRequest(): void
+    {
+        update_post_meta($this->postId, 'subtitle', 'Keep me');
+        $this->manager->getRequest()->request->replace(['details' => wp_create_nonce('details')]);
+
+        (new \ReflectionMethod(PostMetaManager::class, 'save'))
+            ->invoke($this->manager, $this->postId, get_post($this->postId));
+
+        $this->assertSame('Keep me', get_post_meta($this->postId, 'subtitle', true));
+    }
+
     private function fields(): array
     {
         return (new ReflectionProperty(PostMetaManager::class, 'fields'))->getValue($this->manager);
