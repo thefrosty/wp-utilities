@@ -10,14 +10,14 @@ use function apply_filters;
 use function array_filter;
 use function array_merge;
 use function esc_attr;
-use function esc_url;
+use function esc_url_raw;
 use function get_bloginfo;
 use function is_wp_error;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
-use function wp_remote_get;
-use function wp_remote_post;
+use function wp_safe_remote_get;
+use function wp_safe_remote_post;
 use const DAY_IN_SECONDS;
 
 /**
@@ -43,7 +43,7 @@ trait WpRemote
         }
 
         $function = sprintf('wpRemote%1$s', ucfirst(strtolower($method)));
-        $response = wp_remote_retrieve_body($this->$function(esc_url($url), $this->buildRequestArgs($args)));
+        $response = wp_remote_retrieve_body($this->$function($url, $args));
         if (!is_wp_error($response) && $response !== '') {
             $body = json_decode($response);
             if ($body === null) {
@@ -97,24 +97,26 @@ trait WpRemote
 
     /**
      * Return a remote GET request.
+     * Uses `wp_safe_remote_get()`, which rejects requests to local/private network addresses (SSRF protection).
      * @param string $url
      * @param array $args
      * @return array|WP_Error
      */
     public function wpRemoteGet(string $url, array $args = []): WP_Error|array
     {
-        return wp_remote_get(esc_url($url), $this->buildRequestArgs($args));
+        return wp_safe_remote_get(esc_url_raw($url), $this->buildRequestArgs($args));
     }
 
     /**
      * Return a remote POST request.
+     * Uses `wp_safe_remote_post()`, which rejects requests to local/private network addresses (SSRF protection).
      * @param string $url
      * @param array $args
      * @return array|WP_Error
      */
     public function wpRemotePost(string $url, array $args = []): WP_Error|array
     {
-        return wp_remote_post(esc_url($url), $this->buildRequestArgs($args));
+        return wp_safe_remote_post(esc_url_raw($url), $this->buildRequestArgs($args));
     }
 
     /**

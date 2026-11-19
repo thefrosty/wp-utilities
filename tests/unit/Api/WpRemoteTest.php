@@ -76,6 +76,34 @@ class WpRemoteTest extends TestCase
         $this->assertSame('{"method":"ok"}', $this->remote->wpRemotePost('https://example.com/post')['body']);
     }
 
+    public function testRequestsAreSafeAndUrlsAreNotHtmlEncoded(): void
+    {
+        $captured = [];
+        add_filter('pre_http_request', static function ($pre, array $args, string $url) use (&$captured): array {
+            $captured[] = ['url' => $url, 'reject_unsafe_urls' => $args['reject_unsafe_urls'] ?? null];
+
+            return [
+                'headers' => [],
+                'body' => '{"ok":true}',
+                'response' => ['code' => 200, 'message' => 'OK'],
+                'cookies' => [],
+                'filename' => null,
+            ];
+        }, 10, 3);
+
+        $this->remote->wpRemoteGet('https://example.com/api?a=1&b=2');
+        $this->remote->wpRemotePost('https://example.com/api?a=1&b=2');
+        $this->remote->retrieveBody('https://example.com/api?a=1&b=2');
+
+        $this->assertCount(3, $captured);
+        foreach ($captured as $request) {
+            // esc_url() would have sent `a=1&#038;b=2`, breaking the query string.
+            $this->assertSame('https://example.com/api?a=1&b=2', $request['url']);
+            // wp_safe_remote_*() blocks requests to local/private addresses (SSRF).
+            $this->assertTrue($request['reject_unsafe_urls']);
+        }
+    }
+
     private function fakeHttp(string $body): void
     {
         remove_all_filters('pre_http_request');
