@@ -7,6 +7,7 @@ namespace TheFrosty\WpUtilities\WpAdmin;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestInterface;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
+use TheFrosty\WpUtilities\WpAdmin\Models\OptionValueLabel;
 use WP_Query;
 use function apply_filters;
 use function array_pad;
@@ -16,9 +17,11 @@ use function esc_attr;
 use function esc_html__;
 use function esc_url;
 use function explode;
+use function in_array;
 use function is_admin;
 use function is_array;
 use function is_numeric;
+use function is_string;
 use function preg_match;
 use function sanitize_text_field;
 use function sprintf;
@@ -72,6 +75,25 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         $meta_values = apply_filters(self::TAG_FILTER_META_VALUES, [], $post_type);
 
         return is_array($meta_values) ? $meta_values : [];
+    }
+
+    /**
+     * Get the meta keys (values of the meta key select options) that may be filtered for a post type.
+     * @param string $post_type
+     * @return string[]
+     */
+    public static function getAllowedMetaKeys(string $post_type): array
+    {
+        $keys = [];
+        foreach (self::getFilteredMetaKeys($post_type) as $options) {
+            foreach (is_array($options) ? $options : [] as $option) {
+                if ($option instanceof OptionValueLabel) {
+                    [$keys[]] = explode('|', $option->getValue());
+                }
+            }
+        }
+
+        return $keys;
     }
 
     /**
@@ -188,6 +210,15 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
             return;
         }
 
+        // Only allow filtering by the meta keys registered for this post type (not arbitrary/private meta).
+        $post_type = is_string($query->get('post_type')) && $query->get('post_type') !== '' ?
+            $query->get('post_type') : 'post';
+        $meta_key = $this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME);
+        $allowed_keys = self::getAllowedMetaKeys($post_type);
+        if (!empty($meta_key) && !in_array($meta_key, $allowed_keys, true)) {
+            return;
+        }
+
         if (
             !empty($this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_NAME)) &&
             !empty($this->getRequest()->query->get(self::ADMIN_FILTER_FIELD_VALUE))
@@ -207,7 +238,13 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         }
 
         // Allow "advanced search" before custom search field value.
-        if ($this->advancedSearch($this->getRequest()->query->get(self::ADMIN_SEARCH_FIELD_VALUE), $query)) {
+        if (
+            $this->advancedSearch(
+                $this->getRequest()->query->get(self::ADMIN_SEARCH_FIELD_VALUE),
+                $query,
+                $allowed_keys
+            )
+        ) {
             return;
         }
 
@@ -241,9 +278,10 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
      * Maybe create a custom query for advanced searching based on passed key value.
      * @param mixed $value
      * @param WP_Query $query
+     * @param string[] $allowed_keys Meta keys allowed for the post type.
      * @return bool|null
      */
-    private function advancedSearch(mixed $value, WP_Query $query): ?bool
+    private function advancedSearch(mixed $value, WP_Query $query, array $allowed_keys = []): ?bool
     {
         if (empty($value)) {
             return null;
@@ -256,6 +294,7 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
         );
         if (
             !empty($matches['meta_key']) &&
+            in_array(sanitize_text_field($matches['meta_key']), $allowed_keys, true) &&
             !empty($matches['post_title']) &&
             !empty($matches['post_type'])
         ) {

@@ -113,6 +113,9 @@ class RestrictManagePostsTest extends TestCase
     public function testEmptySearchUsesNotExists(): void
     {
         $this->resetRequest();
+        add_filter(RestrictManagePosts::TAG_FILTER_META_KEYS, static fn(): array => [
+            'Keys' => [new OptionValueLabel('color', 'Color')],
+        ]);
         $this->manager->setRequest(Request::create('/wp-admin/edit.php', 'GET', [
             RestrictManagePosts::ADMIN_FILTER_FIELD_NAME => 'color',
             RestrictManagePosts::ADMIN_FILTER_FIELD_VALUE => 'red',
@@ -126,5 +129,35 @@ class RestrictManagePostsTest extends TestCase
         (new ReflectionMethod(RestrictManagePosts::class, 'preGetPostsFilterMetaQuery'))->invoke($this->manager, $query);
 
         $this->assertSame('NOT EXISTS', $query->get('meta_query')[0]['compare']);
+    }
+
+    public function testOnlyRegisteredMetaKeysCanBeFiltered(): void
+    {
+        remove_all_filters(RestrictManagePosts::TAG_FILTER_META_KEYS);
+        add_filter(RestrictManagePosts::TAG_FILTER_META_KEYS, static fn(): array => [
+            'Keys' => [new OptionValueLabel('color|extra', 'Color')],
+        ]);
+        $this->assertSame(['color'], RestrictManagePosts::getAllowedMetaKeys('post'));
+
+        global $pagenow, $wp_the_query;
+        $pagenow = 'edit.php';
+        foreach (['_private_secret', 'color'] as $key) {
+            $this->resetRequest();
+            $this->manager->setRequest(Request::create('/wp-admin/edit.php', 'GET', [
+                RestrictManagePosts::ADMIN_FILTER_FIELD_NAME => $key,
+                RestrictManagePosts::ADMIN_FILTER_FIELD_VALUE => 'COMPARE:REGEXP:^a',
+            ]));
+            $query = new WP_Query();
+            $wp_the_query = $query;
+            (new ReflectionMethod(RestrictManagePosts::class, 'preGetPostsFilterMetaQuery'))
+                ->invoke($this->manager, $query);
+
+            if ($key === 'color') {
+                $this->assertSame('color', $query->get('meta_query')[0]['key']);
+                continue;
+            }
+            $this->assertEmpty($query->get('meta_query'), 'Unregistered meta keys must be ignored.');
+        }
+        remove_all_filters(RestrictManagePosts::TAG_FILTER_META_KEYS);
     }
 }
