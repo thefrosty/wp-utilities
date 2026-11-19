@@ -11,7 +11,6 @@ use TheFrosty\WpUtilities\WpAdmin\Models\OptionValueLabel;
 use WP_Query;
 use function apply_filters;
 use function array_pad;
-use function array_shift;
 use function defined;
 use function esc_attr;
 use function esc_html__;
@@ -306,11 +305,13 @@ class RestrictManagePosts extends AbstractHookProvider implements HttpFoundation
                 'orderby' => 'title',
                 'order' => 'ASC',
             ]);
-            if (!empty($search->posts) && is_numeric(array_shift($search->posts))) {
+            // Use the first matching post: `array_shift()` used to be called twice, which skipped the first match.
+            $post_id = $search->posts[0] ?? null;
+            if (is_numeric($post_id)) {
                 $query->set('meta_query', [
                     [
                         'key' => sanitize_text_field($matches['meta_key']),
-                        'value' => array_shift($search->posts),
+                        'value' => (int)$post_id,
                     ],
                 ]);
 

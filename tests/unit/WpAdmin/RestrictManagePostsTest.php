@@ -160,4 +160,40 @@ class RestrictManagePostsTest extends TestCase
         }
         remove_all_filters(RestrictManagePosts::TAG_FILTER_META_KEYS);
     }
+
+    public function testAdvancedSearchUsesTheFirstMatchingPostId(): void
+    {
+        $this->resetRequest();
+        $first = wp_insert_post(['post_title' => 'Aardvark Advanced Lookup', 'post_status' => 'publish']);
+        $second = wp_insert_post(['post_title' => 'Zebra Advanced Lookup', 'post_status' => 'publish']);
+        add_filter(RestrictManagePosts::TAG_FILTER_META_KEYS, static fn(): array => [
+            'Keys' => [new OptionValueLabel('related_post', 'Related')],
+        ]);
+
+        global $pagenow, $wp_the_query;
+        $pagenow = 'edit.php';
+        $meta_values = [];
+        foreach (['Advanced Lookup' => $first, 'Zebra Advanced Lookup' => $second] as $title => $expected) {
+            $this->resetRequest();
+            $this->manager->setRequest(Request::create('/wp-admin/edit.php', 'GET', [
+                RestrictManagePosts::ADMIN_FILTER_FIELD_NAME => 'related_post',
+                RestrictManagePosts::ADMIN_FILTER_FIELD_VALUE => '',
+                RestrictManagePosts::ADMIN_SEARCH_FIELD_VALUE =>
+                    sprintf('meta_key:"related_post" post_title:"%s" post_type:"post"', $title),
+            ]));
+            $query = new WP_Query();
+            $wp_the_query = $query;
+            (new ReflectionMethod(RestrictManagePosts::class, 'preGetPostsFilterMetaQuery'))
+                ->invoke($this->manager, $query);
+            $meta_values[$title] = [$expected, $query->get('meta_query')[0]['value'] ?? null];
+        }
+        remove_all_filters(RestrictManagePosts::TAG_FILTER_META_KEYS);
+        wp_delete_post($first, true);
+        wp_delete_post($second, true);
+
+        // Two matches (ordered by title): the first is used, not the second.
+        $this->assertSame($first, $meta_values['Advanced Lookup'][1]);
+        // A single match: previously `null`.
+        $this->assertSame($second, $meta_values['Zebra Advanced Lookup'][1]);
+    }
 }
