@@ -118,7 +118,9 @@ trait WpQueryTrait
         array $args = [],
         ?int $expiration = null
     ): array {
-        $paged = 0;
+        // WP_Query treats `paged` 0 and 1 as the first page, so start at 1 (starting at 0 fetched page one twice
+        // and skipped the last page).
+        $paged = 1;
         $post_ids = [];
         do {
             $defaults = [
@@ -135,7 +137,7 @@ trait WpQueryTrait
                     $post_ids[] = $id;
                 }
             }
-        } while ($query->max_num_pages > $paged);
+        } while ($query instanceof WP_Query && $query->max_num_pages >= $paged);
 
         return $post_ids;
     }
