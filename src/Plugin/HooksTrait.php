@@ -61,11 +61,10 @@ trait HooksTrait
      */
     protected function addFilterOnce(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
     {
-        $singular = function () use ($hook, $method, $priority, $arg_count, &$singular): Closure {
-            $filter = $this->mapFilter($this->getWpFilterId($hook, $method, $priority), $method, $arg_count);
-            $this->removeFilter($hook, $singular, $priority);
+        $singular = function (mixed ...$args) use ($hook, $method, $priority, $arg_count, &$singular): mixed {
+            $this->removeFilter($hook, $singular, $priority, $arg_count);
 
-            return $filter;
+            return call_user_func_array($method, array_slice($args, 0, $arg_count));
         };
 
         return $this->addFilter($hook, $singular, $priority, $arg_count);
@@ -99,11 +98,10 @@ trait HooksTrait
      */
     protected function addActionOnce(string $hook, callable $method, int $priority = 10, int $arg_count = 1): bool
     {
-        $singular = function () use ($hook, $method, $priority, $arg_count, &$singular): Closure {
-            $filter = $this->mapFilter($this->getWpFilterId($hook, $method, $priority), $method, $arg_count);
-            $this->removeAction($hook, $singular, $priority);
+        $singular = function (mixed ...$args) use ($hook, $method, $priority, $arg_count, &$singular): mixed {
+            $this->removeAction($hook, $singular, $priority, $arg_count);
 
-            return $filter;
+            return call_user_func_array($method, array_slice($args, 0, $arg_count));
         };
 
         return $this->addAction($hook, $singular, $priority, $arg_count);
