@@ -52,6 +52,50 @@ class FunctionsTest extends TestCase
         $this->assertNull(getIpAddress($request));
     }
 
+    public function testGetIpAddressIgnoresSpoofableHeadersByDefault(): void
+    {
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_CLIENT_IP' => '1.1.1.1',
+            'HTTP_X_FORWARDED_FOR' => '2.2.2.2',
+            'HTTP_CF_CONNECTING_IP' => '3.3.3.3',
+            'HTTP_FORWARDED' => 'for=4.4.4.4',
+        ]);
+
+        $this->assertSame('203.0.113.10', getIpAddress($request));
+    }
+
+    public function testGetIpAddressReadsForwardedForFromTrustedProxies(): void
+    {
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '10.0.0.2',
+            'HTTP_X_FORWARDED_FOR' => '6.6.6.6, 198.51.100.7, 10.0.0.1',
+        ]);
+
+        // The left-most entry is client supplied; the client is the first hop that isn't a trusted proxy.
+        $this->assertSame('198.51.100.7', getIpAddress($request, ['10.0.0.0/8']));
+        // Untrusted REMOTE_ADDR: the header is ignored.
+        $this->assertSame('10.0.0.2', getIpAddress($request, ['192.168.0.0/16']));
+
+        add_filter('thefrosty/wp_utilities/trusted_proxies', static fn(): array => ['10.0.0.0/8']);
+        add_filter('thefrosty/wp_utilities/trusted_proxy_header', static fn(): string => 'HTTP_CF_CONNECTING_IP');
+        $request->server->set('HTTP_CF_CONNECTING_IP', '198.51.100.99');
+        $ip = getIpAddress($request);
+        remove_all_filters('thefrosty/wp_utilities/trusted_proxies');
+        remove_all_filters('thefrosty/wp_utilities/trusted_proxy_header');
+        $this->assertSame('198.51.100.99', $ip);
+    }
+
+    public function testGetIpAddressKeepsTheProxyOnAMalformedChain(): void
+    {
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '10.0.0.2',
+            'HTTP_X_FORWARDED_FOR' => 'not-an-ip',
+        ]);
+
+        $this->assertSame('10.0.0.2', getIpAddress($request, ['10.0.0.0/8']));
+    }
+
     public function testGetRequest(): void
     {
         $request = Request::createFromGlobals();

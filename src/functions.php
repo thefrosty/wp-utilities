@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities;
 
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Exceptions\TerminationException;
+use function apply_filters;
+use function array_filter;
+use function array_map;
+use function array_reverse;
+use function explode;
 use function filter_var;
 use function get_bloginfo;
 use function is_array;
 use function is_callable;
+use function is_string;
 use function sanitize_text_field;
 use function version_compare;
 use function wp_enqueue_script;
@@ -47,36 +54,39 @@ function exitOrThrow(
 }
 
 /**
- * Get the clients IP.
- * @ref https://dev.to/rogeriotaques/an-easy-way-to-get-the-real-client-ip-in-php-4pii
+ * Get the client's IP.
+ * Uses `REMOTE_ADDR`, which can't be spoofed by the client. Proxy headers (`X-Forwarded-For` by default) are only
+ * read when `REMOTE_ADDR` is a trusted proxy, configured via the `thefrosty/wp_utilities/trusted_proxies` filter
+ * (IPs or CIDR ranges, e.g. your load balancer or Cloudflare's ranges). The header can be changed with the
+ * `thefrosty/wp_utilities/trusted_proxy_header` filter (e.g. `HTTP_CF_CONNECTING_IP`).
  * @param Request|null $request
+ * @param string[]|null $trusted_proxies Optional trusted proxies, overrides the filter.
  * @return string|null
  */
-function getIpAddress(?Request $request = null): ?string
+function getIpAddress(?Request $request = null, ?array $trusted_proxies = null): ?string
 {
     $request ??= Request::createFromGlobals();
 
-    $ip = $request->server->get(
-        'HTTP_CLIENT_IP',
-        $request->server->get(
-            'HTTP_CF_CONNECTING_IP',
-            $request->server->get(
-                'HTTP_X_FORWARDED',
-                $request->server->get(
-                    'HTTP_X_FORWARDED_FOR',
-                    $request->server->get(
-                        'HTTP_FORWARDED',
-                        $request->server->get(
-                            'HTTP_FORWARDED_FOR',
-                            $request->server->get('REMOTE_ADDR')
-                        )
-                    )
-                )
-            )
-        )
-    );
+    $ip = $request->server->get('REMOTE_ADDR');
+    $trusted_proxies ??= (array)apply_filters('thefrosty/wp_utilities/trusted_proxies', []);
+    if (is_string($ip) && $trusted_proxies !== [] && IpUtils::checkIp($ip, $trusted_proxies)) {
+        $header = apply_filters('thefrosty/wp_utilities/trusted_proxy_header', 'HTTP_X_FORWARDED_FOR');
+        $forwarded = $request->server->get(is_string($header) ? $header : 'HTTP_X_FORWARDED_FOR', '');
+        $hops = array_reverse(array_filter(array_map('trim', explode(',', (string)$forwarded))));
+        // Walk from the closest hop: the client is the first address that isn't one of our proxies.
+        foreach ($hops as $hop) {
+            if (!filter_var($hop, FILTER_VALIDATE_IP)) {
+                break; // Malformed chain, keep the last trusted address.
+            }
 
-    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+            $ip = $hop;
+            if (!IpUtils::checkIp($hop, $trusted_proxies)) {
+                break;
+            }
+        }
+    }
+
+    if (!is_string($ip) || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
         return null;
     }
 
