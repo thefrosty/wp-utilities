@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Api;
 
+use function get_option;
 use function get_transient;
 use function is_numeric;
 use function set_transient;
@@ -75,14 +76,9 @@ trait TransientsTrait
      */
     public function getTransientTimeout(string $transient): ?int
     {
-        global $wpdb;
-        $timeout = $wpdb->get_col(
-            "
-SELECT option_value
-FROM $wpdb->options
-WHERE option_name
-LIKE '%_transient_timeout_$transient%'"
-        );
-        return !isset($timeout[0]) || !is_numeric($timeout[0]) ? null : (int)$timeout[0];
+        // Read the exact option (no raw SQL / LIKE): avoids SQL injection and matching other transients.
+        $timeout = get_option('_transient_timeout_' . $transient);
+
+        return is_numeric($timeout) ? (int)$timeout : null;
     }
 }

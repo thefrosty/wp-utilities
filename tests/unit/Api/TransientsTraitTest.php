@@ -76,4 +76,16 @@ class TransientsTraitTest extends TestCase
         delete_transient($transientName);
         $this->assertEquals(null, $this->transientsTrait->getTransientTimeout($transientName));
     }
+
+    public function testGetTransientTimeoutIsNotInjectableAndMatchesExactly(): void
+    {
+        $this->transientsTrait->setTransient('abc_long_name', 'something', 3600);
+
+        // A LIKE '%...%' query would have matched `abc_long_name` for `long`, or everything for `%`.
+        $this->assertNull($this->transientsTrait->getTransientTimeout('long'));
+        $this->assertNull($this->transientsTrait->getTransientTimeout('%'));
+        $this->assertNull($this->transientsTrait->getTransientTimeout("x' OR '1'='1"));
+        $this->assertIsInt($this->transientsTrait->getTransientTimeout('abc_long_name'));
+        delete_transient('abc_long_name');
+    }
 }
