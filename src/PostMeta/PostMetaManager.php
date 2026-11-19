@@ -15,6 +15,7 @@ use function is_string;
 use function update_post_meta;
 use function wp_is_post_revision;
 use function wp_nonce_field;
+use function wp_verify_nonce;
 
 /**
  * Class PostMetaManager
@@ -81,6 +82,11 @@ class PostMetaManager extends AbstractManager
             return;
         }
 
+        // Only update fields that were submitted; a missing key must not wipe the stored value.
+        if (!$this->getRequest()->request->has($field->getId())) {
+            return;
+        }
+
         $value = $field->sanitize($this->getRequest()->request->get($field->getId()));
         update_post_meta($this->post->ID, $field->getId(), $value);
     }
@@ -119,6 +125,13 @@ class PostMetaManager extends AbstractManager
         }
 
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        // Only save when our meta box was submitted (protects against CSRF, and against Quick Edit, REST and
+        // programmatic `wp_update_post()` calls that fire `save_post` without our fields).
+        $nonce = $this->getRequest()->request->all()[$this->id] ?? null;
+        if (!is_string($nonce) || !wp_verify_nonce($nonce, $this->id)) {
             return;
         }
 
