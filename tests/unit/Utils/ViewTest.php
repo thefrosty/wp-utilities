@@ -28,6 +28,7 @@ class ViewTest extends TestCase
             mkdir($this->directory);
         }
         file_put_contents($this->directory . '/hello.php', '<?php echo $name;');
+        file_put_contents(sys_get_temp_dir() . '/wp-utilities-outside.php', '<?php echo "outside";');
     }
 
     public function testRenderRetrieveAndSharedVars(): void
@@ -51,5 +52,30 @@ class ViewTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $view->render('missing');
+    }
+
+    public function testViewDataCannotOverrideTheIncludedFile(): void
+    {
+        $view = new View();
+        $view->addPath($this->directory);
+
+        // Previously extract() ran in load()'s scope and `viewPath` replaced the file being included.
+        $output = $view->retrieve('hello', [
+            'name' => 'Ada',
+            'viewPath' => sys_get_temp_dir() . '/wp-utilities-outside.php',
+            'file' => sys_get_temp_dir() . '/wp-utilities-outside.php',
+        ]);
+
+        $this->assertSame('Ada', $output);
+    }
+
+    public function testViewNamesCannotTraverseOutOfTheViewPaths(): void
+    {
+        $view = new View();
+        $view->addPath($this->directory);
+
+        $this->assertNull($view->get('../wp-utilities-outside'));
+        $this->expectException(RuntimeException::class);
+        $view->render('../wp-utilities-outside');
     }
 }

@@ -62,4 +62,13 @@ class TemplateLoaderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->plugin->getTemplateLoader()->getTemplatePart('missing');
     }
+
+    public function testTemplateNamesCannotTraverseOutOfTheTemplatePaths(): void
+    {
+        // `plugin.php` exists one level above `views/`.
+        $loader = $this->plugin->getTemplateLoader();
+
+        $this->expectException(RuntimeException::class);
+        $loader->getTemplatePart('../plugin');
+    }
 }
