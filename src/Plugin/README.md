@@ -7,8 +7,8 @@ Initiate the factory like so:
 ```php
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 (PluginFactory::create('plugin-slug'))
-	->addd(new Members()) // Class extends `AbstractHookProvider` or implements `WpHooksInterface` 
-	->addd(new SomeOtherClass()) 
+	->add(new Members()) // Class extends `AbstractHookProvider` or implements `WpHooksInterface` 
+	->add(new SomeOtherClass()) 
 	->initialize();
 ```
 
@@ -18,8 +18,8 @@ use TheFrosty\WpUtilities\Plugin\PluginFactory;
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 $plugin = PluginFactory::create('plugin-slug');
 $plugin
-    ->addd(new SomeOtherClass())
-    ->addd(new SomeOtherNewClass())
+    ->add(new SomeOtherClass())
+    ->add(new SomeOtherNewClass())
 	->initialize();
 ```
 
@@ -29,7 +29,7 @@ You can also use the latter statement with conditions available on `plugins_load
 if (\is_customize_preview()) {
     /** @var \TheFrosty\WpUtilities\Plugin\Plugin $plugin */
     $plugin
-        ->addd(new SomeOtherCustomizeClass())
+        ->add(new SomeOtherCustomizeClass())
         ->initialize();
 }
 ```
@@ -38,7 +38,7 @@ If you'd like to initialize a class on a specific action hook use `addOnHook()` 
 
 ```php
 $plugin
-    ->addd(new SomeOtherClass())
+    ->add(new SomeOtherClass())
     ->addOnHook(SomeClassToLoad::class, tag: 'admin_init', priority: 10, admin_only: true)
 	->initialize();
 ```
@@ -47,8 +47,8 @@ If you'd like to initialize a class on a specific action hook use and meet a con
 
 ```php
 $plugin
-    ->addd(new SomeOtherClass())
-    ->addOnCondition(SomeClassToLoad::class, condtion: static fn(): bool => true, tag: 'admin_init', priority: 10, admin_only: true)
+    ->add(new SomeOtherClass())
+    ->addOnCondition(SomeClassToLoad::class, function: static fn(): bool => true, tag: 'admin_init', priority: 10, admin_only: true)
 	->initialize();
 ```
 
@@ -56,7 +56,7 @@ If you'd like to initialize a class right away if a condition is met use `addIfC
 
 ```php
 $plugin
-    ->addd(new SomeOtherClass())
-    ->addOnCondition(SomeClassToLoad::class, condtion: \class_exists('SomeClassThatIsRequired'))
+    ->add(new SomeOtherClass())
+    ->addIfCondition(SomeClassToLoad::class, condition: \class_exists('SomeClassThatIsRequired'))
 	->initialize();
 ```
