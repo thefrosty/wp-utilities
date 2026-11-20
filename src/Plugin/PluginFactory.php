@@ -80,8 +80,8 @@ class PluginFactory
      * Attach a PSR-11 container to the plugin and register the plugin in it under its slug.
      * Resolution order:
      *  1. The container passed to `create()` (any PSR-11 implementation: PHP-DI, Pimple, Symfony, …).
-     *  2. Pimple, when `pimple/pimple` is installed (unchanged v3 behaviour, so existing plugins keep working).
-     *  3. PHP-DI, when `php-di/php-di` is installed (autowiring enabled).
+     *  2. PHP-DI, when `php-di/php-di` is installed (autowiring enabled).
+     *  3. Pimple, when `pimple/pimple` is installed (the v3 default).
      *  4. No container.
      * @param Plugin $plugin
      * @param ContainerInterface|null $container
@@ -102,12 +102,12 @@ class PluginFactory
 
     /**
      * Build the default container for the first installed package, if any.
-     * @param string[]|null $candidates Container classes to try, in order. Defaults to Pimple, then PHP-DI.
+     * @param string[]|null $candidates Container classes to try, in order. Defaults to PHP-DI, then Pimple.
      * @return ContainerInterface|null
      */
     private static function getDefaultContainer(?array $candidates = null): ?ContainerInterface
     {
-        foreach ($candidates ?? [PimpleContainer::class, ContainerBuilder::class] as $candidate) {
+        foreach ($candidates ?? [ContainerBuilder::class, PimpleContainer::class] as $candidate) {
             if (!class_exists($candidate)) {
                 continue;
             }
@@ -121,7 +121,8 @@ class PluginFactory
     }
 
     /**
-     * PSR-11 is read-only, so registering the plugin depends on the implementation.
+     * Register the plugin in the container under its slug, when the container is writable (PSR-11 is read-only).
+     * Mirrors ContainerWriter::set(), kept inline so creating a plugin doesn't depend on another class.
      * @param ContainerInterface $container
      * @param Plugin $plugin
      */

@@ -67,54 +67,58 @@ $plugin
 and registers the plugin in it under its slug. The container is resolved in this order:
 
 1. A container you pass in: `PluginFactory::create('plugin-slug', __FILE__, $container)` (any PSR-11 implementation).
-2. [Pimple](https://github.com/silexphp/Pimple), when `pimple/pimple` is installed (the v3 behaviour).
-3. [PHP-DI](https://php-di.org), when `php-di/php-di` is installed (autowiring enabled).
+2. [PHP-DI](https://php-di.org), when `php-di/php-di` is installed (autowiring enabled). **Recommended.**
+3. [Pimple](https://github.com/silexphp/Pimple), when `pimple/pimple` is installed (the v3 default).
 4. No container.
 
 Library code only relies on `get()`/`has()` (e.g. `Viewable::getView()`), so any container works.
 
-### Moving a plugin from Pimple to PHP-DI
+### Service providers
+
+`TheFrosty\WpUtilities\Plugin\ServiceProviderInterface` replaces `Pimple\ServiceProviderInterface` and works with
+either container. A provider returns its entries; closures are shared factories and receive the container when the
+parameter is type-hinted `Psr\Container\ContainerInterface`:
 
 ```php
-// Before (Pimple)
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Psr\Container\ContainerInterface;
+use TheFrosty\WpUtilities\Plugin\ServiceProviderInterface;
+use TheFrosty\WpUtilities\Utils\View;
 
 class ServiceProvider implements ServiceProviderInterface
 {
-    public function register(Container $pimple): void
-    {
-        $pimple['wp_utilities.view'] = static function (): View {
-            $view = new View();
-            $view->addPath(__DIR__ . '/views/');
+    public const string WP_UTILITIES_VIEW = 'wp_utilities.view';
+    public const string UPGRADE_PROVIDER = 'upgrade.provider';
 
-            return $view;
-        };
+    public function getDefinitions(): array
+    {
+        return [
+            self::WP_UTILITIES_VIEW => static function (): View {
+                $view = new View();
+                $view->addPath(__DIR__ . '/views/');
+
+                return $view;
+            },
+            self::UPGRADE_PROVIDER => static fn(ContainerInterface $container): Upgrade => new Upgrade($container),
+        ];
     }
 }
 
-$plugin->getContainer()->register(new ServiceProvider());
-$plugin->add($plugin->getContainer()['upgrade.provider']);
+$plugin = PluginFactory::create('plugin-slug');
+$plugin->addServiceProvider(new ServiceProvider())
+    ->add($plugin->getContainer()->get(ServiceProvider::UPGRADE_PROVIDER))
+    ->initialize();
 ```
 
-```php
-// After (PHP-DI): definitions are shared by default, like Pimple services.
-use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface;
+### Migrating a v3 (Pimple) plugin
 
-$container = (new ContainerBuilder())
-    ->addDefinitions([
-        'wp_utilities.view' => static function (): View {
-            $view = new View();
-            $view->addPath(__DIR__ . '/views/');
+| v3 (Pimple) | v4 |
+|---|---|
+| `class ServiceProvider implements Pimple\ServiceProviderInterface` | `implements TheFrosty\WpUtilities\Plugin\ServiceProviderInterface` |
+| `public function register(Container $pimple): void { $pimple['id'] = fn() => …; }` | `public function getDefinitions(): array { return ['id' => fn() => …]; }` |
+| `$plugin->getContainer()->register(new ServiceProvider())` | `$plugin->addServiceProvider(new ServiceProvider())` |
+| `$container['id']` | `$container->get('id')` |
+| `$container['id'] = fn() => …` | `ContainerWriter::set($container, 'id', fn() => …)` (or the container's own API) |
+| type-hint `Pimple\Container` | type-hint `Psr\Container\ContainerInterface` |
+| require `pimple/pimple` | require `php-di/php-di` |
 
-            return $view;
-        },
-        // Autowired: constructor dependencies are resolved from their type hints.
-        'upgrade.provider' => \DI\autowire(Upgrade::class),
-    ])
-    ->build();
-
-$plugin = PluginFactory::create('plugin-slug', __FILE__, $container);
-$plugin->add($container->get('upgrade.provider'));
-```
+PHP-DI can also autowire classes with no definition at all: `$container->get(Upgrade::class)`.

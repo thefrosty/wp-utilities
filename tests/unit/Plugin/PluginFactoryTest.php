@@ -59,7 +59,7 @@ class PluginFactoryTest extends TestCase
         $this->assertSame(__FILE__, $plugin->getFile());
         $this->assertInstanceOf(Init::class, $plugin->getInit());
         $this->assertInstanceOf(TemplateLoader::class, $plugin->getTemplateLoader());
-        $this->assertInstanceOf(Container::class, $plugin->getContainer());
+        $this->assertInstanceOf(DiContainer::class, $plugin->getContainer());
         $this->assertSame($plugin, $plugin->getContainer()->get('factory-test'));
         $this->assertSame($plugin, PluginFactory::getInstance('factory-test'));
     }
@@ -104,27 +104,35 @@ class PluginFactoryTest extends TestCase
         $this->assertInstanceOf(PlainObject::class, $plugin->getContainer()->get(PlainObject::class));
     }
 
-    public function testPimpleRemainsTheDefaultWhenInstalled(): void
+    public function testPhpDiIsTheDefaultContainerWhenInstalled(): void
     {
         $plugin = PluginFactory::create('factory-default', __FILE__);
 
+        $this->assertInstanceOf(DiContainer::class, $plugin->getContainer());
+        $this->assertSame($plugin, $plugin->getContainer()->get('factory-default'));
+    }
+
+    public function testCreateRegistersThePluginInAPimpleContainer(): void
+    {
+        $plugin = PluginFactory::create('factory-pimple', __FILE__, new Container());
+
         $this->assertInstanceOf(Container::class, $plugin->getContainer());
-        $this->assertSame($plugin, $plugin->getContainer()['factory-default']);
+        $this->assertSame($plugin, $plugin->getContainer()['factory-pimple']);
     }
 
     public function testDefaultContainerResolutionOrder(): void
     {
         $default = new ReflectionMethod(PluginFactory::class, 'getDefaultContainer');
 
-        $this->assertInstanceOf(Container::class, $default->invoke(null));
-        // PHP-DI is used when Pimple isn't installed.
-        $this->assertInstanceOf(
-            DiContainer::class,
-            $default->invoke(null, ['Missing\\Container', ContainerBuilder::class])
-        );
+        // PHP-DI first, then Pimple.
+        $this->assertInstanceOf(DiContainer::class, $default->invoke(null));
         $this->assertInstanceOf(
             Container::class,
-            $default->invoke(null, [PimpleContainer::class, ContainerBuilder::class])
+            $default->invoke(null, ['Missing\\Container', PimpleContainer::class])
+        );
+        $this->assertInstanceOf(
+            DiContainer::class,
+            $default->invoke(null, [ContainerBuilder::class, PimpleContainer::class])
         );
         // Neither installed: no container.
         $this->assertNull($default->invoke(null, ['Missing\\Container']));
