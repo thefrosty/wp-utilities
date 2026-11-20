@@ -38,6 +38,7 @@
   "require-dev": {
     "ext-simplexml": "*",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+    "php-di/php-di": "^7.1",
     "php-stubs/wordpress-stubs": "^7.0",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpunit/php-code-coverage": "^11",
@@ -56,6 +57,8 @@
     "htmlburger/carbon-fields": "WordPress Custom Fields Library.",
     "illuminate/encryption": "Laravel level encryption & decryption.",
     "jjgrainger/posttypes": "Simple WordPress custom post types.",
+    "php-di/php-di": "PSR-11 container with autowiring; used by PluginFactory when Pimple is not installed (v4).",
+    "pimple/pimple": "Simple PSR-11 container; PluginFactory uses it by default when installed.",
     "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
   },
   "autoload": {

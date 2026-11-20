@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
 
+use ArrayAccess;
+use DI\Container as DiContainer;
+use DI\ContainerBuilder;
 use Pimple\Container as PimpleContainer;
 use Psr\Container\ContainerInterface;
-use ReflectionMethod;
 use function class_exists;
 use function debug_backtrace;
-use function interface_exists;
 use function plugin_basename;
 use function plugin_dir_path;
 use function plugin_dir_url;
@@ -40,10 +41,14 @@ class PluginFactory
      * @param string $slug Plugin slug.
      * @param string|null $filename Optional. Absolute path to the main plugin file.
      *                         This should be passed if the calling file is not the main plugin file.
+     * @param ContainerInterface|null $container Optional. Any PSR-11 container to use instead of the default.
      * @return Plugin A Plugin object instance.
      */
-    public static function create(string $slug, ?string $filename = ''): Plugin
-    {
+    public static function create(
+        string $slug,
+        ?string $filename = '',
+        ?ContainerInterface $container = null
+    ): Plugin {
         if (isset(self::$instances[$slug]) && self::$instances[$slug] instanceof Plugin) {
             return self::$instances[$slug];
         }
@@ -64,7 +69,7 @@ class PluginFactory
             ->setSlug($slug)
             ->setUrl(plugin_dir_url($filename));
 
-        $plugin = self::setContainer($plugin);
+        $plugin = self::setContainer($plugin, $container);
         $plugin->setTemplateLoader(new TemplateLoader($plugin));
         self::$instances[$slug] = $plugin;
 
@@ -72,40 +77,61 @@ class PluginFactory
     }
 
     /**
-     * Set the Pimple\Container if it's available.
+     * Attach a PSR-11 container to the plugin and register the plugin in it under its slug.
+     * Resolution order:
+     *  1. The container passed to `create()` (any PSR-11 implementation: PHP-DI, Pimple, Symfony, …).
+     *  2. Pimple, when `pimple/pimple` is installed (unchanged v3 behaviour, so existing plugins keep working).
+     *  3. PHP-DI, when `php-di/php-di` is installed (autowiring enabled).
+     *  4. No container.
      * @param Plugin $plugin
+     * @param ContainerInterface|null $container
      * @return Plugin
      */
-    private static function setContainer(Plugin $plugin): Plugin
+    private static function setContainer(Plugin $plugin, ?ContainerInterface $container = null): Plugin
     {
-        if (
-            class_exists(PimpleContainer::class) &&
-            interface_exists(ContainerInterface::class)
-        ) {
-            $container = self::getContainer();
-            $plugin->setContainer($container);
-            $container[$plugin->getSlug()] = $plugin;
+        $container ??= self::getDefaultContainer();
+        if (!$container instanceof ContainerInterface) {
+            return $plugin;
         }
+
+        $plugin->setContainer($container);
+        self::registerPlugin($container, $plugin);
 
         return $plugin;
     }
 
     /**
-     * Return a "Container" stub for ContainerInterface v1.0.0, v1.1.0 and/or >= v2.0.0.
-     * @return ContainerInterface
+     * Build the default container for the installed package, if any.
+     * @return ContainerInterface|null
      */
-    private static function getContainer(): ContainerInterface
+    private static function getDefaultContainer(): ?ContainerInterface
     {
-        $reflection = new ReflectionMethod(ContainerInterface::class, 'has');
-        if ($reflection->hasReturnType() && $reflection->getReturnType()) {
-            return new Container(); // ContainerInterface >= 2.0.0.
+        if (class_exists(PimpleContainer::class)) {
+            return new Container();
         }
 
-        $parameter = $reflection->getParameters()[0] ?? null;
-        if ($parameter && $parameter->getType() && $parameter->getType()->getName() === 'string') {
-            return new Container110();
+        if (class_exists(ContainerBuilder::class)) {
+            return new ContainerBuilder()->useAutowiring(true)->build();
         }
 
-        return new Container100();
+        return null;
+    }
+
+    /**
+     * PSR-11 is read-only, so registering the plugin depends on the implementation.
+     * @param ContainerInterface $container
+     * @param Plugin $plugin
+     */
+    private static function registerPlugin(ContainerInterface $container, Plugin $plugin): void
+    {
+        if ($container instanceof DiContainer) {
+            $container->set($plugin->getSlug(), $plugin);
+
+            return;
+        }
+
+        if ($container instanceof ArrayAccess) {
+            $container[$plugin->getSlug()] = $plugin;
+        }
     }
 }
