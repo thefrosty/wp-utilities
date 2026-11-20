@@ -84,7 +84,12 @@ class ServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $pimple): void
     {
-        $pimple['wp_utilities.view'] = static fn(): View => (new View())->addPath(__DIR__ . '/views/');
+        $pimple['wp_utilities.view'] = static function (): View {
+            $view = new View();
+            $view->addPath(__DIR__ . '/views/');
+
+            return $view;
+        };
     }
 }
 
