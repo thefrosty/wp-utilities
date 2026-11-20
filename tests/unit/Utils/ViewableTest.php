@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Utils;
 
+use DI\ContainerBuilder;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -87,5 +88,31 @@ class ViewableTest extends TestCase
             }
         };
         $this->assertNull($missing->expose('missing'));
+    }
+
+    public function testGetViewResolvesAPhpDiDefinition(): void
+    {
+        // The PHP-DI equivalent of a Pimple service provider's `$pimple['wp_utilities.view'] = fn() => new View()`.
+        $container = new ContainerBuilder()->addDefinitions([
+            'wp_utilities.view' => static fn(): View => new View(),
+        ])->build();
+        $host = new class($container) {
+            use ContainerAwareTrait;
+            use Viewable;
+
+            public function __construct(ContainerInterface $container)
+            {
+                $this->setContainer($container);
+            }
+
+            public function expose(string $id): ?View
+            {
+                return $this->getView($id);
+            }
+        };
+
+        $view = $host->expose('wp_utilities.view');
+        $this->assertInstanceOf(View::class, $view);
+        $this->assertSame($view, $container->get('wp_utilities.view'), 'PHP-DI entries are shared by default.');
     }
 }
