@@ -63,4 +63,90 @@ class AbstractPostTypeTest extends TestCase
         $this->assertInstanceOf(PostType::class, $registered);
         $this->assertNotNull(get_post_type_object('book'));
     }
+
+    public function testConstructorRequiresTheClassProperties(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Required class properties not set.');
+        new class extends AbstractPostType {
+            public const array|string|null POST_TYPE = 'book_missing_props';
+            public const string|null SLUG = 'book_missing_props';
+
+            public function addHooks(): void
+            {
+            }
+        };
+    }
+
+    public function testBuildBase64DataImageFromTheSvg(): void
+    {
+        $type = new class extends AbstractPostType {
+            public const array|string|null POST_TYPE = 'book_icon';
+            public const string|null SLUG = 'book_icon';
+            public const string|null URL_SLUG = 'books';
+
+            public function __construct()
+            {
+                $this->setNames(['singular' => 'Book', 'plural' => 'Books']);
+                $this->setArgs([]);
+                $this->setLabels(['name' => 'Books']);
+                parent::__construct();
+            }
+
+            public function addHooks(): void
+            {
+            }
+
+            public function icon(): string
+            {
+                return $this->buildBase64DataImage();
+            }
+
+            public function args(): array
+            {
+                return $this->getArgs();
+            }
+
+            protected function getSvg(): string
+            {
+                return '<svg viewBox="0 0 20 20"><path d="M0 0h20v20H0z"/></svg>';
+            }
+        };
+
+        $icon = $type->icon();
+        $this->assertStringStartsWith('data:image/svg+xml;base64, ', $icon);
+        $this->assertSame(
+            '<svg width="20" height="20" viewBox="0 0 20 20"><path fill="black" d="M0 0h20v20H0z"/></svg>',
+            base64_decode(substr($icon, strlen('data:image/svg+xml;base64, ')))
+        );
+        // URL_SLUG overrides the slug derived from SLUG.
+        $this->assertSame('books', $type->args()['rewrite']['slug']);
+    }
+
+    public function testTheDefaultSvgIsEmpty(): void
+    {
+        $type = new class extends AbstractPostType {
+            public const array|string|null POST_TYPE = 'book_no_icon';
+            public const string|null SLUG = 'book_no_icon';
+
+            public function __construct()
+            {
+                $this->setNames(['singular' => 'Book', 'plural' => 'Books']);
+                $this->setArgs([]);
+                $this->setLabels(['name' => 'Books']);
+                parent::__construct();
+            }
+
+            public function addHooks(): void
+            {
+            }
+
+            public function icon(): string
+            {
+                return $this->buildBase64DataImage();
+            }
+        };
+
+        $this->assertSame('data:image/svg+xml;base64, ', $type->icon());
+    }
 }

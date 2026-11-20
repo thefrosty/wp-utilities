@@ -9,6 +9,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\Attributes\UsesTrait;
 use ReflectionProperty;
+use TheFrosty\WpUtilities\Api\ValidationRules\IsArray;
+use TheFrosty\WpUtilities\Api\ValidationRules\IsCallable;
+use TheFrosty\WpUtilities\Api\ValidationRules\IsInstanceOf;
 use TheFrosty\WpUtilities\Plugin\HttpFoundationRequestTrait;
 use TheFrosty\WpUtilities\PostMeta\AbstractManager;
 use TheFrosty\WpUtilities\PostMeta\Fields\Text;
@@ -23,6 +26,9 @@ use WP_Post;
  */
 #[CoversClass(PostMetaManager::class)]
 #[UsesClass(FieldsRegistrar::class)]
+#[UsesClass(IsArray::class)]
+#[UsesClass(IsCallable::class)]
+#[UsesClass(IsInstanceOf::class)]
 #[UsesClass(Text::class)]
 #[UsesTrait(HttpFoundationRequestTrait::class)]
 #[Group('post-meta')]
@@ -122,6 +128,57 @@ class PostMetaManagerTest extends TestCase
             ->invoke($this->manager, $this->postId, get_post($this->postId));
 
         $this->assertSame('Keep me', get_post_meta($this->postId, 'subtitle', true));
+    }
+
+    public function testAddFieldUsesRegisteredFieldsOnce(): void
+    {
+        FieldsRegistrar::add([
+            'id' => 'wpu_registered',
+            'label' => 'Registered',
+            'field' => Text::class,
+            'single' => true,
+            'type' => 'string',
+            'types' => ['post'],
+        ], 'post');
+
+        $this->manager->addField('wpu_registered', ['post', 'page']);
+        $field = $this->fields()['wpu_registered'] ?? null;
+        $this->assertInstanceOf(Text::class, $field);
+        $this->assertSame($this->manager, $field->manager);
+
+        // Already added: the existing instance is kept.
+        $this->manager->addField('wpu_registered', 'post');
+        $this->assertSame($field, $this->fields()['wpu_registered']);
+        FieldsRegistrar::$fields = [];
+    }
+
+    public function testSaveFieldRequiresAuthorization(): void
+    {
+        $this->setPost(get_post($this->postId));
+        update_post_meta($this->postId, 'subtitle', 'Original');
+        wp_set_current_user(0);
+        $this->manager->getRequest()->request->set('subtitle', 'Unauthorized');
+
+        $this->manager->saveField($this->field);
+
+        $this->assertSame('Original', get_post_meta($this->postId, 'subtitle', true));
+        wp_set_current_user(1);
+    }
+
+    public function testMetaBoxCallbackRendersTheNonceAndFields(): void
+    {
+        update_post_meta($this->postId, 'subtitle', 'Rendered value');
+        (new \ReflectionMethod(PostMetaManager::class, 'addMetaBox'))->invoke($this->manager, get_post($this->postId));
+        $box = $GLOBALS['wp_meta_boxes']['post']['advanced']['default']['details'] ?? null;
+        $this->assertIsArray($box);
+
+        ob_start();
+        $box['callback']();
+        $html = ob_get_clean();
+
+        $this->assertStringContainsString('name="details"', $html);
+        $this->assertStringContainsString('name="subtitle"', $html);
+        $this->assertStringContainsString('value="Rendered value"', $html);
     }
 
     private function fields(): array

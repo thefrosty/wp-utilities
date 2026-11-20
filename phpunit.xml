@@ -29,6 +29,10 @@
         <include>
             <directory>src</directory>
         </include>
+        <exclude>
+            <!-- Logic-free view template: not attributable to a class or function for coverage targets. -->
+            <directory>src/Api/Shortcode/Handler/templates</directory>
+        </exclude>
     </source>
 
     <testsuites>
