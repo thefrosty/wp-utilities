@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use DI\Container as DiContainer;
 use DI\ContainerBuilder;
+use Pimple\Container as PimpleContainer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Psr\Container\ContainerInterface;
+use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use TheFrosty\WpUtilities\Plugin\Container;
@@ -107,5 +110,23 @@ class PluginFactoryTest extends TestCase
 
         $this->assertInstanceOf(Container::class, $plugin->getContainer());
         $this->assertSame($plugin, $plugin->getContainer()['factory-default']);
+    }
+
+    public function testDefaultContainerResolutionOrder(): void
+    {
+        $default = new ReflectionMethod(PluginFactory::class, 'getDefaultContainer');
+
+        $this->assertInstanceOf(Container::class, $default->invoke(null));
+        // PHP-DI is used when Pimple isn't installed.
+        $this->assertInstanceOf(
+            DiContainer::class,
+            $default->invoke(null, ['Missing\\Container', ContainerBuilder::class])
+        );
+        $this->assertInstanceOf(
+            Container::class,
+            $default->invoke(null, [PimpleContainer::class, ContainerBuilder::class])
+        );
+        // Neither installed: no container.
+        $this->assertNull($default->invoke(null, ['Missing\\Container']));
     }
 }

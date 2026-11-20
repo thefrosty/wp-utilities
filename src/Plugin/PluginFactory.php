@@ -101,17 +101,20 @@ class PluginFactory
     }
 
     /**
-     * Build the default container for the installed package, if any.
+     * Build the default container for the first installed package, if any.
+     * @param string[]|null $candidates Container classes to try, in order. Defaults to Pimple, then PHP-DI.
      * @return ContainerInterface|null
      */
-    private static function getDefaultContainer(): ?ContainerInterface
+    private static function getDefaultContainer(?array $candidates = null): ?ContainerInterface
     {
-        if (class_exists(PimpleContainer::class)) {
-            return new Container();
-        }
+        foreach ($candidates ?? [PimpleContainer::class, ContainerBuilder::class] as $candidate) {
+            if (!class_exists($candidate)) {
+                continue;
+            }
 
-        if (class_exists(ContainerBuilder::class)) {
-            return new ContainerBuilder()->useAutowiring(true)->build();
+            return $candidate === ContainerBuilder::class ?
+                new ContainerBuilder()->useAutowiring(true)->build() :
+                new Container();
         }
 
         return null;
