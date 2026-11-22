@@ -18,7 +18,6 @@ use function sprintf;
  * `$pimple->protect($callable)` with Pimple; otherwise both containers call the closure to build the entry.
  * Container implementation courtesy of Slim 3.
  * @package TheFrosty\WpUtilities\Plugin
- * @link https://github.com/slimphp/Slim/blob/e80b0f8b4d23e165783e8bf241b31c35272b0e28/Slim/App.php
  */
 trait ContainerAwareTrait
 {
