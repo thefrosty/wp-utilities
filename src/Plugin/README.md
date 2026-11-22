@@ -109,6 +109,23 @@ $plugin->addServiceProvider(new ServiceProvider())
     ->initialize();
 ```
 
+### Container-aware classes
+
+`Plugin`, `AbstractContainerProvider` (and anything else using `ContainerAwareTrait`) proxy container entries:
+
+| Access | Behaviour (v4) |
+|---|---|
+| `$plugin->getContainer()` | The PSR-11 container, or `null`. |
+| `$plugin->entry` | `$container->get('entry')`; throws a `NotFoundExceptionInterface` if missing, `null` with no container. |
+| `isset($plugin->entry)` | `$container->has('entry')`. |
+| `$plugin->entry(...$args)` | Calls the entry if it's callable; otherwise throws `BadMethodCallException`. |
+
+Both containers call a closure to *build* an entry. To store a closure as a callable instead, wrap it:
+`DI\value($callable)` with PHP-DI, `$pimple->protect($callable)` with Pimple.
+
+`TheFrosty\WpUtilities\Plugin\Container` is the Pimple bridge (Pimple + PSR-11). It needs `pimple/pimple`, is
+only used when PHP-DI isn't installed (or when passed to `PluginFactory::create()`), and is deprecated in v4.
+
 ### Migrating a v3 (Pimple) plugin
 
 | v3 (Pimple) | v4 |
@@ -120,5 +137,8 @@ $plugin->addServiceProvider(new ServiceProvider())
 | `$container['id'] = fn() => …` | `ContainerWriter::set($container, 'id', fn() => …)` (or the container's own API) |
 | type-hint `Pimple\Container` | type-hint `Psr\Container\ContainerInterface` |
 | require `pimple/pimple` | require `php-di/php-di` |
+| `$plugin->entry` returned `true`/`false` (bug) | returns the entry |
+| `$plugin->missingMethod()` returned `false` | throws `BadMethodCallException` |
+| `$pimple->protect($fn)` for a callable entry | `DI\value($fn)` |
 
 PHP-DI can also autowire classes with no definition at all: `$container->get(Upgrade::class)`.
