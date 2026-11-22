@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Tests\Taxonomies;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\Attributes\Group;
-use PostTypes\Taxonomy;
 use TheFrosty\WpUtilities\Exceptions\Exception;
 use TheFrosty\WpUtilities\Plugin\AbstractPlugin;
 use TheFrosty\WpUtilities\Plugin\Init;
 use WP_Taxonomy;
 use TheFrosty\WpUtilities\Taxonomies\AbstractTaxonomy;
+use TheFrosty\WpUtilities\Utils\ObjectNames;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
@@ -20,6 +21,7 @@ use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
  */
 #[CoversClass(AbstractPlugin::class)]
 #[CoversClass(AbstractTaxonomy::class)]
+#[UsesClass(ObjectNames::class)]
 #[CoversClass(Init::class)]
 #[Group('taxonomies')]
 class AbstractTaxonomyTest extends TestCase
@@ -47,16 +49,30 @@ class AbstractTaxonomyTest extends TestCase
                 parent::__construct();
             }
 
-            public function expose(): Taxonomy
+            public function expose(): void
             {
-                return $this->registerTaxonomy();
+                $this->registerTaxonomy();
             }
         };
 
         $this->assertSame(['TERM_FICTION' => 'fiction'], AbstractTaxonomy::getTerms($taxonomy));
-        $this->assertInstanceOf(Taxonomy::class, $taxonomy->expose());
-        do_action('init');
-        $this->assertInstanceOf(WP_Taxonomy::class, get_taxonomy('genre'));
+        $taxonomy->expose();
+        $object = get_taxonomy('genre');
+        $this->assertInstanceOf(WP_Taxonomy::class, $object);
+        $this->assertSame(['book'], $object->object_type);
+        $this->assertSame('Genres', $object->labels->name);
+        $this->assertSame('Add New Genre', $object->labels->add_new_item);
+        $this->assertSame('Separate Genres with commas', $object->labels->separate_items_with_commas);
+        $this->assertSame('bookGenre', $object->rewrite['slug']);
+
+        // Before `init`, registration is deferred to `init` priority 9 (before post types).
+        $fired = $GLOBALS['wp_actions']['init'];
+        unset($GLOBALS['wp_actions']['init']);
+        $taxonomy->expose();
+        $GLOBALS['wp_actions']['init'] = $fired;
+        $this->assertSame(9, has_action('init', [$taxonomy, 'registerTaxonomyNow']));
+        remove_action('init', [$taxonomy, 'registerTaxonomyNow']);
+        unregister_taxonomy('genre');
     }
 
     public function testConstructorRequiresTheClassProperties(): void

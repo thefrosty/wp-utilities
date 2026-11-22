@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Taxonomies;
 
-use PostTypes\Taxonomy;
 use ReflectionClass;
 use TheFrosty\WpUtilities\Exceptions\Exception;
+use function add_action;
 use function array_filter;
-use function is_array;
+use function did_action;
+use function register_taxonomy;
 use function str_contains;
 use const ARRAY_FILTER_USE_KEY;
 
@@ -74,17 +75,42 @@ abstract class AbstractTaxonomy
     }
 
     /**
-     * Register the Taxonomy.
-     * @link https://posttypes.jjgrainger.co.uk/taxonomies
-     * @return Taxonomy
+     * Register the taxonomy with WordPress on `init` priority 9, so it exists before post types register at 10
+     * (immediately when `init` is running or has already fired).
+     * @return void
      */
-    protected function registerTaxonomy(): Taxonomy
+    protected function registerTaxonomy(): void
     {
-        $taxonomy = new Taxonomy($this->getNames(), $this->getArgs(), $this->getLabels());
-        $this->registerPostTypes($taxonomy);
-        $taxonomy->register();
+        if (did_action('init')) {
+            $this->registerTaxonomyNow();
 
-        return $taxonomy;
+            return;
+        }
+
+        add_action('init', [$this, 'registerTaxonomyNow'], 9, 0);
+    }
+
+    /**
+     * Register the taxonomy with WordPress now, for each of the `POST_TYPE` object types.
+     * @internal Called by `registerTaxonomy()`; public only so it can be hooked.
+     * @return void
+     */
+    public function registerTaxonomyNow(): void
+    {
+        register_taxonomy((string)static::TAXONOMY_TYPE, $this->getObjectTypes(), $this->getRegistrationArgs());
+    }
+
+    /**
+     * Get the arguments passed to `register_taxonomy()`: the args, plus labels generated from the names
+     * (overridden by any labels that were set).
+     * @return array
+     */
+    protected function getRegistrationArgs(): array
+    {
+        $args = $this->getArgs();
+        $args['labels'] ??= $this->buildLabels($this->getNames(), $this->getLabels());
+
+        return $args;
     }
 
     /**
@@ -142,16 +168,11 @@ abstract class AbstractTaxonomy
     }
 
     /**
-     * Register the taxonomy to a post type.
-     * @param Taxonomy $taxonomy Taxonomy object.
+     * The post type(s) the taxonomy is registered for.
+     * @return string[]
      */
-    private function registerPostTypes(Taxonomy $taxonomy): void
+    private function getObjectTypes(): array
     {
-        $post_types = static::POST_TYPE;
-        if (!is_array($post_types)) {
-            $post_types = [$post_types];
-        }
-
-        $taxonomy->posttype($post_types);
+        return (array)static::POST_TYPE;
     }
 }

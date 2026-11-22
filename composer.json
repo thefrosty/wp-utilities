@@ -28,7 +28,6 @@
     "ext-json": "*",
     "ext-openssl": "*",
     "blakvghost/php-validator": "^2.3",
-    "jjgrainger/posttypes": "^2.2",
     "johnbillion/args": "^2.1",
     "oscarotero/env": "^2.1",
     "psr/container": "^2.0",
@@ -55,7 +54,7 @@
   "suggest": {
     "htmlburger/carbon-fields": "WordPress Custom Fields Library.",
     "illuminate/encryption": "Laravel level encryption & decryption.",
-    "jjgrainger/posttypes": "Simple WordPress custom post types.",
+    "jjgrainger/posttypes": "Fluent post type & taxonomy registration. No longer used by AbstractPostType/AbstractTaxonomy (v4); require it directly if you use its API.",
     "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
   },
   "autoload": {

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes;
+use function array_replace;
 use function base64_encode;
 use function lcfirst;
 use function sprintf;
@@ -58,6 +59,34 @@ trait PostTypeTrait
             ],
             'delete_with_user' => false,
         ]);
+    }
+
+    /**
+     * Build the post type labels from the singular & plural names; labels that were set take precedence.
+     * @param array $names The names array (`name`, `singular`, `plural`).
+     * @param array $labels The labels that were set.
+     * @return array
+     */
+    protected function buildLabels(array $names, array $labels = []): array
+    {
+        $singular = ObjectNames::singular($names);
+        $plural = ObjectNames::plural($names);
+
+        return array_replace([
+            'name' => $plural,
+            'singular_name' => $singular,
+            'menu_name' => $plural,
+            'all_items' => $plural,
+            'add_new' => 'Add New',
+            'add_new_item' => "Add New {$singular}",
+            'edit_item' => "Edit {$singular}",
+            'new_item' => "New {$singular}",
+            'view_item' => "View {$singular}",
+            'search_items' => "Search {$plural}",
+            'not_found' => "No {$plural} found",
+            'not_found_in_trash' => "No {$plural} found in Trash",
+            'parent_item_colon' => "Parent {$singular}:",
+        ], $labels);
     }
 
     /**
