@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Plugin;
@@ -9,7 +10,10 @@ use ReturnTypeWillChange;
 
 /**
  * Container class.
- * Extends Pimple to satisfy the ContainerInterface >= v2.0.0.
+ * The Pimple bridge: extends `Pimple\Container` (keeping its `ArrayAccess` API) and implements PSR-11, so plugins
+ * that still use Pimple work with code that type-hints `ContainerInterface`.
+ * Requires `pimple/pimple`; `PluginFactory` only uses it when PHP-DI isn't installed (or when passed in explicitly).
+ * @deprecated 4.0.0 Kept so v3 (Pimple) plugins can migrate; prefer PHP-DI. Planned for removal in 5.0.0.
  * @ref https://github.com/php-fig/container/blob/2.0.0/src/ContainerInterface.php
  * @package TheFrosty\WpUtilities\Plugin
  * @see \TheFrosty\WpUtilities\Tests\Plugin\ContainerTest
@@ -19,11 +23,13 @@ class Container extends Pimple implements ContainerInterface
 
     /**
      * Finds an entry of the container by its identifier and returns it.
+     * `ContainerInterface::get()` (psr/container ^2) declares no return type, so neither does this.
      * phpcs:disable SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      * @param string $id Identifier of the entry to look for.
      * @return mixed Entry.
      * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
-     * @throws \Psr\Container\NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws \Psr\Container\NotFoundExceptionInterface No entry was found for **this** identifier
+     *     (`Pimple\Exception\UnknownIdentifierException`).
      */
     #[ReturnTypeWillChange]
     public function get(string $id)
