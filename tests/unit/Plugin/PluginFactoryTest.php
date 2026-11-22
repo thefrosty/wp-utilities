@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\Tests\Plugin;
 
+use DI\Container as DiContainer;
+use DI\ContainerBuilder;
+use Pimple\Container as PimpleContainer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\UsesClass;
+use Psr\Container\ContainerInterface;
+use ReflectionMethod;
 use ReflectionProperty;
+use RuntimeException;
 use TheFrosty\WpUtilities\Plugin\Container;
 use TheFrosty\WpUtilities\Plugin\Init;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 use TheFrosty\WpUtilities\Plugin\TemplateLoader;
+use TheFrosty\WpUtilities\Tests\PlainObject;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 
 /**
@@ -52,7 +59,7 @@ class PluginFactoryTest extends TestCase
         $this->assertSame(__FILE__, $plugin->getFile());
         $this->assertInstanceOf(Init::class, $plugin->getInit());
         $this->assertInstanceOf(TemplateLoader::class, $plugin->getTemplateLoader());
-        $this->assertInstanceOf(Container::class, $plugin->getContainer());
+        $this->assertInstanceOf(DiContainer::class, $plugin->getContainer());
         $this->assertSame($plugin, $plugin->getContainer()->get('factory-test'));
         $this->assertSame($plugin, PluginFactory::getInstance('factory-test'));
     }
@@ -63,5 +70,71 @@ class PluginFactoryTest extends TestCase
 
         $this->assertSame(__FILE__, $plugin->getFile());
         $this->assertSame($plugin, PluginFactory::create('factory-backtrace', '/tmp/ignored.php'));
+    }
+
+    public function testCreateAcceptsAnyPsr11Container(): void
+    {
+        $container = new class implements ContainerInterface {
+            public function get(string $id): mixed
+            {
+                throw new RuntimeException($id);
+            }
+
+            public function has(string $id): bool
+            {
+                return false;
+            }
+        };
+
+        $plugin = PluginFactory::create('factory-custom-container', __FILE__, $container);
+
+        // A read-only PSR-11 container is attached as-is (there is no way to register the plugin in it).
+        $this->assertSame($container, $plugin->getContainer());
+    }
+
+    public function testCreateRegistersThePluginInAPhpDiContainer(): void
+    {
+        $container = new ContainerBuilder()->useAutowiring(true)->build();
+
+        $plugin = PluginFactory::create('factory-php-di', __FILE__, $container);
+
+        $this->assertSame($container, $plugin->getContainer());
+        $this->assertSame($plugin, $container->get('factory-php-di'));
+        // Autowiring: classes resolve without a definition.
+        $this->assertInstanceOf(PlainObject::class, $plugin->getContainer()->get(PlainObject::class));
+    }
+
+    public function testPhpDiIsTheDefaultContainerWhenInstalled(): void
+    {
+        $plugin = PluginFactory::create('factory-default', __FILE__);
+
+        $this->assertInstanceOf(DiContainer::class, $plugin->getContainer());
+        $this->assertSame($plugin, $plugin->getContainer()->get('factory-default'));
+    }
+
+    public function testCreateRegistersThePluginInAPimpleContainer(): void
+    {
+        $plugin = PluginFactory::create('factory-pimple', __FILE__, new Container());
+
+        $this->assertInstanceOf(Container::class, $plugin->getContainer());
+        $this->assertSame($plugin, $plugin->getContainer()['factory-pimple']);
+    }
+
+    public function testDefaultContainerResolutionOrder(): void
+    {
+        $default = new ReflectionMethod(PluginFactory::class, 'getDefaultContainer');
+
+        // PHP-DI first, then Pimple.
+        $this->assertInstanceOf(DiContainer::class, $default->invoke(null));
+        $this->assertInstanceOf(
+            Container::class,
+            $default->invoke(null, ['Missing\\Container', PimpleContainer::class])
+        );
+        $this->assertInstanceOf(
+            DiContainer::class,
+            $default->invoke(null, [ContainerBuilder::class, PimpleContainer::class])
+        );
+        // Neither installed: no container.
+        $this->assertNull($default->invoke(null, ['Missing\\Container']));
     }
 }

@@ -37,6 +37,7 @@
   "require-dev": {
     "ext-simplexml": "*",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+    "php-di/php-di": "^7.1",
     "php-stubs/wordpress-stubs": "^7.0",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpunit/php-code-coverage": "^11",
@@ -55,6 +56,8 @@
     "htmlburger/carbon-fields": "WordPress Custom Fields Library.",
     "illuminate/encryption": "Laravel level encryption & decryption.",
     "jjgrainger/posttypes": "Fluent post type & taxonomy registration. No longer used by AbstractPostType/AbstractTaxonomy (v4); require it directly if you use its API.",
+    "php-di/php-di": "PSR-11 container with autowiring; PluginFactory uses it by default when installed.",
+    "pimple/pimple": "Simple PSR-11 container; PluginFactory falls back to it when PHP-DI is not installed.",
     "yahnis-elsts/plugin-update-checker": "A custom update checker for WordPress plugins."
   },
   "autoload": {
