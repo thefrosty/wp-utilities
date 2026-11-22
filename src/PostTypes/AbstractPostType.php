@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes;
 
-use PostTypes\PostType;
 use TheFrosty\WpUtilities\Exceptions\Exception;
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
+use function add_action;
+use function did_action;
+use function register_post_type;
 
 /**
  * Class AbstractPostType.
@@ -55,16 +57,41 @@ abstract class AbstractPostType extends AbstractHookProvider
     }
 
     /**
-     * Register the Post Type.
-     * @link https://posttypes.jjgrainger.co.uk/post-types/create-a-post-type
-     * @return PostType
+     * Register the post type with WordPress on `init` (immediately when `init` is running or has already fired).
+     * @return void
      */
-    protected function registerPostType(): PostType
+    protected function registerPostType(): void
     {
-        $post_type = new PostType($this->getNames(), $this->getArgs(), $this->getLabels());
-        $post_type->register();
+        if (did_action('init')) {
+            $this->registerPostTypeNow();
 
-        return $post_type;
+            return;
+        }
+
+        add_action('init', [$this, 'registerPostTypeNow'], 10, 0);
+    }
+
+    /**
+     * Register the post type with WordPress now.
+     * @internal Called by `registerPostType()`; public only so it can be hooked.
+     * @return void
+     */
+    public function registerPostTypeNow(): void
+    {
+        register_post_type((string)static::POST_TYPE, $this->getRegistrationArgs());
+    }
+
+    /**
+     * Get the arguments passed to `register_post_type()`: the args, plus labels generated from the names
+     * (overridden by any labels that were set).
+     * @return array
+     */
+    protected function getRegistrationArgs(): array
+    {
+        $args = $this->getArgs();
+        $args['labels'] ??= $this->buildLabels($this->getNames(), $this->getLabels());
+
+        return $args;
     }
 
     /**
