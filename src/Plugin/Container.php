@@ -6,6 +6,7 @@ namespace TheFrosty\WpUtilities\Plugin;
 
 use Pimple\Container as Pimple;
 use Psr\Container\ContainerInterface;
+use ReturnTypeWillChange;
 
 /**
  * Container class.
@@ -22,12 +23,16 @@ class Container extends Pimple implements ContainerInterface
 
     /**
      * Finds an entry of the container by its identifier and returns it.
+     * `ContainerInterface::get()` (psr/container ^2) declares no return type, so neither does this.
+     * phpcs:disable SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      * @param string $id Identifier of the entry to look for.
      * @return mixed Entry.
+     * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
      * @throws \Psr\Container\NotFoundExceptionInterface No entry was found for **this** identifier
      *     (`Pimple\Exception\UnknownIdentifierException`).
      */
-    public function get(string $id): mixed
+    #[ReturnTypeWillChange]
+    public function get(string $id)
     {
         return $this->offsetGet($id);
     }
@@ -40,6 +45,7 @@ class Container extends Pimple implements ContainerInterface
      * @param string $id Identifier of the entry to look for.
      * @return bool
      */
+    #[ReturnTypeWillChange]
     public function has(string $id): bool
     {
         return $this->offsetExists($id);
