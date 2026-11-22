@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 namespace TheFrosty\WpUtilities\PostTypes;
+
+use TheFrosty\WpUtilities\Utils\ObjectNames;
 use function array_replace;
 use function base64_encode;
 use function lcfirst;
