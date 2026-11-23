@@ -8,6 +8,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveVoidDocblockFromMagicMethodRector;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddSeeTestAnnotationRector;
 use Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector;
 use Rector\TypeDeclaration\Rector\ClassLike\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
@@ -50,6 +51,7 @@ try {
         ])
         ->withSkip([
             __DIR__ . '/src/Api/Shortcode/Handler/templates/*',
+            AddSeeTestAnnotationRector::class,
             ArrayToFirstClassCallableRector::class,
             FunctionFirstClassCallableRector::class,
             NewlineBetweenClassLikeStmtsRector::class,
