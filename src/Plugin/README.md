@@ -73,33 +73,56 @@ and registers the plugin in it under its slug. The container is resolved in this
 
 Library code only relies on `get()`/`has()` (e.g. `Viewable::getView()`), so any container works.
 
+### Default service provider
+
+Most plugins register the same entries: the current HTTP request and a `View`. Register
+`TheFrosty\WpUtilities\Plugin\DefaultServiceProvider` instead of defining them yourself:
+
+```php
+use Symfony\Component\HttpFoundation\Request;
+use TheFrosty\WpUtilities\Plugin\DefaultServiceProvider;
+use TheFrosty\WpUtilities\Plugin\PluginFactory;
+
+$plugin = PluginFactory::create('plugin-slug');
+$plugin->addServiceProvider(new DefaultServiceProvider());
+
+$request = $plugin->getContainer()->get(DefaultServiceProvider::REQUEST); // Request::createFromGlobals()
+```
+
+| Entry ID | Value |
+|---|---|
+| `DefaultServiceProvider::REQUEST` (`'request'`) | `Request::createFromGlobals()`, shared. |
+| `Request::class` | The same request, so PHP-DI autowiring injects the *current* request into constructors type-hinting `Request` (instead of an empty `new Request()`). |
+| `DefaultServiceProvider::VIEW` (`'wp_utilities.view'`) | A shared `View` (as used by `Viewable::getView()`), with the paths from `getViewPaths()`. |
+
 ### Service providers
 
 `TheFrosty\WpUtilities\Plugin\ServiceProviderInterface` replaces `Pimple\ServiceProviderInterface` and works with
 either container. A provider returns its entries; closures are shared factories and receive the container when the
-parameter is type-hinted `Psr\Container\ContainerInterface`:
+parameter is type-hinted `Psr\Container\ContainerInterface`.
+
+The easiest way to write one is to extend `DefaultServiceProvider`, which keeps the request & view entries:
+merge your entries into `parent::getDefinitions()` and override `getViewPaths()` for your templates.
 
 ```php
 use Psr\Container\ContainerInterface;
-use TheFrosty\WpUtilities\Plugin\ServiceProviderInterface;
-use TheFrosty\WpUtilities\Utils\View;
+use TheFrosty\WpUtilities\Plugin\DefaultServiceProvider;
 
-class ServiceProvider implements ServiceProviderInterface
+class ServiceProvider extends DefaultServiceProvider
 {
-    public const string WP_UTILITIES_VIEW = 'wp_utilities.view';
     public const string UPGRADE_PROVIDER = 'upgrade.provider';
 
     public function getDefinitions(): array
     {
         return [
-            self::WP_UTILITIES_VIEW => static function (): View {
-                $view = new View();
-                $view->addPath(__DIR__ . '/views/');
-
-                return $view;
-            },
+            ...parent::getDefinitions(),
             self::UPGRADE_PROVIDER => static fn(ContainerInterface $container): Upgrade => new Upgrade($container),
         ];
+    }
+
+    protected function getViewPaths(): array
+    {
+        return [dirname(__DIR__) . '/views/'];
     }
 }
 
@@ -108,6 +131,8 @@ $plugin->addServiceProvider(new ServiceProvider())
     ->add($plugin->getContainer()->get(ServiceProvider::UPGRADE_PROVIDER))
     ->initialize();
 ```
+
+Or implement `ServiceProviderInterface` directly when you don't want the defaults.
 
 ### Container-aware classes
 
@@ -140,5 +165,7 @@ only used when PHP-DI isn't installed (or when passed to `PluginFactory::create(
 | `$plugin->entry` returned `true`/`false` (bug) | returns the entry |
 | `$plugin->missingMethod()` returned `false` | throws `BadMethodCallException` |
 | `$pimple->protect($fn)` for a callable entry | `DI\value($fn)` |
+| `$pimple['request'] = fn() => Request::createFromGlobals()` | `DefaultServiceProvider` (`DefaultServiceProvider::REQUEST`) |
+| `$pimple['wp_utilities.view'] = fn() => new View()` + `addPath()` | `DefaultServiceProvider` + override `getViewPaths()` |
 
 PHP-DI can also autowire classes with no definition at all: `$container->get(Upgrade::class)`.

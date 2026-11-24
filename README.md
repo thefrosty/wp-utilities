@@ -34,4 +34,20 @@ To install this library, use Composer:
 composer require thefrosty/wp-utilities:^4.0
 ```
 
-Then follow examples in the [Plugin README](./src/Plugin/README.md)
+Then follow examples in the [Plugin README](./src/Plugin/README.md).
+
+### Quick start
+
+```php
+use TheFrosty\WpUtilities\Plugin\DefaultServiceProvider;
+use TheFrosty\WpUtilities\Plugin\PluginFactory;
+
+$plugin = PluginFactory::create('plugin-slug');
+// Registers the current HTTP request and a shared View in the plugin's container (PHP-DI or Pimple).
+$plugin->addServiceProvider(new DefaultServiceProvider())
+    ->add(new SomeHookProvider())
+    ->initialize();
+```
+
+See [Dependency injection container](./src/Plugin/README.md#dependency-injection-container) for extending
+`DefaultServiceProvider` with your own entries.
