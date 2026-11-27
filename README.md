@@ -44,8 +44,15 @@ use TheFrosty\WpUtilities\Plugin\PluginFactory;
 
 $plugin = PluginFactory::create('plugin-slug');
 // Registers the current HTTP request and a shared View in the plugin's container (PHP-DI or Pimple).
-$plugin->addServiceProvider(new DefaultServiceProvider())
+$plugin->addServiceProvider(new DefaultServiceProvider());
+$plugin
     ->add(new SomeHookProvider())
+    ->addIfCondition(new SomeHookProvider())
+    ->addIfConditionDeferred(new SomeHookProvider())
+    ->addOnCondition(new SomeHookProvider())
+    ->addOnConditionDeferred(new SomeHookProvider())
+    ->addOnHook(new SomeHookProvider())
+    ->addOnHookDeferred(new SomeHookProvider())
     ->initialize();
 ```
 
