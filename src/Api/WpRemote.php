@@ -6,18 +6,20 @@ namespace TheFrosty\WpUtilities\Api;
 
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use WP_Error;
+use WP_Http;
 use function apply_filters;
 use function array_filter;
 use function array_merge;
 use function esc_attr;
 use function esc_url;
 use function get_bloginfo;
-use function is_wp_error;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
 use function wp_remote_get;
 use function wp_remote_post;
+use function wp_remote_retrieve_body;
+use function wp_remote_retrieve_response_code;
 use const DAY_IN_SECONDS;
 
 /**
@@ -43,15 +45,21 @@ trait WpRemote
         }
 
         $function = sprintf('wpRemote%1$s', ucfirst(strtolower($method)));
-        $response = wp_remote_retrieve_body($this->$function(esc_url($url), $this->buildRequestArgs($args)));
-        if (!is_wp_error($response) && $response !== '') {
-            $body = json_decode($response);
-            if ($body === null) {
-                return false;
-            }
+        $response = $this->$function(esc_url($url), $this->buildRequestArgs($args));
+
+        // Only successful (2xx) responses: an error body (e.g. a REST API 404 `{"code": "rest_no_route", …}`)
+        // must not be returned as data, nor cached by `retrieveBodyCached()`.
+        $code = (int)wp_remote_retrieve_response_code($response);
+        if ($code < WP_Http::OK || $code >= WP_Http::MULTIPLE_CHOICES) {
+            return false;
         }
 
-        return $body ?? false;
+        $body = wp_remote_retrieve_body($response);
+        if ($body === '') {
+            return false;
+        }
+
+        return json_decode($body) ?? false;
     }
 
     /**

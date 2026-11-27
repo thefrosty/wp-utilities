@@ -15,6 +15,7 @@ use TheFrosty\WpUtilities\Api\WpRemote;
 use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use WP_Error;
+use WP_Http;
 
 /**
  * Class WpRemoteTest
@@ -76,14 +77,42 @@ class WpRemoteTest extends TestCase
         $this->assertSame('{"method":"ok"}', $this->remote->wpRemotePost('https://example.com/post')['body']);
     }
 
-    private function fakeHttp(string $body): void
+    public function testNon2xxResponsesAreNotReturnedOrCached(): void
+    {
+        $url = 'https://example.com/wp-json/wp/v2/missing-' . wp_generate_password(6, false);
+        $this->fakeHttp('{"code":"rest_no_route","data":{"status":404}}', WP_Http::NOT_FOUND);
+
+        $this->assertFalse($this->remote->retrieveBody($url));
+        $this->assertFalse($this->remote->retrieveBodyCached($url, MINUTE_IN_SECONDS));
+        $this->assertFalse(get_transient($this->remote->getTransientKey($url)), 'Error bodies are not cached.');
+
+        // A redirect / server error is treated the same way.
+        $this->fakeHttp('{"ok":true}', WP_Http::MULTIPLE_CHOICES);
+        $this->assertFalse($this->remote->retrieveBody($url));
+        $this->fakeHttp('{"ok":true}', WP_Http::INTERNAL_SERVER_ERROR);
+        $this->assertFalse($this->remote->retrieveBody($url));
+
+        // An empty 2xx body.
+        $this->fakeHttp('', WP_Http::OK);
+        $this->assertFalse($this->remote->retrieveBody($url));
+    }
+
+    public function testRetrieveBodyReturnsFalseForATransportError(): void
     {
         remove_all_filters('pre_http_request');
-        add_filter('pre_http_request', static function () use ($body): array|WP_Error {
+        add_filter('pre_http_request', static fn(): WP_Error => new WP_Error('http_request_failed', 'timeout'));
+
+        $this->assertFalse($this->remote->retrieveBody('https://example.com/timeout'));
+    }
+
+    private function fakeHttp(string $body, int $code = WP_Http::OK): void
+    {
+        remove_all_filters('pre_http_request');
+        add_filter('pre_http_request', static function () use ($body, $code): array|WP_Error {
             return [
                 'headers' => [],
                 'body' => $body,
-                'response' => ['code' => 200, 'message' => 'OK'],
+                'response' => ['code' => $code, 'message' => ''],
                 'cookies' => [],
                 'filename' => null,
             ];

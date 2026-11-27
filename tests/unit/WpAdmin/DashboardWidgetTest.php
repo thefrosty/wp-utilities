@@ -19,6 +19,7 @@ use TheFrosty\WpUtilities\WpAdmin\Dashboard\SimplePie;
 use TheFrosty\WpUtilities\WpAdmin\Dashboard\Widget;
 use TheFrosty\WpUtilities\WpAdmin\DashboardWidget;
 use WP_Error;
+use WP_Http;
 
 /**
  * Class DashboardWidgetTest
@@ -113,6 +114,62 @@ XML;
         $this->assertStringNotContainsString('<b>', $html);
     }
 
+    public function testRestWidgetRendersAnErrorForANon2xxResponse(): void
+    {
+        // A REST API 404, e.g. a wrong feed URL. Previously this was decoded, cached for a week and iterated,
+        // raising "Attempt to read property "link" on string".
+        add_filter('pre_http_request', static fn(): array => [
+            'headers' => ['content-type' => 'application/json'],
+            'body' => '{"code":"rest_no_route","message":"No route was found.","data":{"status":404}}',
+            'response' => ['code' => WP_Http::NOT_FOUND, 'message' => 'Not Found'],
+            'cookies' => [],
+            'filename' => null,
+        ]);
+        $widget = $this->restWidget('https://example.com/wp-json/wp/v2/missing-' . wp_generate_password(6, false));
+
+        $html = $this->renderRest($widget);
+
+        $this->assertStringContainsString('Error fetching feed', $html);
+        $this->assertStringNotContainsString('rsswidget', $html);
+    }
+
+    public function testRestWidgetSkipsItemsThatAreNotPosts(): void
+    {
+        $widget = $this->restWidget('https://example.com/wp-json/wp/v2/posts');
+        $post = (object)[
+            'link' => 'https://example.com/hello/',
+            'title' => (object)['rendered' => 'Hello <b>world</b>'],
+            'date' => '2026-11-27T10:00:00',
+            'content' => (object)['rendered' => '<p>Summary text</p>'],
+        ];
+
+        // An error object (e.g. already cached), a list of strings, and malformed items: nothing to render.
+        foreach (
+            [
+                (object)['code' => 'rest_no_route', 'message' => 'No route was found.'],
+                ['code', 'message'],
+                [(object)['link' => 'https://example.com/'], (object)['title' => 'string']],
+                'unexpected',
+            ] as $posts
+        ) {
+            $this->assertStringContainsString('Error fetching feed', $this->renderRest($widget, $posts));
+        }
+
+        // Valid posts render; invalid ones in the same list are skipped.
+        $html = $this->renderRest($widget, ['oops', $post, (object)['link' => 42]]);
+        $this->assertSame(1, substr_count($html, 'class="rsswidget"'));
+        $this->assertStringContainsString('utm_campaign=rest_widget', $html);
+        $this->assertStringContainsString('Hello &lt;b&gt;world&lt;/b&gt;', $html);
+        $this->assertStringContainsString('<div class="rssSummary">Summary text</div>', $html);
+        $this->assertStringContainsString('class="rss-date"', $html);
+
+        // Missing optional fields (date, content) don't warn.
+        $minimal = (object)['link' => 'https://example.com/a/', 'title' => (object)['rendered' => 'Minimal']];
+        $html = $this->renderRest($widget, [$minimal]);
+        $this->assertStringContainsString('Minimal', $html);
+        $this->assertStringNotContainsString('class="rss-date"', $html);
+    }
+
     public function testSkipsTheWidgetWhenTheAllowFilterReturnsFalse(): void
     {
         $widget = new DashboardWidget([
@@ -129,5 +186,24 @@ XML;
             'blocked_widget',
             $GLOBALS['wp_meta_boxes']['dashboard']['normal']['core'] ?? []
         );
+    }
+
+    private function restWidget(string $url): DashboardWidget
+    {
+        return new DashboardWidget([
+            Widget::FEED_URL => $url,
+            Widget::WIDGET_ID => 'rest_widget',
+            Widget::WIDGET_NAME => 'REST',
+        ]);
+    }
+
+    private function renderRest(DashboardWidget $widget, mixed $posts = null): string
+    {
+        $data = ['instance' => $widget];
+        if ($posts !== null) {
+            $data['posts'] = $posts;
+        }
+
+        return new View()->retrieve('dashboard-widget/rest', $data);
     }
 }

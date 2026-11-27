@@ -18,30 +18,49 @@ $wpRemote = new class {
 };
 $posts ??= $wpRemote->retrieveBodyCached($instance->getWidget()->getFeedUrl(), WEEK_IN_SECONDS);
 $renderContent ??= true; // Pass false to disable rendering the widget content on the first key.
-static $count;
+
+/*
+ * Only a list of REST API post objects can be rendered. An error response (e.g. a 404 decoded to
+ * `{"code": "rest_no_route", "message": …}`) is an object, and iterating it yields strings.
+ */
+$items = is_array($posts) && array_is_list($posts) ? array_values(array_filter(
+    $posts,
+    static fn(mixed $item): bool => is_object($item) &&
+        isset($item->link, $item->title) &&
+        is_string($item->link) &&
+        is_object($item->title) &&
+        is_string($item->title->rendered ?? null)
+)) : [];
 
 $content = '';
-if (empty($posts)) {
-    $content .= '<li>' . __('Error fetching feed') . '</li>'; // phpcs:ignore
+if ($items === []) {
+    $content .= '<li>' . esc_html__('Error fetching feed', 'wp-utilities') . '</li>';
 } else {
-    foreach ($posts as $item) {
-        $count++;
-        $content .= '<li>';
-        $content .= '<a class="rsswidget" href="' . esc_url(add_query_arg([
+    foreach ($items as $index => $item) {
+        $link = add_query_arg([
             'utm_medium' => 'wpadmin_dashboard',
             'utm_term' => 'newsitem',
             'utm_campaign' => $widgetId,
-        ], $item->link)) . '">' . esc_html($item->title->rendered) . '</a>';
+        ], $item->link);
+        $content .= '<li>';
+        $content .= sprintf(
+            '<a class="rsswidget" href="%1$s">%2$s</a>',
+            esc_url($link),
+            esc_html($item->title->rendered)
+        );
 
-        if ($count === 1 && $renderContent) {
-            $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
-                date_i18n(get_option('date_format'), strtotime($item->date)) . '</span>';
+        if ($index === 0 && $renderContent) {
+            $timestamp = is_string($item->date ?? null) ? strtotime($item->date) : false;
+            if ($timestamp !== false) {
+                $content .= '&nbsp;&nbsp;&nbsp;<span class="rss-date">' .
+                    esc_html(date_i18n(get_option('date_format'), $timestamp)) . '</span>';
+            }
+            $summary = is_string($item->content->rendered ?? null) ? $item->content->rendered : '';
             $content .= '<div class="rssSummary">' .
-                strip_tags(wp_trim_words($item->content->rendered, 28)) . '</div>';
+                esc_html(wp_strip_all_tags(wp_trim_words($summary, 28))) . '</div>';
         }
         $content .= '</li>';
     }
-    unset($count);
 }
 
-echo $content;
+echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
