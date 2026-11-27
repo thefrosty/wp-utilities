@@ -133,5 +133,4 @@ v3 built a `PostTypes\Taxonomy` (from `jjgrainger/posttypes` v2) and `registerTa
 | `->posttype('book')` on the returned object | `POST_TYPE` constant (string or array) |
 | `jjgrainger/posttypes` installed via wp-utilities | Not installed any more: require it yourself if you use its API directly |
 
-The generated label `separate_items_with_commas` now reads "Separate … with commas" (v2 used the misspelling
-"Seperate").
+The generated `separate_items_with_commas` label now spells "Separate" correctly (v2 misspelled it).
