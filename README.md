@@ -39,13 +39,49 @@ Then follow examples in the [Plugin README](./src/Plugin/README.md).
 ### Quick start
 
 ```php
+use MyPlugin\Admin\SettingsPage;
+use MyPlugin\Api\RestRoutes;
+use MyPlugin\Cli\Commands;
+use MyPlugin\Frontend\Assets;
+use MyPlugin\Integrations\WooCommerce;
+use MyPlugin\Integrations\WooCommerceAdmin;
+use MyPlugin\PostTypes\Book;
 use TheFrosty\WpUtilities\Plugin\DefaultServiceProvider;
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 
 $plugin = PluginFactory::create('plugin-slug');
 // Registers the current HTTP request and a shared View in the plugin's container (PHP-DI or Pimple).
-$plugin->addServiceProvider(new DefaultServiceProvider())
-    ->add(new SomeHookProvider())
+$plugin->addServiceProvider(new DefaultServiceProvider());
+$plugin
+    // An instance: registered now, its addHooks() runs on initialize().
+    ->add(new Book())
+    // Class names (WpHooksInterface implementations) from here on; the plugin instantiates them.
+    // Registered now, only when the bool is true.
+    ->addIfCondition(Commands::class, defined('WP_CLI') && WP_CLI)
+    // Registered on `plugins_loaded` (the default $deferred_tag) when the bool is true.
+    // The bool is evaluated now: use addOnConditionDeferred() when the check needs the deferred hook.
+    ->addIfConditionDeferred(SettingsPage::class, is_admin(), deferred_tag: 'plugins_loaded')
+    // The callable is called now (with $func_args unpacked); if it returns true, register it on $tag
+    // (default `init`).
+    ->addOnCondition(
+        RestRoutes::class,
+        'extension_loaded',
+        func_args: ['intl'],
+        tag: 'rest_api_init',
+        priority: 10,
+    )
+    // On `plugins_loaded`, call the callable; if true, register it on `init` (admin only).
+    ->addOnConditionDeferred(
+        WooCommerceAdmin::class,
+        static fn(): bool => class_exists(\WooCommerce::class),
+        deferred_tag: 'plugins_loaded',
+        admin_only: true,
+    )
+    // Registered on a specific hook; $args are unpacked into the class constructor.
+    // admin_only: true = admin only, false = front-end only, null (default) = both.
+    ->addOnHook(Assets::class, tag: 'wp_enqueue_scripts', priority: 20, admin_only: false, args: ['plugin-slug'])
+    // On `init` (the default $deferred_tag), register it on `wp_loaded`.
+    ->addOnHookDeferred(WooCommerce::class, deferred_tag: 'init', tag: 'wp_loaded', deferred_priority: 20)
     ->initialize();
 ```
 
