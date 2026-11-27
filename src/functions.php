@@ -7,9 +7,11 @@ namespace TheFrosty\WpUtilities;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Exceptions\TerminationException;
+use TheFrosty\WpUtilities\Utils\Cloudflare;
 use function apply_filters;
 use function array_filter;
 use function array_map;
+use function array_merge;
 use function array_reverse;
 use function explode;
 use function filter_var;
@@ -55,10 +57,14 @@ function exitOrThrow(
 
 /**
  * Get the client's IP.
- * Uses `REMOTE_ADDR`, which can't be spoofed by the client. Proxy headers (`X-Forwarded-For` by default) are only
- * read when `REMOTE_ADDR` is a trusted proxy, configured via the `thefrosty/wp_utilities/trusted_proxies` filter
- * (IPs or CIDR ranges, e.g. your load balancer or Cloudflare's ranges). The header can be changed with the
- * `thefrosty/wp_utilities/trusted_proxy_header` filter (e.g. `HTTP_CF_CONNECTING_IP`).
+ * Uses `REMOTE_ADDR`, which can't be spoofed by the client, with two exceptions:
+ * - Cloudflare: when `REMOTE_ADDR` is one of Cloudflare's edge ranges, the `CF-Connecting-IP` header (set by
+ *   Cloudflare) is used. Disable with the `thefrosty/wp_utilities/trust_cloudflare` filter; the ranges can be
+ *   changed with `thefrosty/wp_utilities/cloudflare_ip_ranges`. See `Utils\Cloudflare`.
+ * - Trusted proxies: proxy headers (`X-Forwarded-For` by default) are read when `REMOTE_ADDR` is a trusted proxy,
+ *   configured via the `thefrosty/wp_utilities/trusted_proxies` filter (IPs or CIDR ranges, e.g. your load
+ *   balancer). The header can be changed with the `thefrosty/wp_utilities/trusted_proxy_header` filter. When
+ *   Cloudflare is trusted, its ranges are skipped as proxy hops too (Cloudflare in front of a load balancer).
  * @param Request|null $request
  * @param string[]|null $trusted_proxies Optional trusted proxies, overrides the filter.
  * @return string|null
@@ -69,7 +75,17 @@ function getIpAddress(?Request $request = null, ?array $trusted_proxies = null):
 
     $ip = $request->server->get('REMOTE_ADDR');
     $trusted_proxies ??= (array)apply_filters('thefrosty/wp_utilities/trusted_proxies', []);
-    if (is_string($ip) && $trusted_proxies !== [] && IpUtils::checkIp($ip, $trusted_proxies)) {
+    $trust_cloudflare = Cloudflare::isTrusted();
+    if ($trust_cloudflare && is_string($ip) && Cloudflare::isCloudflareIp($ip)) {
+        // Cloudflare connected directly: it sets (and overwrites any client value of) `CF-Connecting-IP`.
+        $connecting_ip = $request->server->get(Cloudflare::HEADER_CONNECTING_IP);
+        if (is_string($connecting_ip) && filter_var($connecting_ip, FILTER_VALIDATE_IP)) {
+            $ip = $connecting_ip;
+        }
+    } elseif (is_string($ip) && $trusted_proxies !== [] && IpUtils::checkIp($ip, $trusted_proxies)) {
+        if ($trust_cloudflare) {
+            $trusted_proxies = array_merge($trusted_proxies, Cloudflare::getIpRanges());
+        }
         $header = apply_filters('thefrosty/wp_utilities/trusted_proxy_header', 'HTTP_X_FORWARDED_FOR');
         $forwarded = $request->server->get(is_string($header) ? $header : 'HTTP_X_FORWARDED_FOR', '');
         $hops = array_reverse(array_filter(array_map('trim', explode(',', (string)$forwarded))));
