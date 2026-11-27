@@ -94,3 +94,10 @@ See [Dependency injection container](./src/Plugin/README.md#dependency-injection
 - [Post types](./src/PostTypes/README.md) (`AbstractPostType`)
 - [Taxonomies](./src/Taxonomies/README.md) (`AbstractTaxonomy`)
 - [WP_Query models](./src/Models/WpQuery/README.md)
+
+### Development scripts
+
+The PHPCS/PHPCBF/PHPStan/Psalm/ESLint and WordPress test-suite scripts that used to live in `bin/` moved to
+[thefrosty/wp-utilities-dev](https://github.com/thefrosty/wp-utilities-dev) in v4. If you called
+`./vendor/thefrosty/wp-utilities/bin/<script>.sh`, run `composer require --dev thefrosty/wp-utilities-dev` and use
+`./vendor/bin/<script>.sh` instead.
