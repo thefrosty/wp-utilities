@@ -68,6 +68,27 @@ class InitTest extends TestCase
         $this->assertNull($init->getWpHookObject(self::class));
         $this->assertCount(2, iterator_to_array($init->getIterator()));
     }
+
+    public function testInitializeEachInstanceOfTheSameClass(): void
+    {
+        $init = new Init();
+        $first = new InitHookProvider();
+        $second = new InitHookProvider();
+        $init->register($first, $this->plugin);
+        $init->register($second, $this->plugin);
+
+        $init->initialize();
+        $init->initialize();
+        $this->assertSame(1, $first->hooks);
+        $this->assertSame(1, $second->hooks);
+
+        // Registered after the first initialize(), like a provider added on a later hook.
+        $third = new InitHookProvider();
+        $init->register($third, $this->plugin);
+        $init->initialize();
+        $this->assertSame(1, $first->hooks);
+        $this->assertSame(1, $third->hooks);
+    }
 }
 
 class InitHookProvider implements PluginAwareInterface, WpHooksInterface

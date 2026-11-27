@@ -6,7 +6,7 @@ namespace TheFrosty\WpUtilities\Plugin;
 
 use ArrayIterator;
 use IteratorAggregate;
-use function array_key_exists;
+use function spl_object_id;
 
 /**
  * Class Init
@@ -15,8 +15,9 @@ use function array_key_exists;
 final class Init implements IteratorAggregate
 {
     /**
-     * A container for objects that have been initiated.
-     * @var array $initiated
+     * The hook providers that have been initiated, keyed by object ID (not class name), so two instances of the
+     * same class (e.g. one license manager or updater per add-on plugin) each get their hooks.
+     * @var array<int, true> $initiated
      */
     private array $initiated = [];
 
@@ -56,8 +57,10 @@ final class Init implements IteratorAggregate
     public function initialize(): void
     {
         foreach ($this as $wp_hook) {
-            if ($wp_hook instanceof WpHooksInterface && !array_key_exists($wp_hook::class, $this->initiated)) {
-                $this->initiated[$wp_hook::class] = true;
+            // Registered objects stay referenced in $wp_hooks, so their IDs are never reused.
+            $id = spl_object_id($wp_hook);
+            if ($wp_hook instanceof WpHooksInterface && !isset($this->initiated[$id])) {
+                $this->initiated[$id] = true;
                 $wp_hook->addHooks();
             }
         }
