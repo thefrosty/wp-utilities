@@ -7,9 +7,11 @@ namespace TheFrosty\WpUtilities\Tests;
 use Closure;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
 use Symfony\Component\HttpFoundation\Request;
 use TheFrosty\WpUtilities\Exceptions\TerminationException;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
+use TheFrosty\WpUtilities\Utils\Cloudflare;
 use function TheFrosty\WpUtilities\exitOrThrow;
 use function TheFrosty\WpUtilities\getIpAddress;
 use function TheFrosty\WpUtilities\getRequest;
@@ -29,6 +31,7 @@ use function wp_script_is;
 #[CoversFunction('TheFrosty\WpUtilities\isPhpunit')]
 #[CoversFunction('TheFrosty\WpUtilities\wpEnqueueScript')]
 #[CoversFunction('TheFrosty\WpUtilities\wpRegisterScript')]
+#[UsesClass(Cloudflare::class)]
 #[Group('functions')]
 class FunctionsTest extends TestCase
 {
@@ -84,6 +87,63 @@ class FunctionsTest extends TestCase
         remove_all_filters('thefrosty/wp_utilities/trusted_proxies');
         remove_all_filters('thefrosty/wp_utilities/trusted_proxy_header');
         $this->assertSame('198.51.100.99', $ip);
+    }
+
+    public function testGetIpAddressUsesCfConnectingIpFromCloudflare(): void
+    {
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '172.69.134.187', // Cloudflare edge (172.64.0.0/13).
+            Cloudflare::HEADER_CONNECTING_IP => '198.51.100.20',
+            'HTTP_X_FORWARDED_FOR' => '6.6.6.6, 198.51.100.20',
+        ]);
+        $this->assertSame('198.51.100.20', getIpAddress($request));
+
+        $request->server->set('REMOTE_ADDR', '2606:4700::6810:84e5'); // IPv6 edge.
+        $request->server->set(Cloudflare::HEADER_CONNECTING_IP, '2001:db8::20');
+        $this->assertSame('2001:db8::20', getIpAddress($request));
+    }
+
+    public function testGetIpAddressKeepsCloudflareWithoutAValidHeader(): void
+    {
+        $request = Request::create('/', server: ['REMOTE_ADDR' => '172.69.134.187']);
+        $this->assertSame('172.69.134.187', getIpAddress($request));
+
+        $request->server->set(Cloudflare::HEADER_CONNECTING_IP, 'not-an-ip');
+        $this->assertSame('172.69.134.187', getIpAddress($request));
+    }
+
+    public function testGetIpAddressIgnoresCfConnectingIpWhenCloudflareIsNotTrusted(): void
+    {
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '172.69.134.187',
+            Cloudflare::HEADER_CONNECTING_IP => '198.51.100.20',
+        ]);
+
+        add_filter(Cloudflare::FILTER_TRUST, '__return_false');
+        $disabled = getIpAddress($request);
+        remove_all_filters(Cloudflare::FILTER_TRUST);
+
+        add_filter(Cloudflare::FILTER_IP_RANGES, '__return_empty_array');
+        $no_ranges = getIpAddress($request);
+        remove_all_filters(Cloudflare::FILTER_IP_RANGES);
+
+        $this->assertSame('172.69.134.187', $disabled);
+        $this->assertSame('172.69.134.187', $no_ranges);
+    }
+
+    public function testGetIpAddressSkipsCloudflareHopsBehindATrustedProxy(): void
+    {
+        // Cloudflare -> load balancer (10.0.0.2) -> WordPress.
+        $request = Request::create('/', server: [
+            'REMOTE_ADDR' => '10.0.0.2',
+            'HTTP_X_FORWARDED_FOR' => '6.6.6.6, 198.51.100.7, 172.69.134.187',
+        ]);
+        $this->assertSame('198.51.100.7', getIpAddress($request, ['10.0.0.0/8']));
+
+        add_filter(Cloudflare::FILTER_TRUST, '__return_false');
+        $ip = getIpAddress($request, ['10.0.0.0/8']);
+        remove_all_filters(Cloudflare::FILTER_TRUST);
+        $this->assertSame('172.69.134.187', $ip);
     }
 
     public function testGetIpAddressKeepsTheProxyOnAMalformedChain(): void
