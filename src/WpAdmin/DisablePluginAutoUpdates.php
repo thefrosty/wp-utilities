@@ -4,8 +4,8 @@ namespace TheFrosty\WpUtilities\WpAdmin;
 
 use TheFrosty\WpUtilities\Plugin\AbstractHookProvider;
 use TheFrosty\WpUtilities\Plugin\Plugin;
-use function apply_filters;
 use function __;
+use function apply_filters;
 use function esc_html;
 use function is_object;
 use function sprintf;

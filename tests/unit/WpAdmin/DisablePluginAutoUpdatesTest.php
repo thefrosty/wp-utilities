@@ -5,8 +5,14 @@ declare(strict_types=1);
 namespace TheFrosty\WpUtilities\Tests\WpAdmin;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\UsesClass;
+use TheFrosty\WpUtilities\Plugin\Container;
+use TheFrosty\WpUtilities\Plugin\Init;
+use TheFrosty\WpUtilities\Plugin\Plugin;
 use TheFrosty\WpUtilities\Plugin\PluginFactory;
 use TheFrosty\WpUtilities\Plugin\PluginInterface;
+use TheFrosty\WpUtilities\Plugin\TemplateLoader;
 use TheFrosty\WpUtilities\Tests\Plugin\Framework\TestCase;
 use TheFrosty\WpUtilities\WpAdmin\DisablePluginAutoUpdates;
 
@@ -15,6 +21,12 @@ use TheFrosty\WpUtilities\WpAdmin\DisablePluginAutoUpdates;
  * @package TheFrosty\WpUtilities\Tests\WpAdmin
  */
 #[CoversClass(DisablePluginAutoUpdates::class)]
+#[UsesClass(Container::class)]
+#[UsesClass(Init::class)]
+#[UsesClass(Plugin::class)]
+#[UsesClass(PluginFactory::class)]
+#[UsesClass(TemplateLoader::class)]
+#[Group('wp-admin')]
 class DisablePluginAutoUpdatesTest extends TestCase
 {
     private const string OTHER_PLUGIN = 'other/other.php';
