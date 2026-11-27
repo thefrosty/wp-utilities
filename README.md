@@ -51,3 +51,10 @@ $plugin->addServiceProvider(new DefaultServiceProvider())
 
 See [Dependency injection container](./src/Plugin/README.md#dependency-injection-container) for extending
 `DefaultServiceProvider` with your own entries.
+
+### Guides
+
+- [Plugin & hook providers](./src/Plugin/README.md)
+- [Post types](./src/PostTypes/README.md) (`AbstractPostType`)
+- [Taxonomies](./src/Taxonomies/README.md) (`AbstractTaxonomy`)
+- [WP_Query models](./src/Models/WpQuery/README.md)
